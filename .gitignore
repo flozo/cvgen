@@ -14,7 +14,8 @@
 *.eps
 *.dvi
 *.pdf
-
+# Libraries:
+/lib/*
 
 # User-specific stuff
 .idea/**/workspace.xml
