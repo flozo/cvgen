@@ -1,0 +1,27 @@
+File info:
+This is the config file for the letter colors.
+It specifies the background colors, border colors, and text colors of all letter elements.
+
+Format info:
+Please note also the general format info in "master.config".
+If a value is left empty, a default value is used automatically.
+Set value to "none" to achieve transparency.
+
+Choose color specifiers from the LaTeX standard color palette
+or from ColorBrewer's sequential and diverging color schemes (see https://colorbrewer2.org).
+
+Standard colors:
+
+black, blue, brown, cyan, darkgray, gray, green, lightgray, lime, magenta,
+olive, orange, pink, purple, red, teal, violet, white, yellow
+
+ColorBrewer colors:
+
+Color values are specified as: SchemeName-Letter; Examples: Oranges-D, Greys-K, PuBu-M, RdYlGn-F
+Sequential color schemes are:
+BuGn, PuRd, BuPu, RdPu, GnBu, YlGn, OrRd, YlGnBu, PuBu, YlOrBr, PuBnGn, YlOrRd, Blues, Greens, Greys, Oranges, Purples, Reds
+with available letters: A, B, C, D, E, F, G, H, I, J, K, L, M
+Diverging color schemes are:
+BrBG, RdGy, RdYlBu, PiYG, PuOr, RdYlGn, PRGn, RdBu, Spectral
+with available letters: A, B, C, D, E, F, G, H, I, J, K, L, M, N, O
+ColorBrewer's qualitative schemes are not (yet) supported.

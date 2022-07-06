@@ -1,0 +1,15 @@
+File info:
+This is the master config file.
+It specifies the individual config files for the respective config groups.
+
+Format info:
+Lines starting with "#" or "!" are comment lines and are ignored by the program. However, values may contain "#" and/or "!".
+Blank lines are ignored as well.
+Configuration settings are specified as key-value pairs, separated by "=", ":", or whitespace.
+If a line contains multiple non-consecutive whitespace characters, the first one is interpreted as key-value separator.
+Consequently, keys cannot contain whitespace.
+Leading whitespace is ignored for both keys and values.
+Trailing whitespace is ignored for keys only.
+
+Config files are assumed to be in the same directory as this master config file.
+If a specified file does not exist, internal default values are used for the missing properties.

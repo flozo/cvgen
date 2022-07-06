@@ -1,0 +1,9 @@
+File info:
+This is the config file for the letter fonts.
+It specifies the font sizes in all letter elements.
+
+Format info:
+Please note also the general format info in "master.config".
+Values are LaTeX font size command names (without leading backslash).
+Choose from: tiny, scriptsize, footnotesize, small, normalsize, large, Large, LARGE, huge, Huge
+If a value is left empty, a default value is used automatically.

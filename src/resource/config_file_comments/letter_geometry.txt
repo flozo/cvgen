@@ -1,0 +1,8 @@
+File info:
+This is the config file for the letter geometry.
+It specifies the positions, widths, heights, lengths, and sizes of all letter elements.
+
+Format info:
+Please note also the general format info in "master.config".
+Values are numeric and can be integer or decimal. Use the point as decimal separator.
+If a value is left empty, a default value is used automatically.
