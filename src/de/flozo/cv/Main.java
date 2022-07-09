@@ -1,8 +1,5 @@
 package de.flozo.cv;
 
-import de.flozo.letter.data.ConfigDirectory;
-import de.flozo.letter.data.MasterConfigFile;
-
 public class Main {
 
     // constants
@@ -21,19 +18,20 @@ public class Main {
     public static void main(String[] args) {
 
 
-        ConfigDirectory configDirectory = ConfigDirectory.fromDefaultDirectory(APPLICATION_NAME);
-        configDirectory.createIfNotExists();
-        System.out.println(configDirectory);
-        MasterConfigFile masterConfigFile = MasterConfigFile.withDefaultFileName(configDirectory);
-        System.out.println(masterConfigFile);
-        ConfigGroup.MASTER.writeToFile(configDirectory, VERSION_INFO_PDF_META_DATA);
-//        masterConfigFile.writeProperties();
-        masterConfigFile.readProperties();
+//        ConfigDirectory configDirectory = ConfigDirectory.fromDefaultDirectory(APPLICATION_NAME);
+//        configDirectory.createIfNotExists();
+//        System.out.println(configDirectory);
+//        MasterConfigFile masterConfigFile = MasterConfigFile.withDefaultFileName(configDirectory);
+//        System.out.println(masterConfigFile);
+//        ConfigGroup.MASTER.writeToFile(configDirectory, VERSION_INFO_PDF_META_DATA);
+////        masterConfigFile.writeProperties();
+//        masterConfigFile.readProperties();
+//
+//        ConfigGroup.LETTER_GENERAL.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
+//        ConfigGroup.LETTER_GEOMETRY.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
+//        ConfigGroup.LETTER_COLORS.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
+//        ConfigGroup.LETTER_FONTS.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
 
-        ConfigGroup.LETTER_GENERAL.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
-        ConfigGroup.LETTER_GEOMETRY.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
-        ConfigGroup.LETTER_COLORS.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
-        ConfigGroup.LETTER_FONTS.writeToFile(configDirectory,VERSION_INFO_PDF_META_DATA);
 
 
 

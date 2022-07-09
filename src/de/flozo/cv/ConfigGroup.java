@@ -50,22 +50,29 @@ public enum ConfigGroup {
     public Map<String, String> getDefaultPropertyMap() {
         Map<String, String> propertiesRawMap = new HashMap<>();
         if (Objects.equals(configGroup, ConfigGroup.MASTER.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(de.flozo.letter.data.ConfigGroup.values()).filter(e -> !e.equals(de.flozo.letter.data.ConfigGroup.MASTER)).collect(Collectors.toMap(de.flozo.letter.data.ConfigGroup::getPropertyKey, de.flozo.letter.data.ConfigGroup::getDefaultFileName)));
+            propertiesRawMap.putAll(Arrays.stream(de.flozo.letter.data.ConfigGroup.values())
+                    .filter(e -> !e.equals(de.flozo.letter.data.ConfigGroup.MASTER))
+                    .collect(Collectors.toMap(de.flozo.letter.data.ConfigGroup::getPropertyKey, de.flozo.letter.data.ConfigGroup::getDefaultFileName)));
         }
         if (Objects.equals(configGroup, ConfigGroup.LETTER_GENERAL.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(LetterGeneralProperty.values()).collect(Collectors.toMap(LetterGeneralProperty::getPropertyKey, LetterGeneralProperty::getGenericStringValue)));
+            propertiesRawMap.putAll(Arrays.stream(LetterGeneralProperty.values())
+                    .collect(Collectors.toMap(LetterGeneralProperty::getPropertyKey, LetterGeneralProperty::getGenericStringValue)));
         }
         if (Objects.equals(configGroup, ConfigGroup.LETTER_GEOMETRY.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(LetterGeometryProperty.values()).collect(Collectors.toMap(LetterGeometryProperty::getPropertyKey, LetterGeometryProperty::getGenericStringValue)));
+            propertiesRawMap.putAll(Arrays.stream(LetterGeometryProperty.values())
+                    .collect(Collectors.toMap(LetterGeometryProperty::getPropertyKey, LetterGeometryProperty::getGenericStringValue)));
         }
         if (Objects.equals(configGroup, ConfigGroup.LETTER_COLORS.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(LetterColorProperty.values()).collect(Collectors.toMap(LetterColorProperty::getPropertyKey, LetterColorProperty::getGenericStringValue)));
+            propertiesRawMap.putAll(Arrays.stream(LetterColorProperty.values())
+                    .collect(Collectors.toMap(LetterColorProperty::getPropertyKey, LetterColorProperty::getGenericStringValue)));
         }
         if (Objects.equals(configGroup, ConfigGroup.LETTER_FONTS.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(LetterFontProperty.values()).collect(Collectors.toMap(LetterFontProperty::getPropertyKey, LetterFontProperty::getGenericStringValue)));
+            propertiesRawMap.putAll(Arrays.stream(LetterFontProperty.values())
+                    .collect(Collectors.toMap(LetterFontProperty::getPropertyKey, LetterFontProperty::getGenericStringValue)));
         }
         if (Objects.equals(configGroup, ConfigGroup.SENDER_DATA.configGroup) || Objects.equals(configGroup, ConfigGroup.RECEIVER_DATA.configGroup)) {
-            propertiesRawMap.putAll(Arrays.stream(AddressProperty.values()).collect(Collectors.toMap(AddressProperty::getPropertyKey, AddressProperty::getGenericStringValue)));
+            propertiesRawMap.putAll(Arrays.stream(AddressProperty.values())
+                    .collect(Collectors.toMap(AddressProperty::getPropertyKey, AddressProperty::getGenericStringValue)));
         }
         return propertiesRawMap;
     }
