@@ -5,9 +5,9 @@ public class AreaStyle {
     private int id;
     private String name;
     private BaseColor color;
-    private NamedOpacity opacity;
+    private PredefinedOpacity opacity;
 
-    public AreaStyle(int id, String name, BaseColor color, NamedOpacity opacity) {
+    public AreaStyle(int id, String name, BaseColor color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -38,11 +38,21 @@ public class AreaStyle {
         this.color = color;
     }
 
-    public NamedOpacity getOpacity() {
+    public PredefinedOpacity getOpacity() {
         return opacity;
     }
 
-    public void setOpacity(NamedOpacity opacity) {
+    public void setOpacity(PredefinedOpacity opacity) {
         this.opacity = opacity;
+    }
+
+    @Override
+    public String toString() {
+        return "AreaStyle{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color=" + color +
+                ", opacity=" + opacity +
+                '}';
     }
 }

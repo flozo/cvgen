@@ -1,11 +1,11 @@
 package de.flozo.common;
 
-public class NamedOpacity {
+public class PredefinedOpacity {
 
     private int id;
     private String value;
 
-    public NamedOpacity(int id, String value) {
+    public PredefinedOpacity(int id, String value) {
         this.id = id;
         this.value = value;
     }
@@ -24,5 +24,13 @@ public class NamedOpacity {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "PredefinedOpacity{" +
+                "id=" + id +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

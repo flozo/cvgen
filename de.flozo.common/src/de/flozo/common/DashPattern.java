@@ -25,4 +25,12 @@ public class DashPattern {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "DashPattern{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

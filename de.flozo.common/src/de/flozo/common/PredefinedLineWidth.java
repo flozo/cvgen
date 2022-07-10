@@ -1,15 +1,13 @@
 package de.flozo.common;
 
-public class NamedPosition {
+public class PredefinedLineWidth {
 
     private int id;
     private String name;
-    private Position position;
 
-    public NamedPosition(int id, String name, Position position) {
+    public PredefinedLineWidth(int id, String name) {
         this.id = id;
         this.name = name;
-        this.position = position;
     }
 
     public int getId() {
@@ -28,20 +26,11 @@ public class NamedPosition {
         this.name = name;
     }
 
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     @Override
     public String toString() {
-        return "NamedPosition{" +
+        return "PredefinedLineWidth{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", position=" + position +
                 '}';
     }
 }

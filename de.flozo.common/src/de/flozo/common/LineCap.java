@@ -25,4 +25,12 @@ public class LineCap {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "LineCap{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

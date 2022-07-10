@@ -2,35 +2,57 @@ package de.flozo.common;
 
 public class Position {
 
-    private Length x;
-    private Length y;
+    private int id;
+    private String name;
+    private Length lengthX;
+    private Length lengthY;
 
-    public Position(Length x, Length y) {
-        this.x = x;
-        this.y = y;
+    public Position(int id, String name, Length lengthX, Length lengthY) {
+        this.id = id;
+        this.name = name;
+        this.lengthX = lengthX;
+        this.lengthY = lengthY;
     }
 
-    public Length getX() {
-        return x;
+    public int getId() {
+        return id;
     }
 
-    public void setX(Length x) {
-        this.x = x;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public Length getY() {
-        return y;
+    public String getName() {
+        return name;
     }
 
-    public void setY(Length y) {
-        this.y = y;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Length getLengthX() {
+        return lengthX;
+    }
+
+    public void setLengthX(Length lengthX) {
+        this.lengthX = lengthX;
+    }
+
+    public Length getLengthY() {
+        return lengthY;
+    }
+
+    public void setLengthY(Length lengthY) {
+        this.lengthY = lengthY;
     }
 
     @Override
     public String toString() {
         return "Position{" +
-                "x=" + x +
-                ", y=" + y +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", lengthX=" + lengthX +
+                ", lengthY=" + lengthY +
                 '}';
     }
 }

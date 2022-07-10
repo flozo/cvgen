@@ -4,15 +4,15 @@ public class Element {
 
     private int id;
     private String name;
-    private NamedPosition position;
-    private NamedLength width;
-    private NamedLength height;
+    private Position position;
+    private Length width;
+    private Length height;
     private Anchor anchor;
     private TextStyle textStyle;
     private LineStyle lineStyle;
     private AreaStyle areaStyle;
 
-    public Element(int id, String name, NamedPosition position, NamedLength width, NamedLength height, Anchor anchor, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
+    public Element(int id, String name, Position position, Length width, Length height, Anchor anchor, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -40,27 +40,27 @@ public class Element {
         this.name = name;
     }
 
-    public NamedPosition getPosition() {
+    public Position getPosition() {
         return position;
     }
 
-    public void setPosition(NamedPosition position) {
+    public void setPosition(Position position) {
         this.position = position;
     }
 
-    public NamedLength getWidth() {
+    public Length getWidth() {
         return width;
     }
 
-    public void setWidth(NamedLength width) {
+    public void setWidth(Length width) {
         this.width = width;
     }
 
-    public NamedLength getHeight() {
+    public Length getHeight() {
         return height;
     }
 
-    public void setHeight(NamedLength height) {
+    public void setHeight(Length height) {
         this.height = height;
     }
 
@@ -94,5 +94,20 @@ public class Element {
 
     public void setAreaStyle(AreaStyle areaStyle) {
         this.areaStyle = areaStyle;
+    }
+
+    @Override
+    public String toString() {
+        return "Element{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", position=" + position +
+                ", width=" + width +
+                ", height=" + height +
+                ", anchor=" + anchor +
+                ", textStyle=" + textStyle +
+                ", lineStyle=" + lineStyle +
+                ", areaStyle=" + areaStyle +
+                '}';
     }
 }

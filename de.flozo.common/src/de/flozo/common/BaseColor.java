@@ -25,4 +25,12 @@ public class BaseColor {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public String toString() {
+        return "BaseColor{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

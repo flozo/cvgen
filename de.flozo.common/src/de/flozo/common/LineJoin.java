@@ -25,4 +25,13 @@ public class LineJoin {
     public void setName(String name) {
         this.name = name;
     }
+
+
+    @Override
+    public String toString() {
+        return "LineJoin{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
