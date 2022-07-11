@@ -1,6 +1,8 @@
 package de.flozo.db;
 
-import de.flozo.common.*;
+import de.flozo.common.appearance.*;
+import de.flozo.common.content.Address;
+import de.flozo.common.content.Enclosure;
 
 import java.sql.*;
 
@@ -9,7 +11,8 @@ public class Datasource {
     // database
     public static final String DB_NAME = "properties.db";
     public static final String CONNECTION_STRING_PREFIX = "jdbc:sqlite:";
-    public static final String RESOURCE_FOLDER = "src/resource/";
+    public static final String RESOURCE_FOLDER = "../../../Data/CVgen_test/";
+//    public static final String RESOURCE_FOLDER = "src/resource/";
 
     // general
     public static final String ID = "_id";
@@ -28,6 +31,7 @@ public class Datasource {
 
 
     // tables and columns
+    // appearance
     public static final String TABLE_ANCHORS = "anchors";
     public static final String COLUMN_ANCHOR_ID = ID;
     public static final String COLUMN_ANCHOR_NAME = NAME;
@@ -124,6 +128,29 @@ public class Datasource {
     public static final String COLUMN_TEXT_STYLE_COLOR_ID = COLOR + ID;
     public static final String COLUMN_TEXT_STYLE_OPACITY_ID = OPACITY + ID;
 
+    // content
+    public static final String TABLE_ADDRESSES = "addresses";
+    public static final String COLUMN_ADDRESSES_ID = ID;
+    public static final String COLUMN_ADDRESSES_LABEL = "label";
+    public static final String COLUMN_ADDRESSES_ACADEMIC_TITLE = "academic_title";
+    public static final String COLUMN_ADDRESSES_FIRST_NAME = "first_name";
+    public static final String COLUMN_ADDRESSES_SECOND_NAME = "second_name";
+    public static final String COLUMN_ADDRESSES_LAST_NAME = "last_name";
+    public static final String COLUMN_ADDRESSES_STREET = "street";
+    public static final String COLUMN_ADDRESSES_HOUSE_NUMBER = "house_number";
+    public static final String COLUMN_ADDRESSES_POSTAL_CODE = "postal_code";
+    public static final String COLUMN_ADDRESSES_CITY = "city";
+    public static final String COLUMN_ADDRESSES_COUNTRY = "country";
+    public static final String COLUMN_ADDRESSES_PHONE_NUMBER = "phone_number";
+    public static final String COLUMN_ADDRESSES_MOBILE_NUMBER = "mobile_number";
+    public static final String COLUMN_ADDRESSES_E_MAIL_ADDRESS = "email_address";
+    public static final String COLUMN_ADDRESSES_WEB_PAGE = "web_page";
+
+    public static final String TABLE_ENCLOSURES = "enclosures";
+    public static final String COLUMN_ENCLOSURES_ID = ID;
+    public static final String COLUMN_ENCLOSURES_NAME = NAME;
+    public static final String COLUMN_ENCLOSURES_FILE = "file";
+
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -139,9 +166,7 @@ public class Datasource {
     public static final String EQUALS = " = ";
 
     // query
-    // SELECT * FROM length_units WHERE _id=?
     public static final String QUERY_LENGTH_UNIT = SELECT + STAR + FROM + TABLE_LENGTH_UNITS + WHERE + COLUMN_LENGTH_UNIT_ID + EQUALS + QUESTION_MARK;
-    // SELECT * FROM named_lengths WHERE _id=?;
     public static final String QUERY_LENGTH = SELECT + STAR + FROM + TABLE_LENGTHS + WHERE + COLUMN_LENGTH_UNIT_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_POSITION = SELECT + STAR + FROM + TABLE_POSITIONS + WHERE + COLUMN_POSITION_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ANCHOR = SELECT + STAR + FROM + TABLE_ANCHORS + WHERE + COLUMN_ANCHOR_ID + EQUALS + QUESTION_MARK;
@@ -157,7 +182,16 @@ public class Datasource {
     public static final String QUERY_LINE_JOIN = SELECT + STAR + FROM + TABLE_LINE_JOINS + WHERE + COLUMN_LINE_JOIN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_DASH_PATTERN = SELECT + STAR + FROM + TABLE_DASH_PATTERNS + WHERE + COLUMN_DASH_PATTERN_ID + EQUALS + QUESTION_MARK;
 
-    public static final String QUERY_ELEMENT = SELECT + STAR + FROM + TABLE_ELEMENTS + WHERE + COLUMN_ELEMENT_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ELEMENT_BY_ID = SELECT + STAR + FROM + TABLE_ELEMENTS + WHERE + COLUMN_ELEMENT_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ELEMENT_BY_NAME = SELECT + STAR + FROM + TABLE_ELEMENTS + WHERE + COLUMN_ELEMENT_NAME + EQUALS + QUESTION_MARK;
+
+
+    public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ENCLOSURE_BY_ID = SELECT + STAR + FROM + TABLE_ENCLOSURES + WHERE + COLUMN_ENCLOSURES_ID + EQUALS + QUESTION_MARK;
+
+    public static final String QUERY_ADDRESS_BY_LABEL = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ENCLOSURE_BY_NAME = SELECT + STAR + FROM + TABLE_ENCLOSURES + WHERE + COLUMN_ENCLOSURES_NAME + EQUALS + QUESTION_MARK;
+
 
     // insert
     public static final String INSERT_POSITION = INSERT_INTO + TABLE_POSITIONS +
@@ -168,54 +202,65 @@ public class Datasource {
 
     private Connection connection;
 
-    private PreparedStatement queryLengthUnit;
-    private PreparedStatement queryLength;
-    private PreparedStatement queryPosition;
-    private PreparedStatement queryAnchor;
-    private PreparedStatement queryFontSize;
-    private PreparedStatement queryTextFormat;
-    private PreparedStatement queryBaseColor;
-    private PreparedStatement queryOpacity;
-    private PreparedStatement queryLineWidth;
-    private PreparedStatement queryLineCap;
-    private PreparedStatement queryLineJoin;
-    private PreparedStatement queryDashPattern;
+    private PreparedStatement queryLengthUnitById;
+    private PreparedStatement queryLengthById;
+    private PreparedStatement queryPositionById;
+    private PreparedStatement queryAnchorById;
+    private PreparedStatement queryFontSizeById;
+    private PreparedStatement queryTextFormatById;
+    private PreparedStatement queryBaseColorById;
+    private PreparedStatement queryOpacityById;
+    private PreparedStatement queryLineWidthById;
+    private PreparedStatement queryLineCapById;
+    private PreparedStatement queryLineJoinById;
+    private PreparedStatement queryDashPatternById;
 
-    private PreparedStatement queryTextStyle;
-    private PreparedStatement queryLineStyle;
-    private PreparedStatement queryAreaStyle;
+    private PreparedStatement queryTextStyleById;
+    private PreparedStatement queryLineStyleById;
+    private PreparedStatement queryAreaStyleById;
 
-    private PreparedStatement queryElement;
+    private PreparedStatement queryElementById;
+    private PreparedStatement queryElementByName;
+    private PreparedStatement queryAddressById;
+    private PreparedStatement queryAddressByLabel;
+    private PreparedStatement queryEnclosureById;
+    private PreparedStatement queryEnclosureByName;
+
     private PreparedStatement insertIntoPositions;
 
-    private static Datasource instance = new Datasource();
+    private static final Datasource INSTANCE = new Datasource();
 
     private Datasource() {
     }
 
     public static Datasource getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     public boolean open() {
         try {
             connection = DriverManager.getConnection(connectionString);
-            queryLengthUnit = connection.prepareStatement(QUERY_LENGTH_UNIT);
-            queryLength = connection.prepareStatement(QUERY_LENGTH);
-            queryPosition = connection.prepareStatement(QUERY_POSITION);
-            queryAnchor = connection.prepareStatement(QUERY_ANCHOR);
-            queryFontSize = connection.prepareStatement(QUERY_FONT_SIZE);
-            queryTextFormat = connection.prepareStatement(QUERY_TEXT_FORMAT);
-            queryBaseColor = connection.prepareStatement(QUERY_BASE_COLOR);
-            queryOpacity = connection.prepareStatement(QUERY_OPACITY);
-            queryElement = connection.prepareStatement(QUERY_ELEMENT);
-            queryTextStyle = connection.prepareStatement(QUERY_TEXT_STYLE);
-            queryLineStyle = connection.prepareStatement(QUERY_LINE_STYLE);
-            queryAreaStyle = connection.prepareStatement(QUERY_AREA_STYLE);
-            queryLineWidth = connection.prepareStatement(QUERY_LINE_WIDTH);
-            queryLineCap = connection.prepareStatement(QUERY_LINE_CAP);
-            queryLineJoin = connection.prepareStatement(QUERY_LINE_JOIN);
-            queryDashPattern = connection.prepareStatement(QUERY_DASH_PATTERN);
+            queryLengthUnitById = connection.prepareStatement(QUERY_LENGTH_UNIT);
+            queryLengthById = connection.prepareStatement(QUERY_LENGTH);
+            queryPositionById = connection.prepareStatement(QUERY_POSITION);
+            queryAnchorById = connection.prepareStatement(QUERY_ANCHOR);
+            queryFontSizeById = connection.prepareStatement(QUERY_FONT_SIZE);
+            queryTextFormatById = connection.prepareStatement(QUERY_TEXT_FORMAT);
+            queryBaseColorById = connection.prepareStatement(QUERY_BASE_COLOR);
+            queryOpacityById = connection.prepareStatement(QUERY_OPACITY);
+            queryElementById = connection.prepareStatement(QUERY_ELEMENT_BY_ID);
+            queryElementByName = connection.prepareStatement(QUERY_ELEMENT_BY_NAME);
+            queryTextStyleById = connection.prepareStatement(QUERY_TEXT_STYLE);
+            queryLineStyleById = connection.prepareStatement(QUERY_LINE_STYLE);
+            queryAreaStyleById = connection.prepareStatement(QUERY_AREA_STYLE);
+            queryLineWidthById = connection.prepareStatement(QUERY_LINE_WIDTH);
+            queryLineCapById = connection.prepareStatement(QUERY_LINE_CAP);
+            queryLineJoinById = connection.prepareStatement(QUERY_LINE_JOIN);
+            queryDashPatternById = connection.prepareStatement(QUERY_DASH_PATTERN);
+            queryAddressById = connection.prepareStatement(QUERY_ADDRESS_BY_ID);
+            queryAddressByLabel = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL);
+            queryEnclosureById = connection.prepareStatement(QUERY_ENCLOSURE_BY_ID);
+            queryEnclosureByName = connection.prepareStatement(QUERY_ENCLOSURE_BY_NAME);
 
 //            insertIntoPositions = connection.prepareStatement(INSERT_POSITION, Statement.RETURN_GENERATED_KEYS);
 
@@ -228,53 +273,68 @@ public class Datasource {
 
     public void close() {
         try {
-            if (queryLengthUnit != null) {
-                queryLengthUnit.close();
+            if (queryLengthUnitById != null) {
+                queryLengthUnitById.close();
             }
-            if (queryLength != null) {
-                queryLength.close();
+            if (queryLengthById != null) {
+                queryLengthById.close();
             }
-            if (queryPosition != null) {
-                queryPosition.close();
+            if (queryPositionById != null) {
+                queryPositionById.close();
             }
-            if (queryAnchor != null) {
-                queryAnchor.close();
+            if (queryAnchorById != null) {
+                queryAnchorById.close();
             }
-            if (queryFontSize != null) {
-                queryFontSize.close();
+            if (queryFontSizeById != null) {
+                queryFontSizeById.close();
             }
-            if (queryTextFormat != null) {
-                queryTextFormat.close();
+            if (queryTextFormatById != null) {
+                queryTextFormatById.close();
             }
-            if (queryBaseColor != null) {
-                queryBaseColor.close();
+            if (queryBaseColorById != null) {
+                queryBaseColorById.close();
             }
-            if (queryOpacity != null) {
-                queryOpacity.close();
+            if (queryOpacityById != null) {
+                queryOpacityById.close();
             }
-            if (queryElement != null) {
-                queryElement.close();
+            if (queryElementById != null) {
+                queryElementById.close();
             }
-            if (queryTextStyle != null) {
-                queryTextStyle.close();
+            if (queryElementByName != null) {
+                queryElementByName.close();
             }
-            if (queryLineStyle != null) {
-                queryLineStyle.close();
+            if (queryTextStyleById != null) {
+                queryTextStyleById.close();
             }
-            if (queryAreaStyle != null) {
-                queryAreaStyle.close();
+            if (queryLineStyleById != null) {
+                queryLineStyleById.close();
             }
-            if (queryLineWidth != null) {
-                queryLineWidth.close();
+            if (queryAreaStyleById != null) {
+                queryAreaStyleById.close();
             }
-            if (queryLineCap != null) {
-                queryLineCap.close();
+            if (queryLineWidthById != null) {
+                queryLineWidthById.close();
             }
-            if (queryLineJoin != null) {
-                queryLineJoin.close();
+            if (queryLineCapById != null) {
+                queryLineCapById.close();
             }
-            if (queryDashPattern != null) {
-                queryDashPattern.close();
+            if (queryLineJoinById != null) {
+                queryLineJoinById.close();
+            }
+            if (queryDashPatternById != null) {
+                queryDashPatternById.close();
+            }
+            if (queryAddressById != null) {
+                queryAddressById.close();
+            }
+            if (queryAddressByLabel != null) {
+                queryAddressByLabel.close();
+            }
+            if (queryEnclosureById != null) {
+                queryEnclosureById.close();
+            }
+            if (queryEnclosureByName != null) {
+                queryEnclosureByName.close();
             }
 
         } catch (SQLException e) {
@@ -286,189 +346,249 @@ public class Datasource {
         System.out.println("Query \"" + preparedStatement + "\" failed: " + message);
     }
 
-    public LengthUnit queryLengthUnitById(int id) {
+    public LengthUnit lengthUnitById(int id) {
         try {
-            queryLengthUnit.setInt(1, id);
-            ResultSet resultSet = queryLengthUnit.executeQuery();
+            queryLengthUnitById.setInt(1, id);
+            ResultSet resultSet = queryLengthUnitById.executeQuery();
             return new LengthUnit(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
         } catch (SQLException e) {
-            showMessage(queryLengthUnit, e.getMessage());
+            showMessage(queryLengthUnitById, e.getMessage());
             return null;
         }
     }
 
-    public Length queryLengthById(int id) {
+    public Length lengthById(int id) {
         try {
-            queryLength.setInt(1, id);
-            ResultSet resultSet = queryLength.executeQuery();
-            return new Length(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3), queryLengthUnitById(resultSet.getInt(4)));
+            queryLengthById.setInt(1, id);
+            ResultSet resultSet = queryLengthById.executeQuery();
+            return new Length(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3), lengthUnitById(resultSet.getInt(4)));
         } catch (SQLException e) {
-            showMessage(queryLength, e.getMessage());
+            showMessage(queryLengthById, e.getMessage());
             return null;
         }
     }
 
-    public Position queryPositionById(int id) {
+    public Position positionById(int id) {
         try {
-            queryPosition.setInt(1, id);
-            ResultSet resultSet = queryPosition.executeQuery();
-            return new Position(resultSet.getInt(1), resultSet.getString(2), queryLengthById(resultSet.getInt(3)), queryLengthById(resultSet.getInt(4)));
+            queryPositionById.setInt(1, id);
+            ResultSet resultSet = queryPositionById.executeQuery();
+            return new Position(resultSet.getInt(1), resultSet.getString(2), lengthById(resultSet.getInt(3)), lengthById(resultSet.getInt(4)));
         } catch (SQLException e) {
-            showMessage(queryPosition, e.getMessage());
+            showMessage(queryPositionById, e.getMessage());
             return null;
         }
     }
 
-    public Anchor queryAnchorById(int id) {
+    public Anchor anchorById(int id) {
         try {
-            queryAnchor.setInt(1, id);
-            ResultSet resultSet = queryAnchor.executeQuery();
+            queryAnchorById.setInt(1, id);
+            ResultSet resultSet = queryAnchorById.executeQuery();
             return new Anchor(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
         } catch (SQLException e) {
-            showMessage(queryAnchor, e.getMessage());
+            showMessage(queryAnchorById, e.getMessage());
             return null;
         }
     }
 
-    public FontSize queryFontSizeById(int id) {
+    public FontSize fontSizeById(int id) {
         try {
-            queryFontSize.setInt(1, id);
-            ResultSet resultSet = queryFontSize.executeQuery();
+            queryFontSizeById.setInt(1, id);
+            ResultSet resultSet = queryFontSizeById.executeQuery();
             return new FontSize(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
         } catch (SQLException e) {
-            showMessage(queryFontSize, e.getMessage());
+            showMessage(queryFontSizeById, e.getMessage());
             return null;
         }
     }
 
-    public TextFormat queryTextFormatById(int id) {
+    public TextFormat textFormatById(int id) {
         try {
-            queryTextFormat.setInt(1, id);
-            ResultSet resultSet = queryTextFormat.executeQuery();
+            queryTextFormatById.setInt(1, id);
+            ResultSet resultSet = queryTextFormatById.executeQuery();
             return new TextFormat(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
         } catch (SQLException e) {
-            showMessage(queryTextFormat, e.getMessage());
+            showMessage(queryTextFormatById, e.getMessage());
             return null;
         }
     }
 
-    public BaseColor queryBaseColorById(int id) {
+    public BaseColor baseColorById(int id) {
         try {
-            queryBaseColor.setInt(1, id);
-            ResultSet resultSet = queryBaseColor.executeQuery();
+            queryBaseColorById.setInt(1, id);
+            ResultSet resultSet = queryBaseColorById.executeQuery();
             return new BaseColor(resultSet.getInt(1), resultSet.getString(2));
         } catch (SQLException e) {
-            showMessage(queryBaseColor, e.getMessage());
+            showMessage(queryBaseColorById, e.getMessage());
             return null;
         }
     }
 
-    public PredefinedOpacity queryOpacityById(int id) {
+    public PredefinedOpacity opacityById(int id) {
         try {
-            queryOpacity.setInt(1, id);
-            ResultSet resultSet = queryOpacity.executeQuery();
+            queryOpacityById.setInt(1, id);
+            ResultSet resultSet = queryOpacityById.executeQuery();
             return new PredefinedOpacity(resultSet.getInt(1), resultSet.getString(2));
         } catch (SQLException e) {
-            showMessage(queryOpacity, e.getMessage());
+            showMessage(queryOpacityById, e.getMessage());
             return null;
         }
     }
 
-    public LineWidth queryLineWidthById(int id) {
+    public LineWidth lineWidthById(int id) {
         try {
-            queryLineWidth.setInt(1, id);
-            ResultSet resultSet = queryLineWidth.executeQuery();
-            return new LineWidth(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3), queryLengthUnitById(resultSet.getInt(4)));
+            queryLineWidthById.setInt(1, id);
+            ResultSet resultSet = queryLineWidthById.executeQuery();
+            return new LineWidth(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3), lengthUnitById(resultSet.getInt(4)));
         } catch (SQLException e) {
-            showMessage(queryLineWidth, e.getMessage());
+            showMessage(queryLineWidthById, e.getMessage());
             return null;
         }
     }
 
-    public LineCap queryLineCapById(int id) {
+    public LineCap lineCapById(int id) {
         try {
-            queryLineCap.setInt(1, id);
-            ResultSet resultSet = queryLineCap.executeQuery();
+            queryLineCapById.setInt(1, id);
+            ResultSet resultSet = queryLineCapById.executeQuery();
             return new LineCap(resultSet.getInt(1), resultSet.getString(2));
         } catch (SQLException e) {
-            showMessage(queryLineCap, e.getMessage());
+            showMessage(queryLineCapById, e.getMessage());
             return null;
         }
     }
 
-    public LineJoin queryLineJoinById(int id) {
+    public LineJoin lineJoinById(int id) {
         try {
-            queryLineJoin.setInt(1, id);
-            ResultSet resultSet = queryLineJoin.executeQuery();
+            queryLineJoinById.setInt(1, id);
+            ResultSet resultSet = queryLineJoinById.executeQuery();
             return new LineJoin(resultSet.getInt(1), resultSet.getString(2));
         } catch (SQLException e) {
-            showMessage(queryLineJoin, e.getMessage());
+            showMessage(queryLineJoinById, e.getMessage());
             return null;
         }
     }
 
-    public DashPattern queryDashPatternById(int id) {
+    public DashPattern dashPatternById(int id) {
         try {
-            queryDashPattern.setInt(1, id);
-            ResultSet resultSet = queryDashPattern.executeQuery();
+            queryDashPatternById.setInt(1, id);
+            ResultSet resultSet = queryDashPatternById.executeQuery();
             return new DashPattern(resultSet.getInt(1), resultSet.getString(2));
         } catch (SQLException e) {
-            showMessage(queryDashPattern, e.getMessage());
+            showMessage(queryDashPatternById, e.getMessage());
             return null;
         }
     }
 
 
-    public TextStyle queryTextStyleById(int id) {
+    public TextStyle textStyleById(int id) {
         try {
-            queryTextStyle.setInt(1, id);
-            ResultSet resultSet = queryTextStyle.executeQuery();
-            return new TextStyle(resultSet.getInt(1), resultSet.getString(2), queryFontSizeById(resultSet.getInt(3)),
-                    queryTextFormatById(resultSet.getInt(4)), queryBaseColorById(resultSet.getInt(5)), queryOpacityById(resultSet.getInt(6)));
+            queryTextStyleById.setInt(1, id);
+            ResultSet resultSet = queryTextStyleById.executeQuery();
+            return new TextStyle(resultSet.getInt(1), resultSet.getString(2), fontSizeById(resultSet.getInt(3)),
+                    textFormatById(resultSet.getInt(4)), baseColorById(resultSet.getInt(5)), opacityById(resultSet.getInt(6)));
         } catch (SQLException e) {
-            showMessage(queryTextStyle, e.getMessage());
+            showMessage(queryTextStyleById, e.getMessage());
             return null;
         }
     }
 
-    public LineStyle queryLineStyleById(int id) {
+    public LineStyle lineStyleById(int id) {
         try {
-            queryLineStyle.setInt(1, id);
-            ResultSet resultSet = queryLineStyle.executeQuery();
-            return new LineStyle(resultSet.getInt(1), resultSet.getString(2), queryLineWidthById(resultSet.getInt(3)),
-                    queryLineCapById(resultSet.getInt(4)), queryLineJoinById(resultSet.getInt(5)), queryDashPatternById(resultSet.getInt(6)),
-                    queryBaseColorById(resultSet.getInt(7)), queryOpacityById(resultSet.getInt(8)));
+            queryLineStyleById.setInt(1, id);
+            ResultSet resultSet = queryLineStyleById.executeQuery();
+            return new LineStyle(resultSet.getInt(1), resultSet.getString(2), lineWidthById(resultSet.getInt(3)),
+                    lineCapById(resultSet.getInt(4)), lineJoinById(resultSet.getInt(5)), dashPatternById(resultSet.getInt(6)),
+                    baseColorById(resultSet.getInt(7)), opacityById(resultSet.getInt(8)));
         } catch (SQLException e) {
-            showMessage(queryLineStyle, e.getMessage());
+            showMessage(queryLineStyleById, e.getMessage());
             return null;
         }
     }
 
-    public AreaStyle queryAreaStyleById(int id) {
+    public AreaStyle areaStyleById(int id) {
         try {
-            queryAreaStyle.setInt(1, id);
-            ResultSet resultSet = queryAreaStyle.executeQuery();
-            return new AreaStyle(resultSet.getInt(1), resultSet.getString(2), queryBaseColorById(resultSet.getInt(3)), queryOpacityById(resultSet.getInt(4)));
+            queryAreaStyleById.setInt(1, id);
+            ResultSet resultSet = queryAreaStyleById.executeQuery();
+            return new AreaStyle(resultSet.getInt(1), resultSet.getString(2), baseColorById(resultSet.getInt(3)), opacityById(resultSet.getInt(4)));
         } catch (SQLException e) {
-            showMessage(queryAreaStyle, e.getMessage());
+            showMessage(queryAreaStyleById, e.getMessage());
             return null;
         }
     }
 
 
-    public Element queryElementById(int id) {
+    public Element elementById(int id) {
         try {
-            queryElement.setInt(1, id);
-            ResultSet resultSet = queryElement.executeQuery();
-            return new Element(resultSet.getInt(1), resultSet.getString(2), queryPositionById(resultSet.getInt(3)),
-                    queryLengthById(resultSet.getInt(4)), queryLengthById(resultSet.getInt(5)), queryAnchorById(resultSet.getInt(6)),
-                    queryTextStyleById(resultSet.getInt(7)), queryLineStyleById(resultSet.getInt(8)), queryAreaStyleById(resultSet.getInt(9)));
+            queryElementById.setInt(1, id);
+            ResultSet resultSet = queryElementById.executeQuery();
+            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
         } catch (SQLException e) {
-            showMessage(queryElement, e.getMessage());
+            showMessage(queryElementById, e.getMessage());
             return null;
         }
     }
 
+    public Element elementByName(String elementName) {
+        try {
+            queryElementByName.setString(1, elementName);
+            ResultSet resultSet = queryElementByName.executeQuery();
+            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+        } catch (SQLException e) {
+            showMessage(queryElementByName, e.getMessage());
+            return null;
+        }
+    }
+
+    public Address addressById(int id) {
+        try {
+            queryAddressById.setInt(1, id);
+            ResultSet resultSet = queryAddressById.executeQuery();
+            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),resultSet.getString(5), resultSet.getString(6),
+                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
+        } catch (SQLException e) {
+            showMessage(queryAddressById, e.getMessage());
+            return null;
+        }
+    }
+
+    public Address addressByLabel(String label) {
+        try {
+            queryAddressByLabel.setString(1, label);
+            ResultSet resultSet = queryAddressByLabel.executeQuery();
+            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),resultSet.getString(5), resultSet.getString(6),
+                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
+        } catch (SQLException e) {
+            showMessage(queryAddressByLabel, e.getMessage());
+            return null;
+        }
+    }
+
+    public Enclosure enclosureById(int id) {
+        try {
+            queryEnclosureById.setInt(1, id);
+            ResultSet resultSet = queryEnclosureById.executeQuery();
+            return new Enclosure(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+        } catch (SQLException e) {
+            showMessage(queryEnclosureById, e.getMessage());
+            return null;
+        }
+    }
+
+    public Enclosure enclosureByName(String name) {
+        try {
+            queryEnclosureByName.setString(1, name);
+            ResultSet resultSet = queryEnclosureByName.executeQuery();
+            return new Enclosure(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+        } catch (SQLException e) {
+            showMessage(queryEnclosureByName, e.getMessage());
+            return null;
+        }
+    }
 
 //    public NamedPosition queryPositionById(int id) {
 //        try {

@@ -1,12 +1,14 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class PredefinedOpacity {
+public class FontSize {
 
     private int id;
+    private String name;
     private String value;
 
-    public PredefinedOpacity(int id, String value) {
+    public FontSize(int id, String name, String value) {
         this.id = id;
+        this.name = name;
         this.value = value;
     }
 
@@ -16,6 +18,14 @@ public class PredefinedOpacity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {
@@ -28,8 +38,9 @@ public class PredefinedOpacity {
 
     @Override
     public String toString() {
-        return "PredefinedOpacity{" +
+        return "FontSize{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 '}';
     }

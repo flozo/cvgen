@@ -1,4 +1,6 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
+
+import de.flozo.common.appearance.Length;
 
 public class Position {
 

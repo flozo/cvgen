@@ -1,5 +1,8 @@
 package de.flozo.cvgen;
 
+import de.flozo.common.appearance.Element;
+import de.flozo.common.content.Address;
+import de.flozo.common.content.Enclosure;
 import de.flozo.db.Datasource;
 
 public class Main {
@@ -8,14 +11,21 @@ public class Main {
 
         Datasource.getInstance().open();
         try {
-            System.out.println(Datasource.getInstance().queryTextFormatById(1));
-            System.out.println(Datasource.getInstance().queryTextStyleById(2));
-            System.out.println(Datasource.getInstance().queryAnchorById(4));
-            System.out.println(Datasource.getInstance().queryLineStyleById(2));
+            System.out.println(Datasource.getInstance().textFormatById(1));
+            System.out.println(Datasource.getInstance().textStyleById(2));
+            System.out.println(Datasource.getInstance().anchorById(4));
+            System.out.println(Datasource.getInstance().lineStyleById(2));
             System.out.println("*********");
-            System.out.println(Datasource.getInstance().queryElementById(1));
-            System.out.println(Datasource.getInstance().queryElementById(2));
-            System.out.println(Datasource.getInstance().queryElementById(3));
+            System.out.println(Datasource.getInstance().elementById(1));
+            Element address_field_appearance = Datasource.getInstance().elementByName("address_field");
+
+            System.out.println(address_field_appearance.getLineStyle().getLineCap().getName());
+            System.out.println(address_field_appearance.getAnchor().getValue());
+            System.out.println(address_field_appearance.getWidth().getValue());
+            Address address_content = Datasource.getInstance().addressByLabel("dummy_address");
+            System.out.println(address_content.geteMailAddress());
+            Enclosure enclosure_content = Datasource.getInstance().enclosureByName("dummy_certificate");
+            System.out.println(enclosure_content.getFile());
 
         } finally {
             Datasource.getInstance().close();

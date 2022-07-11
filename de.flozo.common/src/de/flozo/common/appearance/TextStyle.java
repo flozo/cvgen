@@ -1,15 +1,24 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class AreaStyle {
+import de.flozo.common.appearance.BaseColor;
+import de.flozo.common.appearance.FontSize;
+import de.flozo.common.appearance.PredefinedOpacity;
+import de.flozo.common.appearance.TextFormat;
+
+public class TextStyle {
 
     private int id;
     private String name;
+    private FontSize fontSize;
+    private TextFormat textFormat;
     private BaseColor color;
     private PredefinedOpacity opacity;
 
-    public AreaStyle(int id, String name, BaseColor color, PredefinedOpacity opacity) {
+    public TextStyle(int id, String name, FontSize fontSize, TextFormat textFormat, BaseColor color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
+        this.fontSize = fontSize;
+        this.textFormat = textFormat;
         this.color = color;
         this.opacity = opacity;
     }
@@ -30,6 +39,22 @@ public class AreaStyle {
         this.name = name;
     }
 
+    public FontSize getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(FontSize fontSize) {
+        this.fontSize = fontSize;
+    }
+
+    public TextFormat getTextFormat() {
+        return textFormat;
+    }
+
+    public void setTextFormat(TextFormat textFormat) {
+        this.textFormat = textFormat;
+    }
+
     public BaseColor getColor() {
         return color;
     }
@@ -48,9 +73,11 @@ public class AreaStyle {
 
     @Override
     public String toString() {
-        return "AreaStyle{" +
+        return "TextStyle{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", fontSize=" + fontSize +
+                ", textFormat=" + textFormat +
                 ", color=" + color +
                 ", opacity=" + opacity +
                 '}';

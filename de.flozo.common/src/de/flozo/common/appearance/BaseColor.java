@@ -1,11 +1,11 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class DashPattern {
+public class BaseColor {
 
     private int id;
     private String name;
 
-    public DashPattern(int id, String name) {
+    public BaseColor(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,7 +28,7 @@ public class DashPattern {
 
     @Override
     public String toString() {
-        return "DashPattern{" +
+        return "BaseColor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

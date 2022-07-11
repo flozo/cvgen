@@ -1,13 +1,15 @@
-package de.flozo.common;
+package de.flozo.common.content;
 
-public class BaseColor {
+public class Enclosure {
 
     private int id;
     private String name;
+    private String file;
 
-    public BaseColor(int id, String name) {
+    public Enclosure(int id, String name, String file) {
         this.id = id;
         this.name = name;
+        this.file = file;
     }
 
     public int getId() {
@@ -26,11 +28,20 @@ public class BaseColor {
         this.name = name;
     }
 
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
     @Override
     public String toString() {
-        return "BaseColor{" +
+        return "Enclosure{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", file='" + file + '\'' +
                 '}';
     }
 }

@@ -1,11 +1,11 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class LineJoin {
+public class LineCap {
 
     private int id;
     private String name;
 
-    public LineJoin(int id, String name) {
+    public LineCap(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -26,10 +26,9 @@ public class LineJoin {
         this.name = name;
     }
 
-
     @Override
     public String toString() {
-        return "LineJoin{" +
+        return "LineCap{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

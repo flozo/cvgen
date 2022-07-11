@@ -1,13 +1,15 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class PredefinedLineWidth {
+public class TextFormat {
 
     private int id;
     private String name;
+    private String value;
 
-    public PredefinedLineWidth(int id, String name) {
+    public TextFormat(int id, String name, String value) {
         this.id = id;
         this.name = name;
+        this.value = value;
     }
 
     public int getId() {
@@ -26,11 +28,20 @@ public class PredefinedLineWidth {
         this.name = name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
-        return "PredefinedLineWidth{" +
+        return "TextFormat{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

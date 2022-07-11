@@ -1,13 +1,15 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class Length {
+import de.flozo.common.appearance.LengthUnit;
+
+public class LineWidth {
 
     private int id;
     private String name;
     private double value;
     private LengthUnit unit;
 
-    public Length(int id, String name, double value, LengthUnit unit) {
+    public LineWidth(int id, String name, double value, LengthUnit unit) {
         this.id = id;
         this.name = name;
         this.value = value;
@@ -48,7 +50,7 @@ public class Length {
 
     @Override
     public String toString() {
-        return "Length{" +
+        return "LineWidth{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", value=" + value +

@@ -1,15 +1,13 @@
-package de.flozo.common;
+package de.flozo.common.appearance;
 
-public class TextFormat {
+public class DashPattern {
 
     private int id;
     private String name;
-    private String value;
 
-    public TextFormat(int id, String name, String value) {
+    public DashPattern(int id, String name) {
         this.id = id;
         this.name = name;
-        this.value = value;
     }
 
     public int getId() {
@@ -28,20 +26,11 @@ public class TextFormat {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     @Override
     public String toString() {
-        return "TextFormat{" +
+        return "DashPattern{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
                 '}';
     }
 }
