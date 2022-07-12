@@ -1,15 +1,15 @@
 package de.flozo.common.content;
 
-public class Enclosure {
+public class Timeline {
 
     private int id;
     private String name;
-    private String fileId;
+    private String timelineTableName;
 
-    public Enclosure(int id, String name, String fileId) {
+    public Timeline(int id, String name, String timelineTableName) {
         this.id = id;
         this.name = name;
-        this.fileId = fileId;
+        this.timelineTableName = timelineTableName;
     }
 
     public int getId() {
@@ -28,20 +28,20 @@ public class Enclosure {
         this.name = name;
     }
 
-    public String getFileId() {
-        return fileId;
+    public String getTimelineTableName() {
+        return timelineTableName;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
+    public void setTimelineTableName(String timelineTableName) {
+        this.timelineTableName = timelineTableName;
     }
 
     @Override
     public String toString() {
-        return "Enclosure{" +
+        return "Timeline{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", fileId='" + fileId + '\'' +
+                ", timelineTableName='" + timelineTableName + '\'' +
                 '}';
     }
 }

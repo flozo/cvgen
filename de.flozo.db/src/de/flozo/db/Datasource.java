@@ -103,6 +103,14 @@ public class Datasource {
     public static final String COLUMN_LINE_WIDTH_VALUE = VALUE;
     public static final String COLUMN_LINE_WIDTH_LENGTH_UNIT_ID = "length_unit" + ID;
 
+    public static final String TABLE_LINES = "lines";
+    public static final String COLUMN_LINES_ID = ID;
+    public static final String COLUMN_LINES_NAME = NAME;
+    public static final String COLUMN_LINES_POSITION_ID = POSITION + ID;
+    public static final String COLUMN_LINES_LENGTH_ID = "length" + ID;
+    public static final String COLUMN_LINES_LINE_STYLE_ID = "line_style" + ID;
+
+
     public static final String TABLE_PREDEFINED_OPACITIES = "predefined_opacities";
     public static final String COLUMN_PREDEFINED_OPACITY_ID = ID;
     public static final String COLUMN_PREDEFINED_OPACITY_NAME = NAME;
@@ -182,6 +190,7 @@ public class Datasource {
     public static final String QUERY_LINE_JOIN = SELECT + STAR + FROM + TABLE_LINE_JOINS + WHERE + COLUMN_LINE_JOIN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_DASH_PATTERN = SELECT + STAR + FROM + TABLE_DASH_PATTERNS + WHERE + COLUMN_DASH_PATTERN_ID + EQUALS + QUESTION_MARK;
 
+    public static final String QUERY_LINE_BY_ID = SELECT + STAR + FROM + TABLE_LINES + WHERE + COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ELEMENT_BY_ID = SELECT + STAR + FROM + TABLE_ELEMENTS + WHERE + COLUMN_ELEMENT_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ELEMENT_BY_NAME = SELECT + STAR + FROM + TABLE_ELEMENTS + WHERE + COLUMN_ELEMENT_NAME + EQUALS + QUESTION_MARK;
 
@@ -219,6 +228,7 @@ public class Datasource {
     private PreparedStatement queryLineStyleById;
     private PreparedStatement queryAreaStyleById;
 
+    private PreparedStatement queryLineById;
     private PreparedStatement queryElementById;
     private PreparedStatement queryElementByName;
     private PreparedStatement queryAddressById;
@@ -248,8 +258,6 @@ public class Datasource {
             queryTextFormatById = connection.prepareStatement(QUERY_TEXT_FORMAT);
             queryBaseColorById = connection.prepareStatement(QUERY_BASE_COLOR);
             queryOpacityById = connection.prepareStatement(QUERY_OPACITY);
-            queryElementById = connection.prepareStatement(QUERY_ELEMENT_BY_ID);
-            queryElementByName = connection.prepareStatement(QUERY_ELEMENT_BY_NAME);
             queryTextStyleById = connection.prepareStatement(QUERY_TEXT_STYLE);
             queryLineStyleById = connection.prepareStatement(QUERY_LINE_STYLE);
             queryAreaStyleById = connection.prepareStatement(QUERY_AREA_STYLE);
@@ -257,6 +265,9 @@ public class Datasource {
             queryLineCapById = connection.prepareStatement(QUERY_LINE_CAP);
             queryLineJoinById = connection.prepareStatement(QUERY_LINE_JOIN);
             queryDashPatternById = connection.prepareStatement(QUERY_DASH_PATTERN);
+            queryLineById = connection.prepareStatement(QUERY_LINE_BY_ID);
+            queryElementById = connection.prepareStatement(QUERY_ELEMENT_BY_ID);
+            queryElementByName = connection.prepareStatement(QUERY_ELEMENT_BY_NAME);
             queryAddressById = connection.prepareStatement(QUERY_ADDRESS_BY_ID);
             queryAddressByLabel = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL);
             queryEnclosureById = connection.prepareStatement(QUERY_ENCLOSURE_BY_ID);
@@ -335,6 +346,9 @@ public class Datasource {
             }
             if (queryEnclosureByName != null) {
                 queryEnclosureByName.close();
+            }
+            if (queryLineById != null) {
+                queryLineById.close();
             }
 
         } catch (SQLException e) {
@@ -546,7 +560,7 @@ public class Datasource {
         try {
             queryAddressById.setInt(1, id);
             ResultSet resultSet = queryAddressById.executeQuery();
-            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),resultSet.getString(5), resultSet.getString(6),
+            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                     resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
                     resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
         } catch (SQLException e) {
@@ -559,7 +573,7 @@ public class Datasource {
         try {
             queryAddressByLabel.setString(1, label);
             ResultSet resultSet = queryAddressByLabel.executeQuery();
-            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),resultSet.getString(5), resultSet.getString(6),
+            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                     resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
                     resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
         } catch (SQLException e) {
@@ -590,37 +604,25 @@ public class Datasource {
         }
     }
 
-//    public NamedPosition queryPositionById(int id) {
-//        try {
-//            queryPosition.setInt(1, id);
-//            ResultSet resultSet = queryPosition.executeQuery();
-//            NamedLength lengthX = new NamedLength(queryNamedLengthById(resultSet.getInt(3)).getName(), queryNamedLengthById(resultSet.getInt(4)).getLength());
-//            NamedLength lengthY = new NamedLength(resultSet.getInt(3), resultSet.getInt(4));
-//            Position position = new Position(lengthX, lengthY);
-//            return new NamedPosition(resultSet.getInt(1), resultSet.getString(2), position);
-//        } catch (SQLException e) {
-//            System.out.println("Query failed: " + e.getMessage());
-//            return null;
-//        }
+    public Line lineById(int id) {
+        try {
+            queryLineById.setInt(1, id);
+            ResultSet resultSet = queryLineById.executeQuery();
+            return new Line(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)), lengthById(resultSet.getInt(4)), lineStyleById(resultSet.getInt(5)));
+        } catch (SQLException e) {
+            showMessage(queryLineById, e.getMessage());
+            return null;
+        }
+    }
+
+
+
+//    private Predicate<Integer> checkIntRangeOfId() {
+//        return idNumber -> idNumber.equals(0);
 //    }
-//
-//
-//    public List<Element> queryElementByName(String elementName) {
-//        try {
-//            queryElement.setString(1, elementName);
-//            ResultSet resultSet = queryElement.executeQuery();
-//            List<Element> elements = new ArrayList<>();
-//            while (resultSet.next()) {
-//                Element element = new Element();
-//                elements.add(element);
-//            }
-//            return elements;
-//        } catch (SQLException e) {
-//            System.out.println("Query failed: " + e.getMessage());
-//            return null;
-//        }
-//    }
-//
+
+
+
 //
 //    private int insertPosition(double xValue, String xUnit, double yValue, String yUnit) throws SQLException {
 //        .setString(1, name);

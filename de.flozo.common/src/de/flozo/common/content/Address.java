@@ -140,11 +140,11 @@ public class Address {
         this.mobileNumber = mobileNumber;
     }
 
-    public String geteMailAddress() {
+    public String getEMailAddress() {
         return eMailAddress;
     }
 
-    public void seteMailAddress(String eMailAddress) {
+    public void setEMailAddress(String eMailAddress) {
         this.eMailAddress = eMailAddress;
     }
 
