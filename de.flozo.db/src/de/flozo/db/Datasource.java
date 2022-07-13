@@ -206,6 +206,12 @@ public class Datasource {
     public static final String INSERT_POSITION = INSERT_INTO + TABLE_POSITIONS +
             OPENING_PARENTHESIS + COLUMN_POSITION_X_VALUE + COMMA + COLUMN_POSITION_X_UNIT_ID + COMMA + COLUMN_POSITION_Y_VALUE + COMMA + COLUMN_POSITION_Y_UNIT_ID + CLOSING_PARENTHESIS +
             VALUES + OPENING_PARENTHESIS + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + CLOSING_PARENTHESIS;
+    public static final String INSERT_ADDRESS = INSERT_INTO + TABLE_ADDRESSES +
+            OPENING_PARENTHESIS + COLUMN_ADDRESSES_LABEL + COMMA + COLUMN_ADDRESSES_ACADEMIC_TITLE + COMMA + COLUMN_ADDRESSES_FIRST_NAME + COMMA + COLUMN_ADDRESSES_SECOND_NAME + COMMA +
+            COLUMN_ADDRESSES_LAST_NAME + COMMA + COLUMN_ADDRESSES_STREET + COMMA + COLUMN_ADDRESSES_HOUSE_NUMBER + COMMA + COLUMN_ADDRESSES_POSTAL_CODE + COMMA + COLUMN_ADDRESSES_CITY + COMMA +
+            COLUMN_ADDRESSES_COUNTRY + COMMA + COLUMN_ADDRESSES_PHONE_NUMBER + COMMA + COLUMN_ADDRESSES_MOBILE_NUMBER + COMMA + COLUMN_ADDRESSES_E_MAIL_ADDRESS + COMMA +
+            COLUMN_ADDRESSES_WEB_PAGE + CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(13) + CLOSING_PARENTHESIS;
+
 
     private final String connectionString = CONNECTION_STRING_PREFIX + RESOURCE_FOLDER + DB_NAME;
 
@@ -236,7 +242,7 @@ public class Datasource {
     private PreparedStatement queryEnclosureById;
     private PreparedStatement queryEnclosureByName;
 
-    private PreparedStatement insertIntoPositions;
+    private PreparedStatement insertIntoAddresses;
 
     private static final Datasource INSTANCE = new Datasource();
 
@@ -272,6 +278,8 @@ public class Datasource {
             queryAddressByLabel = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL);
             queryEnclosureById = connection.prepareStatement(QUERY_ENCLOSURE_BY_ID);
             queryEnclosureByName = connection.prepareStatement(QUERY_ENCLOSURE_BY_NAME);
+
+            insertIntoAddresses = connection.prepareStatement(INSERT_ADDRESS);
 
 //            insertIntoPositions = connection.prepareStatement(INSERT_POSITION, Statement.RETURN_GENERATED_KEYS);
 
@@ -350,7 +358,12 @@ public class Datasource {
             if (queryLineById != null) {
                 queryLineById.close();
             }
-
+            if (insertIntoAddresses != null) {
+                insertIntoAddresses.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
         } catch (SQLException e) {
             System.out.println("Couldn't close connection: " + e.getMessage());
         }
@@ -616,11 +629,54 @@ public class Datasource {
     }
 
 
+    public void insertAddress(Address address) {
+        try {
+            // start transaction:
+            connection.setAutoCommit(false);
+            insertIntoAddresses.setString(1, address.getLabel());
+            insertIntoAddresses.setString(2, address.getAcademicTitle());
+            insertIntoAddresses.setString(3, address.getFirstName());
+            insertIntoAddresses.setString(4, address.getSecondName());
+            insertIntoAddresses.setString(5, address.getLastName());
+            insertIntoAddresses.setString(6, address.getStreet());
+            insertIntoAddresses.setString(7, address.getHouseNumber());
+            insertIntoAddresses.setString(8, address.getPostalCode());
+            insertIntoAddresses.setString(9, address.getCity());
+            insertIntoAddresses.setString(10, address.getCountry());
+            insertIntoAddresses.setString(11, address.getPhoneNumber());
+            insertIntoAddresses.setString(12, address.getMobileNumber());
+            insertIntoAddresses.setString(13, address.getEMailAddress());
+            insertIntoAddresses.setString(14, address.getWebPage());
+
+            // do it
+            int affectedRows = insertIntoAddresses.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (Exception e) {
+            System.out.println("[error] Insert address exception: " + e.getMessage());
+            try {
+                System.out.println("Performing rollback ...");
+                connection.rollback();
+                // end of transaction
+            } catch (SQLException e2) {
+                System.out.println("[error] Rollback failed! " + e2.getMessage());
+            }
+        } finally {
+            try {
+                System.out.println("Resetting auto-commit behavior ...");
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("[error] Resetting auto commit failed! " + e.getMessage());
+            }
+        }
+    }
+
 
 //    private Predicate<Integer> checkIntRangeOfId() {
 //        return idNumber -> idNumber.equals(0);
 //    }
-
 
 
 //

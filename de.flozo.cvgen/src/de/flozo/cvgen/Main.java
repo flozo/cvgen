@@ -25,9 +25,12 @@ public class Main {
             System.out.println(address_field_appearance.getWidth().getValue());
             Address address_content = Datasource.getInstance().addressByLabel("dummy_address");
             System.out.println(address_content.getEMailAddress());
+            System.out.println(address_content.getFirstName() + " " + address_content.getLastName());
             Enclosure enclosure_content = Datasource.getInstance().enclosureByName("dummy_certificate");
             System.out.println(enclosure_content.getFileId());
             Line line = Datasource.getInstance().lineById(1);
+            Address newAddress = new Address(0, "entry_name", "Dr", "Peter", "James", "Miller", "Main street", "10b", "98765", "Heretown", "Otherland", "0987654321", "24680", "my.mail@address.org", "");
+            Datasource.getInstance().insertAddress(newAddress);
             System.out.println(line.getLength());
 
         } finally {
