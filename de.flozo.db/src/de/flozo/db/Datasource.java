@@ -136,7 +136,7 @@ public class Datasource {
 
     // content
     public static final String TABLE_ADDRESSES = "addresses";
-    public static final String COLUMN_ADDRESSES_ID = ID;
+    public static final String COLUMN_ADDRESSES_ID = "_id";
     public static final String COLUMN_ADDRESSES_LABEL = "label";
     public static final String COLUMN_ADDRESSES_ACADEMIC_TITLE = "academic_title";
     public static final String COLUMN_ADDRESSES_FIRST_NAME = "first_name";
@@ -255,6 +255,15 @@ public class Datasource {
 
     public static Datasource getInstance() {
         return INSTANCE;
+    }
+
+    public Connection getConnection() {
+        try (Connection connection = DriverManager.getConnection(connectionString)) {
+            return connection;
+        } catch (SQLException e) {
+            System.out.println("Couldn't connect to database: " + e.getMessage());
+        }
+        return null;
     }
 
     public boolean open() {
