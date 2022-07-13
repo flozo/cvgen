@@ -71,7 +71,7 @@ public class Datasource {
     public static final String COLUMN_LENGTH_ID = ID;
     public static final String COLUMN_LENGTH_NAME = NAME;
     public static final String COLUMN_LENGTH_VALUE = VALUE;
-    public static final String COLUMN_LENGTH_LENGTH_UNIT_ID = UNIT + ID;
+    public static final String COLUMN_LENGTH_LENGTH_UNIT_ID = "length_unit" + ID;
 
     public static final String TABLE_LENGTH_UNITS = "length_units";
     public static final String COLUMN_LENGTH_UNIT_ID = ID;
@@ -118,10 +118,8 @@ public class Datasource {
     public static final String TABLE_POSITIONS = "positions";
     public static final String COLUMN_POSITION_ID = ID;
     public static final String COLUMN_POSITION_NAME = NAME;
-    public static final String COLUMN_POSITION_X_VALUE = "x_value";
-    public static final String COLUMN_POSITION_X_UNIT_ID = "x_unit" + ID;
-    public static final String COLUMN_POSITION_Y_VALUE = "y_value";
-    public static final String COLUMN_POSITION_Y_UNIT_ID = "y_unit" + ID;
+    public static final String COLUMN_POSITION_X_LENGTH_ID = "x_length" + ID;
+    public static final String COLUMN_POSITION_Y_LENGTH_ID = "y_length" + ID;
 
     public static final String TABLE_TEXT_FORMATS = "text_formats";
     public static final String COLUMN_TEXT_FORMAT_ID = ID;
@@ -203,9 +201,13 @@ public class Datasource {
 
 
     // insert
-    public static final String INSERT_POSITION = INSERT_INTO + TABLE_POSITIONS +
-            OPENING_PARENTHESIS + COLUMN_POSITION_X_VALUE + COMMA + COLUMN_POSITION_X_UNIT_ID + COMMA + COLUMN_POSITION_Y_VALUE + COMMA + COLUMN_POSITION_Y_UNIT_ID + CLOSING_PARENTHESIS +
-            VALUES + OPENING_PARENTHESIS + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + CLOSING_PARENTHESIS;
+    public static final String INSERT_LENGTH = INSERT_INTO + TABLE_LENGTHS + OPENING_PARENTHESIS + COLUMN_LENGTH_NAME + COMMA + COLUMN_LENGTH_VALUE + COMMA + COLUMN_LENGTH_LENGTH_UNIT_ID +
+            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + CLOSING_PARENTHESIS;
+
+    public static final String INSERT_POSITION = INSERT_INTO + TABLE_POSITIONS + OPENING_PARENTHESIS + COLUMN_POSITION_NAME + COMMA + COLUMN_POSITION_X_LENGTH_ID + COMMA + COLUMN_POSITION_Y_LENGTH_ID +
+            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + COMMA + QUESTION_MARK + COMMA + QUESTION_MARK + CLOSING_PARENTHESIS;
+
+
     public static final String INSERT_ADDRESS = INSERT_INTO + TABLE_ADDRESSES +
             OPENING_PARENTHESIS + COLUMN_ADDRESSES_LABEL + COMMA + COLUMN_ADDRESSES_ACADEMIC_TITLE + COMMA + COLUMN_ADDRESSES_FIRST_NAME + COMMA + COLUMN_ADDRESSES_SECOND_NAME + COMMA +
             COLUMN_ADDRESSES_LAST_NAME + COMMA + COLUMN_ADDRESSES_STREET + COMMA + COLUMN_ADDRESSES_HOUSE_NUMBER + COMMA + COLUMN_ADDRESSES_POSTAL_CODE + COMMA + COLUMN_ADDRESSES_CITY + COMMA +
@@ -242,6 +244,8 @@ public class Datasource {
     private PreparedStatement queryEnclosureById;
     private PreparedStatement queryEnclosureByName;
 
+    private PreparedStatement insertIntoLengths;
+    private PreparedStatement insertIntoPositions;
     private PreparedStatement insertIntoAddresses;
 
     private static final Datasource INSTANCE = new Datasource();
@@ -279,6 +283,8 @@ public class Datasource {
             queryEnclosureById = connection.prepareStatement(QUERY_ENCLOSURE_BY_ID);
             queryEnclosureByName = connection.prepareStatement(QUERY_ENCLOSURE_BY_NAME);
 
+            insertIntoLengths = connection.prepareStatement(INSERT_LENGTH);
+            insertIntoPositions = connection.prepareStatement(INSERT_POSITION);
             insertIntoAddresses = connection.prepareStatement(INSERT_ADDRESS);
 
 //            insertIntoPositions = connection.prepareStatement(INSERT_POSITION, Statement.RETURN_GENERATED_KEYS);
@@ -357,6 +363,12 @@ public class Datasource {
             }
             if (queryLineById != null) {
                 queryLineById.close();
+            }
+            if (insertIntoLengths != null) {
+                insertIntoLengths.close();
+            }
+            if (insertIntoPositions != null) {
+                insertIntoPositions.close();
             }
             if (insertIntoAddresses != null) {
                 insertIntoAddresses.close();
@@ -569,6 +581,34 @@ public class Datasource {
         }
     }
 
+    public Element element(int id) {
+        try {
+            queryElementById.setInt(1, id);
+            ResultSet resultSet = queryElementById.executeQuery();
+            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+        } catch (SQLException e) {
+            showMessage(queryElementById, e.getMessage());
+            return null;
+        }
+    }
+
+    public Element element(String elementName) {
+        try {
+            queryElementByName.setString(1, elementName);
+            ResultSet resultSet = queryElementByName.executeQuery();
+            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+        } catch (SQLException e) {
+            showMessage(queryElementByName, e.getMessage());
+            return null;
+        }
+    }
+
+
+
     public Address addressById(int id) {
         try {
             queryAddressById.setInt(1, id);
@@ -629,6 +669,71 @@ public class Datasource {
     }
 
 
+    private void rollback(Exception e, String messageText) {
+        System.out.println("[error] " + messageText + " exception: " + e.getMessage());
+        try {
+            System.out.println("Performing rollback ...");
+            connection.rollback();
+            // end of transaction
+        } catch (SQLException e2) {
+            System.out.println("[error] Rollback failed! " + e2.getMessage());
+        }
+    }
+
+    private void resetAutoCommitBehavior() {
+        try {
+            System.out.println("Resetting auto-commit behavior ...");
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            System.out.println("[error] Resetting auto commit failed! " + e.getMessage());
+        }
+    }
+
+    public void insertLength(Length length) {
+        try {
+            // start transaction:
+            connection.setAutoCommit(false);
+            System.out.println(INSERT_LENGTH);
+            insertIntoLengths.setString(1, length.getName());
+            insertIntoLengths.setDouble(2, length.getValue());
+            insertIntoLengths.setInt(3, length.getUnit().getId());
+
+            // do it
+            int affectedRows = insertIntoLengths.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (Exception e) {
+            rollback(e, "Insert-length");
+        } finally {
+            resetAutoCommitBehavior();
+        }
+    }
+
+    public void insertPosition(Position position) {
+        try {
+            // start transaction:
+            connection.setAutoCommit(false);
+            System.out.println(INSERT_POSITION);
+            insertIntoPositions.setString(1, position.getName());
+            insertIntoPositions.setInt(2, position.getLengthX().getId());
+            insertIntoPositions.setInt(3, position.getLengthY().getId());
+
+            // do it
+            int affectedRows = insertIntoPositions.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (Exception e) {
+            rollback(e, "Insert-position");
+        } finally {
+            resetAutoCommitBehavior();
+        }
+    }
+
+
     public void insertAddress(Address address) {
         try {
             // start transaction:
@@ -655,53 +760,12 @@ public class Datasource {
                 // end of transaction
             }
         } catch (Exception e) {
-            System.out.println("[error] Insert address exception: " + e.getMessage());
-            try {
-                System.out.println("Performing rollback ...");
-                connection.rollback();
-                // end of transaction
-            } catch (SQLException e2) {
-                System.out.println("[error] Rollback failed! " + e2.getMessage());
-            }
+            rollback(e, "Insert-address");
         } finally {
-            try {
-                System.out.println("Resetting auto-commit behavior ...");
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                System.out.println("[error] Resetting auto commit failed! " + e.getMessage());
-            }
+            resetAutoCommitBehavior();
         }
     }
 
 
-//    private Predicate<Integer> checkIntRangeOfId() {
-//        return idNumber -> idNumber.equals(0);
-//    }
-
-
-//
-//    private int insertPosition(double xValue, String xUnit, double yValue, String yUnit) throws SQLException {
-//        .setString(1, name);
-//        ResultSet results = queryAlbum.executeQuery();
-//        if (results.next()) {
-//            return results.getInt(1);
-//        } else {
-//            // Insert the album
-//            insertIntoAlbums.setString(1, name);
-//            insertIntoAlbums.setInt(2, artistId);
-//            int affectedRows = insertIntoAlbums.executeUpdate();
-//            // expect number of affected rows to be 1
-//            if (affectedRows != 1) {
-//                throw new SQLException("Couldn't insert album!");
-//            }
-//
-//            ResultSet generatedKeys = insertIntoAlbums.getGeneratedKeys();
-//            if (generatedKeys.next()) {
-//                return generatedKeys.getInt(1);
-//            } else {
-//                throw new SQLException("Couldn't get _id for album");
-//            }
-//        }
-//    }
 
 }

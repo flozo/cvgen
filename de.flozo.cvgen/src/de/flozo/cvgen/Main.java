@@ -1,7 +1,6 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.Element;
-import de.flozo.common.appearance.Line;
+import de.flozo.common.appearance.*;
 import de.flozo.common.content.Address;
 import de.flozo.common.content.Enclosure;
 import de.flozo.db.Datasource;
@@ -30,8 +29,18 @@ public class Main {
             System.out.println(enclosure_content.getFileId());
             Line line = Datasource.getInstance().lineById(1);
             Address newAddress = new Address(0, "entry_name", "Dr", "Peter", "James", "Miller", "Main street", "10b", "98765", "Heretown", "Otherland", "0987654321", "24680", "my.mail@address.org", "");
-            Datasource.getInstance().insertAddress(newAddress);
-            System.out.println(line.getLength());
+//            Datasource.getInstance().insertAddress(newAddress);
+
+            LengthUnit lengthUnit = Datasource.getInstance().lengthUnitById(4);
+            System.out.println(lengthUnit);
+            Length length = new Length(1, "new length", 123, lengthUnit);
+            System.out.println(length);
+//            Datasource.getInstance().insertLength(length);
+            Position position = new Position(0, "new position", length, length);
+            System.out.println(position);
+            Datasource.getInstance().insertPosition(position);
+            System.out.println(Datasource.getInstance().positionById(20));
+
 
         } finally {
             Datasource.getInstance().close();
