@@ -1,6 +1,9 @@
 package de.flozo.db;
 
-import java.sql.PreparedStatement;
+import de.flozo.common.content.Address;
+
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddressDAOImpl implements AddressDAO {
@@ -39,6 +42,7 @@ public class AddressDAOImpl implements AddressDAO {
     // query
     public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ADDRESS_BY_LABEL = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL_ADDRESSES = SELECT + STAR + FROM + TABLE_ADDRESSES;
 
     // insert
     public static final String INSERT_ADDRESS = INSERT_INTO + TABLE_ADDRESSES +
@@ -47,41 +51,121 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_ADDRESSES_COUNTRY + COMMA + COLUMN_ADDRESSES_PHONE_NUMBER + COMMA + COLUMN_ADDRESSES_MOBILE_NUMBER + COMMA + COLUMN_ADDRESSES_E_MAIL_ADDRESS + COMMA +
             COLUMN_ADDRESSES_WEB_PAGE + CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(13) + CLOSING_PARENTHESIS;
 
-    private PreparedStatement queryAddressById;
-    private PreparedStatement queryAddressByLabel;
-    private PreparedStatement insertIntoAddresses;
+    //    private PreparedStatement queryAddressById;
+//    private PreparedStatement queryAddressByLabel;
+    //    private PreparedStatement queryAllAddresses;
+//    private PreparedStatement insertIntoAddresses;
+    private Connection connection = Datasource2.INSTANCE.getConnection();
 
 
     public AddressDAOImpl() {
     }
 
+//    private void close(ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
+//        Datasource2.INSTANCE.closeResultSet(resultSet);
+//        Datasource2.INSTANCE.closePreparedStatement(preparedStatement);
+//        Datasource2.INSTANCE.closeConnection(connection);
+//    }
+//    private void close(Connection connection) {
+////        Datasource2.INSTANCE.closeResultSet(resultSet);
+////        Datasource2.INSTANCE.closePreparedStatement(preparedStatement);
+//        Datasource2.INSTANCE.closeConnection(connection);
+//    }
+
+
     @Override
-    public AddressDAOImpl get(int id) {
-        return null;
+    public Address get(int id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADDRESS_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return extractFromResultSet(resultSet);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
-    public AddressDAOImpl get(String specifier) {
-        return null;
+    public Address get(String specifier) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL)) {
+            preparedStatement.setString(1, specifier);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return extractFromResultSet(resultSet);
+                } else {
+                    return null;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
     }
 
     @Override
-    public List<AddressDAOImpl> getAll() {
-        return null;
+    public List<Address> getAll() {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_ADDRESSES)) {
+            List<Address> addresses = new ArrayList<>();
+            while (resultSet.next()) {
+                addresses.add(extractFromResultSet(resultSet));
+            }
+            Datasource.getInstance().close(connection, statement, resultSet);
+            return addresses;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
     }
 
+    private Address extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
+    }
+
+
+//    @Override
+//    public List<Address> getAll() {
+//        try {
+//            Connection connection = Datasource.getInstance().getConnection();
+//            System.out.println(QUERY_ALL_ADDRESSES);
+//            queryAllAddresses = connection.prepareStatement(QUERY_ALL_ADDRESSES);
+//            ResultSet resultSet = queryAllAddresses.executeQuery();
+//            List<Address> addresses = new ArrayList<>();
+//            while (resultSet.next()) {
+//                addresses.add(new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+//                        resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+//                        resultSet.getString(13), resultSet.getString(14), resultSet.getString(15)));
+//            }
+//            Datasource.getInstance().closeResultSet(resultSet);
+//            Datasource.getInstance().closePreparedStatement(queryAllAddresses);
+//            Datasource.getInstance().closeConnection(connection);
+//            return addresses;
+//        } catch (SQLException e) {
+//            System.out.println("Query failed: " + e.getMessage());
+//            return null;
+//        }
+//    }
+
     @Override
-    public int add(AddressDAOImpl addressDAO) {
+    public int add(Address address) {
         return 0;
     }
 
     @Override
-    public int update(AddressDAOImpl addressDAO) {
+    public int update(Address address) {
         return 0;
     }
 
     @Override
-    public int delete(AddressDAOImpl addressDAO) {
+    public int delete(Address address) {
         return 0;
     }
+
 }

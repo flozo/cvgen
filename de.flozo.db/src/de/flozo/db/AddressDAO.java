@@ -1,24 +1,26 @@
 package de.flozo.db;
 
+import de.flozo.common.content.Address;
+
 import java.util.List;
 
-public interface AddressDAO extends DAO<AddressDAOImpl> {
+public interface AddressDAO extends DAO<Address> {
 
     @Override
-    AddressDAOImpl get(int id);
+    Address get(int id);
 
     @Override
-    AddressDAOImpl get(String specifier);
+    Address get(String specifier);
 
     @Override
-    List<AddressDAOImpl> getAll();
+    List<Address> getAll();
 
     @Override
-    int add(AddressDAOImpl addressDAO);
+    int add(Address addressDAO);
 
     @Override
-    int update(AddressDAOImpl addressDAO);
+    int update(Address addressDAO);
 
     @Override
-    int delete(AddressDAOImpl addressDAO);
+    int delete(Address addressDAO);
 }

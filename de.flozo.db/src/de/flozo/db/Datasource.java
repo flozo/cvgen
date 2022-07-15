@@ -196,7 +196,7 @@ public class Datasource {
     public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ENCLOSURE_BY_ID = SELECT + STAR + FROM + TABLE_ENCLOSURES + WHERE + COLUMN_ENCLOSURES_ID + EQUALS + QUESTION_MARK;
 
-    public static final String QUERY_ADDRESS_BY_LABEL = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
+    //    public static final String QUERY_ADDRESS_BY_LABEL = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
     public static final String QUERY_ENCLOSURE_BY_NAME = SELECT + STAR + FROM + TABLE_ENCLOSURES + WHERE + COLUMN_ENCLOSURES_NAME + EQUALS + QUESTION_MARK;
 
 
@@ -240,7 +240,7 @@ public class Datasource {
     private PreparedStatement queryElementById;
     private PreparedStatement queryElementByName;
     private PreparedStatement queryAddressById;
-    private PreparedStatement queryAddressByLabel;
+    //    private PreparedStatement queryAddressByLabel;
     private PreparedStatement queryEnclosureById;
     private PreparedStatement queryEnclosureByName;
 
@@ -258,12 +258,69 @@ public class Datasource {
     }
 
     public Connection getConnection() {
+        System.out.print("Connecting to database \"" + connectionString + "\" ...");
         try (Connection connection = DriverManager.getConnection(connectionString)) {
+            System.out.println(connection.getClientInfo());
+            System.out.println(" done!");
             return connection;
         } catch (SQLException e) {
+            System.out.println();
             System.out.println("Couldn't connect to database: " + e.getMessage());
         }
         return null;
+    }
+
+    public void close(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
+        closeResultSet(resultSet);
+        closePreparedStatement(preparedStatement);
+        closeConnection(connection);
+    }
+
+    public void close(Connection connection, Statement statement, ResultSet resultSet) {
+        closeResultSet(resultSet);
+        closeStatement(statement);
+        closeConnection(connection);
+    }
+
+    public void closeConnection(Connection connection) {
+        try {
+            if (connection != null) {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Couldn't close connection \"" + connection + "\": " + e.getMessage());
+        }
+    }
+
+    public void closeStatement(Statement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Couldn't close statement \"" + statement + "\": " + e.getMessage());
+        }
+    }
+
+
+    public void closePreparedStatement(PreparedStatement preparedStatement) {
+        try {
+            if (preparedStatement != null) {
+                preparedStatement.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Couldn't close prepared statement \"" + preparedStatement + "\": " + e.getMessage());
+        }
+    }
+
+    public void closeResultSet(ResultSet resultSet) {
+        try {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+        } catch (SQLException e) {
+            System.out.println("Couldn't close result set \"" + resultSet + "\": " + e.getMessage());
+        }
     }
 
     public boolean open() {
@@ -288,7 +345,7 @@ public class Datasource {
             queryElementById = connection.prepareStatement(QUERY_ELEMENT_BY_ID);
             queryElementByName = connection.prepareStatement(QUERY_ELEMENT_BY_NAME);
             queryAddressById = connection.prepareStatement(QUERY_ADDRESS_BY_ID);
-            queryAddressByLabel = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL);
+//            queryAddressByLabel = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL);
             queryEnclosureById = connection.prepareStatement(QUERY_ENCLOSURE_BY_ID);
             queryEnclosureByName = connection.prepareStatement(QUERY_ENCLOSURE_BY_NAME);
 
@@ -361,9 +418,9 @@ public class Datasource {
             if (queryAddressById != null) {
                 queryAddressById.close();
             }
-            if (queryAddressByLabel != null) {
-                queryAddressByLabel.close();
-            }
+//            if (queryAddressByLabel != null) {
+//                queryAddressByLabel.close();
+//            }
             if (queryEnclosureById != null) {
                 queryEnclosureById.close();
             }
@@ -617,7 +674,6 @@ public class Datasource {
     }
 
 
-
     public Address addressById(int id) {
         try {
             queryAddressById.setInt(1, id);
@@ -630,19 +686,19 @@ public class Datasource {
             return null;
         }
     }
-
-    public Address addressByLabel(String label) {
-        try {
-            queryAddressByLabel.setString(1, label);
-            ResultSet resultSet = queryAddressByLabel.executeQuery();
-            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
-        } catch (SQLException e) {
-            showMessage(queryAddressByLabel, e.getMessage());
-            return null;
-        }
-    }
+//
+//    public Address addressByLabel(String label) {
+//        try {
+//            queryAddressByLabel.setString(1, label);
+//            ResultSet resultSet = queryAddressByLabel.executeQuery();
+//            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+//                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+//                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
+//        } catch (SQLException e) {
+//            showMessage(queryAddressByLabel, e.getMessage());
+//            return null;
+//        }
+//    }
 
     public Enclosure enclosureById(int id) {
         try {
@@ -774,7 +830,6 @@ public class Datasource {
             resetAutoCommitBehavior();
         }
     }
-
 
 
 }
