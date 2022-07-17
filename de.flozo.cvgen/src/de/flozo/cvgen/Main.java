@@ -24,8 +24,8 @@ public class Main {
             Address address = new Address(0,"new person", "Prof.","John", "", "Smith", "Main street", "1", "23570", "City", "Country",
                     "1357924680", "09876", "address@mail.com", "www.test.org");
             addressDAO.add(address);
-            Address address1 = addressDAO.get(8);
-            address1.setSecondName("Mark");
+            Address address1 = addressDAO.get(6);
+            address1.setLastName("Carpenter");
             addressDAO.update(address1);
 
         } finally {

@@ -112,7 +112,6 @@ public class AddressDAOImpl implements AddressDAO {
             while (resultSet.next()) {
                 addresses.add(extractFromResultSet(resultSet));
             }
-//            Datasource.getInstance().close(connection, statement, resultSet);
             return addresses;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
@@ -126,26 +125,30 @@ public class AddressDAOImpl implements AddressDAO {
                 resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
     }
 
+    private void setAllValues(PreparedStatement preparedStatement, Address address) throws SQLException {
+        preparedStatement.setString(1, address.getLabel());
+        preparedStatement.setString(2, address.getAcademicTitle());
+        preparedStatement.setString(3, address.getFirstName());
+        preparedStatement.setString(4, address.getSecondName());
+        preparedStatement.setString(5, address.getLastName());
+        preparedStatement.setString(6, address.getStreet());
+        preparedStatement.setString(7, address.getHouseNumber());
+        preparedStatement.setString(8, address.getPostalCode());
+        preparedStatement.setString(9, address.getCity());
+        preparedStatement.setString(10, address.getCountry());
+        preparedStatement.setString(11, address.getPhoneNumber());
+        preparedStatement.setString(12, address.getMobileNumber());
+        preparedStatement.setString(13, address.getEMailAddress());
+        preparedStatement.setString(14, address.getWebPage());
+    }
+
 
     @Override
     public void add(Address address) {
         // start transaction:
         setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS)) {
-            preparedStatement.setString(1, address.getLabel());
-            preparedStatement.setString(2, address.getAcademicTitle());
-            preparedStatement.setString(3, address.getFirstName());
-            preparedStatement.setString(4, address.getSecondName());
-            preparedStatement.setString(5, address.getLastName());
-            preparedStatement.setString(6, address.getStreet());
-            preparedStatement.setString(7, address.getHouseNumber());
-            preparedStatement.setString(8, address.getPostalCode());
-            preparedStatement.setString(9, address.getCity());
-            preparedStatement.setString(10, address.getCountry());
-            preparedStatement.setString(11, address.getPhoneNumber());
-            preparedStatement.setString(12, address.getMobileNumber());
-            preparedStatement.setString(13, address.getEMailAddress());
-            preparedStatement.setString(14, address.getWebPage());
+            setAllValues(preparedStatement, address);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -164,21 +167,8 @@ public class AddressDAOImpl implements AddressDAO {
         // start transaction:
         setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS)) {
-            preparedStatement.setInt(15,address.getId());
-            preparedStatement.setString(1, address.getLabel());
-            preparedStatement.setString(2, address.getAcademicTitle());
-            preparedStatement.setString(3, address.getFirstName());
-            preparedStatement.setString(4, address.getSecondName());
-            preparedStatement.setString(5, address.getLastName());
-            preparedStatement.setString(6, address.getStreet());
-            preparedStatement.setString(7, address.getHouseNumber());
-            preparedStatement.setString(8, address.getPostalCode());
-            preparedStatement.setString(9, address.getCity());
-            preparedStatement.setString(10, address.getCountry());
-            preparedStatement.setString(11, address.getPhoneNumber());
-            preparedStatement.setString(12, address.getMobileNumber());
-            preparedStatement.setString(13, address.getEMailAddress());
-            preparedStatement.setString(14, address.getWebPage());
+            preparedStatement.setInt(15, address.getId());
+            setAllValues(preparedStatement, address);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
