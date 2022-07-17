@@ -115,7 +115,7 @@ public class AddressDAOImpl implements AddressDAO {
             while (resultSet.next()) {
                 addresses.add(extractFromResultSet(resultSet));
             }
-            Datasource.getInstance().close(connection, statement, resultSet);
+//            Datasource.getInstance().close(connection, statement, resultSet);
             return addresses;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
@@ -130,42 +130,69 @@ public class AddressDAOImpl implements AddressDAO {
     }
 
 
-//    @Override
-//    public List<Address> getAll() {
-//        try {
-//            Connection connection = Datasource.getInstance().getConnection();
-//            System.out.println(QUERY_ALL_ADDRESSES);
-//            queryAllAddresses = connection.prepareStatement(QUERY_ALL_ADDRESSES);
-//            ResultSet resultSet = queryAllAddresses.executeQuery();
-//            List<Address> addresses = new ArrayList<>();
-//            while (resultSet.next()) {
-//                addresses.add(new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-//                        resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-//                        resultSet.getString(13), resultSet.getString(14), resultSet.getString(15)));
-//            }
-//            Datasource.getInstance().closeResultSet(resultSet);
-//            Datasource.getInstance().closePreparedStatement(queryAllAddresses);
-//            Datasource.getInstance().closeConnection(connection);
-//            return addresses;
-//        } catch (SQLException e) {
-//            System.out.println("Query failed: " + e.getMessage());
-//            return null;
-//        }
-//    }
-
     @Override
-    public int add(Address address) {
-        return 0;
+    public void add(Address address) {
+        // start transaction:
+        setAutoCommitBehavior(false);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS)) {
+            preparedStatement.setString(1, address.getLabel());
+            preparedStatement.setString(2, address.getAcademicTitle());
+            preparedStatement.setString(3, address.getFirstName());
+            preparedStatement.setString(4, address.getSecondName());
+            preparedStatement.setString(5, address.getLastName());
+            preparedStatement.setString(6, address.getStreet());
+            preparedStatement.setString(7, address.getHouseNumber());
+            preparedStatement.setString(8, address.getPostalCode());
+            preparedStatement.setString(9, address.getCity());
+            preparedStatement.setString(10, address.getCountry());
+            preparedStatement.setString(11, address.getPhoneNumber());
+            preparedStatement.setString(12, address.getMobileNumber());
+            preparedStatement.setString(13, address.getEMailAddress());
+            preparedStatement.setString(14, address.getWebPage());
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (Exception e) {
+            rollback(e, "Insert-address");
+        } finally {
+            setAutoCommitBehavior(true);
+        }
     }
 
     @Override
-    public int update(Address address) {
-        return 0;
+    public void update(Address address) {
     }
 
     @Override
-    public int delete(Address address) {
-        return 0;
+    public void delete(Address address) {
     }
+
+    private void rollback(Exception e, String messageText) {
+        System.out.println("[database] [error] " + messageText + " exception: " + e.getMessage());
+        try {
+            System.out.print("[database] Performing rollback ...");
+            connection.rollback();
+            // end of transaction
+            System.out.println(" done!");
+        } catch (SQLException e2) {
+            System.out.println();
+            System.out.println("[database] [error] Rollback failed! " + e2.getMessage());
+        }
+    }
+
+    private void setAutoCommitBehavior(boolean autoCommitOn) {
+        try {
+            System.out.print("[database] Setting auto-commit behavior to \"" + autoCommitOn + "\" ...");
+            connection.setAutoCommit(autoCommitOn);
+            System.out.println(" done!");
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("[database] [error] Setting auto commit failed! " + e.getMessage());
+        }
+    }
+
 
 }

@@ -16,11 +16,11 @@ public interface AddressDAO extends DAO<Address> {
     List<Address> getAll();
 
     @Override
-    int add(Address addressDAO);
+    void add(Address addressDAO);
 
     @Override
-    int update(Address addressDAO);
+    void update(Address addressDAO);
 
     @Override
-    int delete(Address addressDAO);
+    void delete(Address addressDAO);
 }
