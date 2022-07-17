@@ -9,16 +9,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        Datasource.getInstance().open();
-//        Datasource.getInstance().getConnection();
 
-//        Datasource2.INSTANCE.getConnection();
         try {
 
-//            System.out.println(Datasource.getInstance().addressById(1));
-//            System.out.println(Datasource.getInstance().textStyleById(2));
-//            System.out.println(Datasource.getInstance().anchorById(4));
-//            System.out.println(Datasource.getInstance().lineStyleById(2));
             AddressDAO addressDAO = new AddressDAOImpl();
 
             System.out.println(addressDAO.get(1));
@@ -31,6 +24,9 @@ public class Main {
             Address address = new Address(0,"new person", "Prof.","John", "", "Smith", "Main street", "1", "23570", "City", "Country",
                     "1357924680", "09876", "address@mail.com", "www.test.org");
             addressDAO.add(address);
+            Address address1 = addressDAO.get(8);
+            address1.setSecondName("Mark");
+            addressDAO.update(address1);
 
         } finally {
             Datasource2.INSTANCE.closeConnection();

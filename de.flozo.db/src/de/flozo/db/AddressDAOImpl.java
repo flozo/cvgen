@@ -38,6 +38,8 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String FROM = " FROM ";
     public static final String WHERE = " WHERE ";
     public static final String EQUALS = " = ";
+    public static final String UPDATE = "UPDATE ";
+    public static final String SET = " SET ";
 
     // query
     public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
@@ -51,26 +53,21 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_ADDRESSES_COUNTRY + COMMA + COLUMN_ADDRESSES_PHONE_NUMBER + COMMA + COLUMN_ADDRESSES_MOBILE_NUMBER + COMMA + COLUMN_ADDRESSES_E_MAIL_ADDRESS + COMMA +
             COLUMN_ADDRESSES_WEB_PAGE + CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(13) + CLOSING_PARENTHESIS;
 
-    //    private PreparedStatement queryAddressById;
-//    private PreparedStatement queryAddressByLabel;
-    //    private PreparedStatement queryAllAddresses;
-//    private PreparedStatement insertIntoAddresses;
-    private Connection connection = Datasource2.INSTANCE.getConnection();
+    // update
+    public static final String UPDATE_ADDRESS = UPDATE + TABLE_ADDRESSES + SET +
+            COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_ACADEMIC_TITLE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_FIRST_NAME + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_SECOND_NAME + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_LAST_NAME + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_STREET + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_HOUSE_NUMBER + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_POSTAL_CODE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_CITY + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_COUNTRY + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_PHONE_NUMBER + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_MOBILE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ADDRESSES_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_WEB_PAGE + EQUALS + QUESTION_MARK +
+            WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
 
+    private Connection connection = Datasource2.INSTANCE.getConnection();
 
     public AddressDAOImpl() {
     }
-
-//    private void close(ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
-//        Datasource2.INSTANCE.closeResultSet(resultSet);
-//        Datasource2.INSTANCE.closePreparedStatement(preparedStatement);
-//        Datasource2.INSTANCE.closeConnection(connection);
-//    }
-//    private void close(Connection connection) {
-////        Datasource2.INSTANCE.closeResultSet(resultSet);
-////        Datasource2.INSTANCE.closePreparedStatement(preparedStatement);
-//        Datasource2.INSTANCE.closeConnection(connection);
-//    }
 
 
     @Override
@@ -164,6 +161,35 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void update(Address address) {
+        // start transaction:
+        setAutoCommitBehavior(false);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS)) {
+            preparedStatement.setInt(15,address.getId());
+            preparedStatement.setString(1, address.getLabel());
+            preparedStatement.setString(2, address.getAcademicTitle());
+            preparedStatement.setString(3, address.getFirstName());
+            preparedStatement.setString(4, address.getSecondName());
+            preparedStatement.setString(5, address.getLastName());
+            preparedStatement.setString(6, address.getStreet());
+            preparedStatement.setString(7, address.getHouseNumber());
+            preparedStatement.setString(8, address.getPostalCode());
+            preparedStatement.setString(9, address.getCity());
+            preparedStatement.setString(10, address.getCountry());
+            preparedStatement.setString(11, address.getPhoneNumber());
+            preparedStatement.setString(12, address.getMobileNumber());
+            preparedStatement.setString(13, address.getEMailAddress());
+            preparedStatement.setString(14, address.getWebPage());
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (Exception e) {
+            rollback(e, "Update-address");
+        } finally {
+            setAutoCommitBehavior(true);
+        }
     }
 
     @Override
