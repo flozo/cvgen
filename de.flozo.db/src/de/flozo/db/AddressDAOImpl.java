@@ -40,6 +40,7 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String EQUALS = " = ";
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
+    public static final String DELETE_FROM = "DELETE FROM ";
 
     // query
     public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
@@ -64,9 +65,49 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_ADDRESSES_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA + COLUMN_ADDRESSES_WEB_PAGE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
 
+    // count
+    public static final String COUNT_ADDRESSES = SELECT + "count(*) AS count" + FROM + TABLE_ADDRESSES;
+
+    // delete
+    public static final String DELETE_ADDRESS = DELETE_FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
+
+
     private Connection connection = Datasource2.INSTANCE.getConnection();
 
     public AddressDAOImpl() {
+    }
+
+    @Override
+    public void showMetadata() {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_ADDRESSES)) {
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            for (int column = 1; column <= metaData.getColumnCount(); column++) {
+                System.out.format("Column %d: ", column);
+                System.out.format("TableName = %s, ", metaData.getTableName(column));
+                System.out.format("CatalogName = %s, ", metaData.getCatalogName(column));
+                System.out.format("ColumnClassName = %s, ", metaData.getColumnClassName(column));
+                System.out.format("SchemaName = %s, ", metaData.getSchemaName(column));
+                System.out.format("ColumnTypeName = %s, ", metaData.getColumnTypeName(column));
+                System.out.format("ColumnType = %s, ", metaData.getColumnType(column));
+                System.out.format("ColumnLabel = %s, ", metaData.getColumnLabel(column));
+                System.out.format("ColumnName = %s, ", metaData.getColumnName(column));
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            System.out.println("[database] [error] Querying metadata failed!");
+        }
+    }
+
+    @Override
+    public int getCount() {
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(COUNT_ADDRESSES)) {
+            return resultSet.getInt("count");
+        } catch (SQLException e) {
+            System.out.println("[database] [error] Counting rows failed!");
+            return -1;
+        }
     }
 
 
@@ -184,6 +225,21 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public void delete(Address address) {
+        // start transaction:
+        setAutoCommitBehavior(false);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ADDRESS)) {
+            preparedStatement.setInt(1, address.getId());
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+        } catch (SQLException e) {
+            rollback(e, "Delete-address");
+        } finally {
+            setAutoCommitBehavior(true);
+        }
     }
 
     private void rollback(Exception e, String messageText) {

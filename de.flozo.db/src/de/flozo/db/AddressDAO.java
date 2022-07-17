@@ -6,6 +6,9 @@ import java.util.List;
 
 public interface AddressDAO extends DAO<Address> {
 
+    void showMetadata();
+
+    int getCount();
     @Override
     Address get(int id);
 
