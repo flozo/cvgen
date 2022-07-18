@@ -97,11 +97,11 @@ public enum Datasource2 {
     }
 
 
-
     @Override
     public String toString() {
         return "Datasource2{" +
                 "connectionString='" + connectionString + '\'' +
+                ", connection=" + connection +
                 '}';
     }
 }

@@ -1,9 +1,7 @@
 package de.flozo.cvgen;
 
 import de.flozo.common.content.Address;
-import de.flozo.db.AddressDAO;
-import de.flozo.db.AddressDAOImpl;
-import de.flozo.db.Datasource2;
+import de.flozo.db.*;
 
 public class Main {
 
@@ -35,6 +33,8 @@ public class Main {
             Address address1 = addressDAO.get(3);
             address1.setLastName("Fisher");
             addressDAO.update(address1);
+            AnchorDAO anchorDAO = new AnchorDAOImpl();
+            System.out.println(anchorDAO.get("center"));
 
 
         } finally {
