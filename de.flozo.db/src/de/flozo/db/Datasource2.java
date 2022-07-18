@@ -18,26 +18,29 @@ public enum Datasource2 {
 
 
     public Connection getConnection() {
-        System.out.print("Connecting to database \"" + connectionString + "\" ...");
+        System.out.print("[database] Connecting to database \"" + connectionString + "\" ...");
         try {
             connection = DriverManager.getConnection(connectionString);
             System.out.println(" done!");
             return connection;
         } catch (SQLException e) {
             System.out.println();
-            System.out.println("Couldn't connect to database: " + e.getMessage());
+            System.out.println("[database] [error] Couldn't connect to database: " + e.getMessage());
         }
         return null;
     }
 
 
     public void closeConnection() {
+        System.out.print("[database] Closing connection to database \"" + connectionString + "\" ...");
         try {
             if (connection != null) {
                 connection.close();
             }
+            System.out.println(" done!");
         } catch (SQLException e) {
-            System.out.println("Couldn't close connection \"" + connection + "\": " + e.getMessage());
+            System.out.println();
+            System.out.println("[database] [error] Couldn't close connection \"" + connection + "\": " + e.getMessage());
         }
     }
 
