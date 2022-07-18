@@ -44,7 +44,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     // query
     public static final String QUERY_ADDRESS_BY_ID = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ADDRESS_BY_LABEL = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ADDRESS_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_ADDRESSES + WHERE + COLUMN_ADDRESSES_LABEL + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL_ADDRESSES = SELECT + STAR + FROM + TABLE_ADDRESSES;
 
     // insert
@@ -85,12 +85,12 @@ public class AddressDAOImpl implements AddressDAO {
             for (int column = 1; column <= metaData.getColumnCount(); column++) {
                 System.out.format("Column %d: ", column);
                 System.out.format("TableName = %s, ", metaData.getTableName(column));
-                System.out.format("CatalogName = %s, ", metaData.getCatalogName(column));
-                System.out.format("ColumnClassName = %s, ", metaData.getColumnClassName(column));
-                System.out.format("SchemaName = %s, ", metaData.getSchemaName(column));
+//                System.out.format("CatalogName = %s, ", metaData.getCatalogName(column));
+//                System.out.format("ColumnClassName = %s, ", metaData.getColumnClassName(column));
+//                System.out.format("SchemaName = %s, ", metaData.getSchemaName(column));
                 System.out.format("ColumnTypeName = %s, ", metaData.getColumnTypeName(column));
-                System.out.format("ColumnType = %s, ", metaData.getColumnType(column));
-                System.out.format("ColumnLabel = %s, ", metaData.getColumnLabel(column));
+//                System.out.format("ColumnType = %s, ", metaData.getColumnType(column));
+//                System.out.format("ColumnLabel = %s, ", metaData.getColumnLabel(column));
                 System.out.format("ColumnName = %s, ", metaData.getColumnName(column));
                 System.out.println();
             }
@@ -130,7 +130,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADDRESS_BY_LABEL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ADDRESS_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -187,7 +187,7 @@ public class AddressDAOImpl implements AddressDAO {
     @Override
     public void add(Address address) {
         // start transaction:
-        setAutoCommitBehavior(false);
+        Datasource2.INSTANCE.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ADDRESS)) {
             setAllValues(preparedStatement, address);
             // do it
@@ -197,16 +197,16 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            rollback(e, "Insert-address");
+            Datasource2.INSTANCE.rollback(e, "Insert-address");
         } finally {
-            setAutoCommitBehavior(true);
+            Datasource2.INSTANCE.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Address address) {
         // start transaction:
-        setAutoCommitBehavior(false);
+        Datasource2.INSTANCE.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ADDRESS)) {
             preparedStatement.setInt(15, address.getId());
             setAllValues(preparedStatement, address);
@@ -217,16 +217,16 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            rollback(e, "Update-address");
+            Datasource2.INSTANCE.rollback(e, "Update-address");
         } finally {
-            setAutoCommitBehavior(true);
+            Datasource2.INSTANCE.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Address address) {
         // start transaction:
-        setAutoCommitBehavior(false);
+        Datasource2.INSTANCE.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_ADDRESS)) {
             preparedStatement.setInt(1, address.getId());
             // do it
@@ -236,35 +236,10 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            rollback(e, "Delete-address");
+            Datasource2.INSTANCE.rollback(e, "Delete-address");
         } finally {
-            setAutoCommitBehavior(true);
+            Datasource2.INSTANCE.setAutoCommitBehavior(true);
         }
     }
-
-    private void rollback(Exception e, String messageText) {
-        System.out.println("[database] [error] " + messageText + " exception: " + e.getMessage());
-        try {
-            System.out.print("[database] Performing rollback ...");
-            connection.rollback();
-            // end of transaction
-            System.out.println(" done!");
-        } catch (SQLException e2) {
-            System.out.println();
-            System.out.println("[database] [error] Rollback failed! " + e2.getMessage());
-        }
-    }
-
-    private void setAutoCommitBehavior(boolean autoCommitOn) {
-        try {
-            System.out.print("[database] Setting auto-commit behavior to \"" + autoCommitOn + "\" ...");
-            connection.setAutoCommit(autoCommitOn);
-            System.out.println(" done!");
-        } catch (SQLException e) {
-            System.out.println();
-            System.out.println("[database] [error] Setting auto commit failed! " + e.getMessage());
-        }
-    }
-
 
 }

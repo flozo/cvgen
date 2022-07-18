@@ -72,6 +72,31 @@ public enum Datasource2 {
         }
     }
 
+    public void rollback(Exception e, String messageText) {
+        System.out.println("[database] [error] " + messageText + " exception: " + e.getMessage());
+        try {
+            System.out.print("[database] Performing rollback ...");
+            connection.rollback();
+            // end of transaction
+            System.out.println(" done!");
+        } catch (SQLException e2) {
+            System.out.println();
+            System.out.println("[database] [error] Rollback failed! " + e2.getMessage());
+        }
+    }
+
+    public void setAutoCommitBehavior(boolean autoCommitOn) {
+        try {
+            System.out.print("[database] Setting auto-commit behavior to \"" + autoCommitOn + "\" ...");
+            connection.setAutoCommit(autoCommitOn);
+            System.out.println(" done!");
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("[database] [error] Setting auto commit failed! " + e.getMessage());
+        }
+    }
+
+
 
     @Override
     public String toString() {
