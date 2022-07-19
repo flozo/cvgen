@@ -9,9 +9,9 @@ import java.util.List;
 public class LengthUnitDAOImpl implements LengthUnitDAO {
 
     // content
-    public static final String TABLE_LENGTH_UNITS = "length_units";
-    public static final String COLUMN_LENGTH_UNIT_ID = "_id";
-    public static final String COLUMN_LENGTH_UNIT_NAME = "name";
+    public static final String TABLE_NAME = "length_units";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "name";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -22,9 +22,9 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
     public static final String EQUALS = " = ";
 
     // query
-    public static final String QUERY_LENGTH_UNIT_BY_ID = SELECT + STAR + FROM + TABLE_LENGTH_UNITS + WHERE + COLUMN_LENGTH_UNIT_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_LENGTH_UNIT_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_LENGTH_UNITS + WHERE + COLUMN_LENGTH_UNIT_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_LENGTH_UNITS = SELECT + STAR + FROM + TABLE_LENGTH_UNITS;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
     private Connection connection = Datasource2.INSTANCE.getConnection();
 
@@ -33,7 +33,7 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
 
     @Override
     public LengthUnit get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LENGTH_UNIT_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -50,7 +50,7 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
 
     @Override
     public LengthUnit get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LENGTH_UNIT_BY_SPECIFIER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -68,7 +68,7 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
     @Override
     public List<LengthUnit> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_LENGTH_UNITS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<LengthUnit> lengthUnits = new ArrayList<>();
             while (resultSet.next()) {
                 lengthUnits.add(extractFromResultSet(resultSet));

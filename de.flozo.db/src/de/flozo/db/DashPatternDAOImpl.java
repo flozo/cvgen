@@ -9,9 +9,9 @@ import java.util.List;
 public class DashPatternDAOImpl implements DashPatternDAO {
 
     // content
-    public static final String TABLE_DASH_PATTERNS = "dash_patterns";
-    public static final String COLUMN_DASH_PATTERN_ID = "_id";
-    public static final String COLUMN_DASH_PATTERN_NAME = "name";
+    public static final String TABLE_NAME = "dash_patterns";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "name";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -22,9 +22,9 @@ public class DashPatternDAOImpl implements DashPatternDAO {
     public static final String EQUALS = " = ";
 
     // query
-    public static final String QUERY_DASH_PATTERN_BY_ID = SELECT + STAR + FROM + TABLE_DASH_PATTERNS + WHERE + COLUMN_DASH_PATTERN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_DASH_PATTERN_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_DASH_PATTERNS + WHERE + COLUMN_DASH_PATTERN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_DASH_PATTERNS = SELECT + STAR + FROM + TABLE_DASH_PATTERNS;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
     private Connection connection = Datasource2.INSTANCE.getConnection();
@@ -34,7 +34,7 @@ public class DashPatternDAOImpl implements DashPatternDAO {
 
     @Override
     public DashPattern get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_DASH_PATTERN_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -52,7 +52,7 @@ public class DashPatternDAOImpl implements DashPatternDAO {
 
     @Override
     public DashPattern get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_DASH_PATTERN_BY_SPECIFIER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -70,7 +70,7 @@ public class DashPatternDAOImpl implements DashPatternDAO {
     @Override
     public List<DashPattern> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_DASH_PATTERNS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<DashPattern> dashPatterns = new ArrayList<>();
             while (resultSet.next()) {
                 dashPatterns.add(extractFromResultSet(resultSet));

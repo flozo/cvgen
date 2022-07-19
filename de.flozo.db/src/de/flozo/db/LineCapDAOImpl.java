@@ -9,9 +9,9 @@ import java.util.List;
 public class LineCapDAOImpl implements LineCapDAO {
 
     // content
-    public static final String TABLE_LINE_CAPS = "line_caps";
-    public static final String COLUMN_LINE_CAP_ID = "_id";
-    public static final String COLUMN_LINE_CAP_NAME = "name";
+    public static final String TABLE_NAME = "line_caps";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "name";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -22,9 +22,9 @@ public class LineCapDAOImpl implements LineCapDAO {
     public static final String EQUALS = " = ";
 
     // query
-    public static final String QUERY_LINE_CAP_BY_ID = SELECT + STAR + FROM + TABLE_LINE_CAPS + WHERE + COLUMN_LINE_CAP_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_LINE_CAP_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_LINE_CAPS + WHERE + COLUMN_LINE_CAP_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_LINE_CAPS = SELECT + STAR + FROM + TABLE_LINE_CAPS;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
     private Connection connection = Datasource2.INSTANCE.getConnection();
@@ -34,7 +34,7 @@ public class LineCapDAOImpl implements LineCapDAO {
 
     @Override
     public LineCap get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LINE_CAP_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -51,7 +51,7 @@ public class LineCapDAOImpl implements LineCapDAO {
 
     @Override
     public LineCap get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LINE_CAP_BY_SPECIFIER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -69,7 +69,7 @@ public class LineCapDAOImpl implements LineCapDAO {
     @Override
     public List<LineCap> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_LINE_CAPS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<LineCap> lineCaps = new ArrayList<>();
             while (resultSet.next()) {
                 lineCaps.add(extractFromResultSet(resultSet));

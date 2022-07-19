@@ -9,9 +9,9 @@ import java.util.List;
 public class AnchorDAOImpl implements AnchorDAO {
 
     // content
-    public static final String TABLE_ANCHORS = "anchors";
-    public static final String COLUMN_ANCHOR_ID = "_id";
-    public static final String COLUMN_ANCHOR_NAME = "name";
+    public static final String TABLE_NAME = "anchors";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "name";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -22,9 +22,9 @@ public class AnchorDAOImpl implements AnchorDAO {
     public static final String EQUALS = " = ";
 
     // query
-    public static final String QUERY_ANCHOR_BY_ID = SELECT + STAR + FROM + TABLE_ANCHORS + WHERE + COLUMN_ANCHOR_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ANCHOR_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_ANCHORS + WHERE + COLUMN_ANCHOR_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_ANCHORS = SELECT + STAR + FROM + TABLE_ANCHORS;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
     private Connection connection = Datasource2.INSTANCE.getConnection();
@@ -35,7 +35,7 @@ public class AnchorDAOImpl implements AnchorDAO {
 
     @Override
     public Anchor get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ANCHOR_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -52,7 +52,7 @@ public class AnchorDAOImpl implements AnchorDAO {
 
     @Override
     public Anchor get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ANCHOR_BY_SPECIFIER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -70,7 +70,7 @@ public class AnchorDAOImpl implements AnchorDAO {
     @Override
     public List<Anchor> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_ANCHORS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<Anchor> anchors = new ArrayList<>();
             while (resultSet.next()) {
                 anchors.add(extractFromResultSet(resultSet));

@@ -9,9 +9,9 @@ import java.util.List;
 public class LineJoinDAOImpl implements LineJoinDAO {
 
     // content
-    public static final String TABLE_LINE_JOINS = "line_joins";
-    public static final String COLUMN_LINE_JOIN_ID = "_id";
-    public static final String COLUMN_LINE_JOIN_NAME = "name";
+    public static final String TABLE_NAME = "line_joins";
+    public static final String COLUMN_ID = "_id";
+    public static final String COLUMN_NAME = "name";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -22,9 +22,9 @@ public class LineJoinDAOImpl implements LineJoinDAO {
     public static final String EQUALS = " = ";
 
     // query
-    public static final String QUERY_LINE_JOIN_BY_ID = SELECT + STAR + FROM + TABLE_LINE_JOINS + WHERE + COLUMN_LINE_JOIN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_LINE_JOIN_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_LINE_JOINS + WHERE + COLUMN_LINE_JOIN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_LINE_JOINS = SELECT + STAR + FROM + TABLE_LINE_JOINS;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
     private Connection connection = Datasource2.INSTANCE.getConnection();
@@ -34,7 +34,7 @@ public class LineJoinDAOImpl implements LineJoinDAO {
 
     @Override
     public LineJoin get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LINE_JOIN_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -51,7 +51,7 @@ public class LineJoinDAOImpl implements LineJoinDAO {
 
     @Override
     public LineJoin get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LINE_JOIN_BY_SPECIFIER)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -69,7 +69,7 @@ public class LineJoinDAOImpl implements LineJoinDAO {
     @Override
     public List<LineJoin> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_LINE_JOINS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<LineJoin> lineJoins = new ArrayList<>();
             while (resultSet.next()) {
                 lineJoins.add(extractFromResultSet(resultSet));
