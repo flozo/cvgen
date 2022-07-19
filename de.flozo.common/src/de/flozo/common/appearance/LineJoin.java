@@ -4,10 +4,12 @@ public class LineJoin {
 
     private int id;
     private String name;
+    private String value;
 
-    public LineJoin(int id, String name) {
+    public LineJoin(int id, String name, String value) {
         this.id = id;
         this.name = name;
+        this.value = value;
     }
 
     public int getId() {
@@ -26,12 +28,20 @@ public class LineJoin {
         this.name = name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {
         return "LineJoin{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

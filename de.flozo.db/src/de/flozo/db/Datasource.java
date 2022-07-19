@@ -550,27 +550,27 @@ public class Datasource {
         }
     }
 
-    public LineCap lineCapById(int id) {
-        try {
-            queryLineCapById.setInt(1, id);
-            ResultSet resultSet = queryLineCapById.executeQuery();
-            return new LineCap(resultSet.getInt(1), resultSet.getString(2));
-        } catch (SQLException e) {
-            showMessage(queryLineCapById, e.getMessage());
-            return null;
-        }
-    }
+//    public LineCap lineCapById(int id) {
+//        try {
+//            queryLineCapById.setInt(1, id);
+//            ResultSet resultSet = queryLineCapById.executeQuery();
+//            return new LineCap(resultSet.getInt(1), resultSet.getString(2));
+//        } catch (SQLException e) {
+//            showMessage(queryLineCapById, e.getMessage());
+//            return null;
+//        }
+//    }
 
-    public LineJoin lineJoinById(int id) {
-        try {
-            queryLineJoinById.setInt(1, id);
-            ResultSet resultSet = queryLineJoinById.executeQuery();
-            return new LineJoin(resultSet.getInt(1), resultSet.getString(2));
-        } catch (SQLException e) {
-            showMessage(queryLineJoinById, e.getMessage());
-            return null;
-        }
-    }
+//    public LineJoin lineJoinById(int id) {
+//        try {
+//            queryLineJoinById.setInt(1, id);
+//            ResultSet resultSet = queryLineJoinById.executeQuery();
+//            return new LineJoin(resultSet.getInt(1), resultSet.getString(2));
+//        } catch (SQLException e) {
+//            showMessage(queryLineJoinById, e.getMessage());
+//            return null;
+//        }
+//    }
 
     public DashPattern dashPatternById(int id) {
         try {
@@ -596,18 +596,18 @@ public class Datasource {
         }
     }
 
-    public LineStyle lineStyleById(int id) {
-        try {
-            queryLineStyleById.setInt(1, id);
-            ResultSet resultSet = queryLineStyleById.executeQuery();
-            return new LineStyle(resultSet.getInt(1), resultSet.getString(2), lineWidthById(resultSet.getInt(3)),
-                    lineCapById(resultSet.getInt(4)), lineJoinById(resultSet.getInt(5)), dashPatternById(resultSet.getInt(6)),
-                    baseColorById(resultSet.getInt(7)), opacityById(resultSet.getInt(8)));
-        } catch (SQLException e) {
-            showMessage(queryLineStyleById, e.getMessage());
-            return null;
-        }
-    }
+//    public LineStyle lineStyleById(int id) {
+//        try {
+//            queryLineStyleById.setInt(1, id);
+//            ResultSet resultSet = queryLineStyleById.executeQuery();
+//            return new LineStyle(resultSet.getInt(1), resultSet.getString(2), lineWidthById(resultSet.getInt(3)),
+//                    lineCapById(resultSet.getInt(4)), lineJoinById(resultSet.getInt(5)), dashPatternById(resultSet.getInt(6)),
+//                    baseColorById(resultSet.getInt(7)), opacityById(resultSet.getInt(8)));
+//        } catch (SQLException e) {
+//            showMessage(queryLineStyleById, e.getMessage());
+//            return null;
+//        }
+//    }
 
     public AreaStyle areaStyleById(int id) {
         try {
@@ -621,57 +621,57 @@ public class Datasource {
     }
 
 
-    public Element elementById(int id) {
-        try {
-            queryElementById.setInt(1, id);
-            ResultSet resultSet = queryElementById.executeQuery();
-            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
-                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
-                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
-        } catch (SQLException e) {
-            showMessage(queryElementById, e.getMessage());
-            return null;
-        }
-    }
-
-    public Element elementByName(String elementName) {
-        try {
-            queryElementByName.setString(1, elementName);
-            ResultSet resultSet = queryElementByName.executeQuery();
-            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
-                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
-                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
-        } catch (SQLException e) {
-            showMessage(queryElementByName, e.getMessage());
-            return null;
-        }
-    }
-
-    public Element element(int id) {
-        try {
-            queryElementById.setInt(1, id);
-            ResultSet resultSet = queryElementById.executeQuery();
-            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
-                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
-                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
-        } catch (SQLException e) {
-            showMessage(queryElementById, e.getMessage());
-            return null;
-        }
-    }
-
-    public Element element(String elementName) {
-        try {
-            queryElementByName.setString(1, elementName);
-            ResultSet resultSet = queryElementByName.executeQuery();
-            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
-                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
-                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
-        } catch (SQLException e) {
-            showMessage(queryElementByName, e.getMessage());
-            return null;
-        }
-    }
+//    public Element elementById(int id) {
+//        try {
+//            queryElementById.setInt(1, id);
+//            ResultSet resultSet = queryElementById.executeQuery();
+//            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+//                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+//                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+//        } catch (SQLException e) {
+//            showMessage(queryElementById, e.getMessage());
+//            return null;
+//        }
+//    }
+//
+//    public Element elementByName(String elementName) {
+//        try {
+//            queryElementByName.setString(1, elementName);
+//            ResultSet resultSet = queryElementByName.executeQuery();
+//            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+//                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+//                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+//        } catch (SQLException e) {
+//            showMessage(queryElementByName, e.getMessage());
+//            return null;
+//        }
+//    }
+//
+//    public Element element(int id) {
+//        try {
+//            queryElementById.setInt(1, id);
+//            ResultSet resultSet = queryElementById.executeQuery();
+//            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+//                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+//                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+//        } catch (SQLException e) {
+//            showMessage(queryElementById, e.getMessage());
+//            return null;
+//        }
+//    }
+//
+//    public Element element(String elementName) {
+//        try {
+//            queryElementByName.setString(1, elementName);
+//            ResultSet resultSet = queryElementByName.executeQuery();
+//            return new Element(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)),
+//                    lengthById(resultSet.getInt(4)), lengthById(resultSet.getInt(5)), anchorById(resultSet.getInt(6)),
+//                    textStyleById(resultSet.getInt(7)), lineStyleById(resultSet.getInt(8)), areaStyleById(resultSet.getInt(9)));
+//        } catch (SQLException e) {
+//            showMessage(queryElementByName, e.getMessage());
+//            return null;
+//        }
+//    }
 
 
     public Address addressById(int id) {
@@ -722,16 +722,16 @@ public class Datasource {
         }
     }
 
-    public Line lineById(int id) {
-        try {
-            queryLineById.setInt(1, id);
-            ResultSet resultSet = queryLineById.executeQuery();
-            return new Line(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)), lengthById(resultSet.getInt(4)), lineStyleById(resultSet.getInt(5)));
-        } catch (SQLException e) {
-            showMessage(queryLineById, e.getMessage());
-            return null;
-        }
-    }
+//    public Line lineById(int id) {
+//        try {
+//            queryLineById.setInt(1, id);
+//            ResultSet resultSet = queryLineById.executeQuery();
+//            return new Line(resultSet.getInt(1), resultSet.getString(2), positionById(resultSet.getInt(3)), lengthById(resultSet.getInt(4)), lineStyleById(resultSet.getInt(5)));
+//        } catch (SQLException e) {
+//            showMessage(queryLineById, e.getMessage());
+//            return null;
+//        }
+//    }
 
 
     private void rollback(Exception e, String messageText) {

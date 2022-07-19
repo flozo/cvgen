@@ -4,10 +4,12 @@ public class LineCap {
 
     private int id;
     private String name;
+    private String value;
 
-    public LineCap(int id, String name) {
+    public LineCap(int id, String name, String value) {
         this.id = id;
         this.name = name;
+        this.value = value;
     }
 
     public int getId() {
@@ -26,11 +28,20 @@ public class LineCap {
         this.name = name;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
     @Override
     public String toString() {
         return "LineCap{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", value='" + value + '\'' +
                 '}';
     }
 }
