@@ -1,7 +1,9 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.content.Address;
-import de.flozo.db.*;
+import de.flozo.common.appearance.Length;
+import de.flozo.db.Datasource2;
+import de.flozo.db.LengthDAO;
+import de.flozo.db.LengthDAOImpl;
 
 public class Main {
 
@@ -10,17 +12,16 @@ public class Main {
 
         try {
 
-            AddressDAO addressDAO = new AddressDAOImpl();
-
-            addressDAO.showMetadata();
-            System.out.println(addressDAO.getCount());
-            System.out.println(addressDAO.get(1));
-
-
-
-            for (Address address : addressDAO.getAll()) {
-                System.out.println(address);
-            }
+//            AddressDAO addressDAO = new AddressDAOImpl();
+//
+//            addressDAO.showMetadata();
+//            System.out.println(addressDAO.getCount());
+//            System.out.println(addressDAO.get(1));
+//
+//
+//            for (Address address : addressDAO.getAll()) {
+//                System.out.println(address);
+//            }
 
 //            Address address = addressDAO.get(4);
 //            System.out.println(address);
@@ -30,11 +31,16 @@ public class Main {
 //            Address address = new Address(0,"new person", "Prof.","John", "", "Smith", "Main street", "1", "23570", "City", "Country",
 //                    "1357924680", "09876", "address@mail.com", "www.test.org");
 //            addressDAO.add(address);
-            Address address1 = addressDAO.get(3);
-            address1.setLastName("Fisher");
-            addressDAO.update(address1);
-            AnchorDAO anchorDAO = new AnchorDAOImpl();
-            System.out.println(anchorDAO.get("center"));
+
+            LengthDAO lengthDAO = new LengthDAOImpl();
+            System.out.println(lengthDAO.get("sender_y"));
+//            Length newLength = new Length(0, "my_length", 50.55, new LengthUnit(4, "centimeter", "cm"));
+//            lengthDAO.add(newLength);
+//            Length myLength = lengthDAO.get("my_length");
+//            lengthDAO.delete(myLength);
+            for (Length length : lengthDAO.getAll()) {
+                System.out.println(length);
+            }
 
 
         } finally {
