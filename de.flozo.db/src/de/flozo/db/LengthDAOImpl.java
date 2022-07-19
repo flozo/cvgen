@@ -10,12 +10,17 @@ import java.util.List;
 public class LengthDAOImpl implements LengthDAO {
 
 
-    // content
+    // table
     public static final String TABLE_NAME = "lengths";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_VALUE = "value";
     public static final String COLUMN_LENGTH_UNIT_ID = "length_unit_id";
+
+    // view (read only)
+    public static final String VIEW_NAME = "length_view";
+    public static final String VIEW_COLUMN_ID = "length_id";
+    public static final String VIEW_COLUMN_NAME = "length_name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -36,16 +41,16 @@ public class LengthDAOImpl implements LengthDAO {
 
 
     // query
-//    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-//    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
-//    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
-    public static final String QUERY_BY_ID_RESOLVE_FOREIGN_KEYS = SELECT + "lengths._id, lengths.name, lengths.value, length_units._id, length_units.name, length_units.value " + FROM +
-            TABLE_NAME + INNER_JOIN + "length_units on lengths.length_unit_id = length_units._id where lengths._id" + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER_RESOLVE_FOREIGN_KEYS = SELECT + "lengths._id, lengths.name, lengths.value, length_units._id, length_units.name, length_units.value " + FROM +
-            TABLE_NAME + INNER_JOIN + "length_units on lengths.length_unit_id = length_units._id where lengths.name" + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL_RESOLVE_FOREIGN_KEYS = SELECT + "lengths._id, lengths.name, lengths.value, length_units._id, length_units.name, length_units.value " + FROM +
-            TABLE_NAME + INNER_JOIN + "length_units on lengths.length_unit_id = length_units._id";
+    // length_view created via:
+
+    // CREATE VIEW length_view AS SELECT l._id AS length_id, l.name AS length_name, l.value AS length_value,
+    //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
+    // FROM lengths as l
+    // INNER JOIN length_units AS lu ON l.length_unit_id = lu._id
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
 
     // insert
@@ -62,8 +67,6 @@ public class LengthDAOImpl implements LengthDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-//    private final Connection connection = Datasource3.getInstance().getConnection();
-//    private static final Connection connection = Datasource3.getInstance().getConnection();
 
     private final Datasource2 datasource2;
     private final Connection connection;
@@ -75,7 +78,7 @@ public class LengthDAOImpl implements LengthDAO {
 
     @Override
     public Length get(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID_RESOLVE_FOREIGN_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -92,7 +95,7 @@ public class LengthDAOImpl implements LengthDAO {
 
     @Override
     public Length get(String specifier) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER_RESOLVE_FOREIGN_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -110,7 +113,7 @@ public class LengthDAOImpl implements LengthDAO {
     @Override
     public List<Length> getAll() {
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(QUERY_ALL_RESOLVE_FOREIGN_KEYS)) {
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<Length> lengths = new ArrayList<>();
             while (resultSet.next()) {
                 lengths.add(extractFromResultSet(resultSet));

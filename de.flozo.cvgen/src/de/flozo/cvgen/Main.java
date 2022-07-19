@@ -25,6 +25,7 @@ public class Main {
 //            System.out.println(position);
 
             LengthDAO lengthDAO = new LengthDAOImpl(datasource2, connection);
+            System.out.println(lengthDAO.get("marks_x"));
             Length newLength = lengthDAO.get("sender_width");
 //            position.setLengthX(newLength);
 
