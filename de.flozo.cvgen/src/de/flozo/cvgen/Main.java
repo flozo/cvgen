@@ -1,9 +1,9 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.Length;
+import de.flozo.common.appearance.LengthUnit;
 import de.flozo.db.Datasource2;
-import de.flozo.db.LengthDAO;
-import de.flozo.db.LengthDAOImpl;
+import de.flozo.db.LengthUnitDAO;
+import de.flozo.db.LengthUnitDAOImpl;
 
 public class Main {
 
@@ -32,14 +32,13 @@ public class Main {
 //                    "1357924680", "09876", "address@mail.com", "www.test.org");
 //            addressDAO.add(address);
 
-            LengthDAO lengthDAO = new LengthDAOImpl();
-            System.out.println(lengthDAO.get("sender_y"));
+            LengthUnitDAO lengthUnitDAO = new LengthUnitDAOImpl();
 //            Length newLength = new Length(0, "my_length", 50.55, new LengthUnit(4, "centimeter", "cm"));
 //            lengthDAO.add(newLength);
 //            Length myLength = lengthDAO.get("my_length");
 //            lengthDAO.delete(myLength);
-            for (Length length : lengthDAO.getAll()) {
-                System.out.println(length);
+            for (LengthUnit lengthUnit : lengthUnitDAO.getAll()) {
+                System.out.println(lengthUnit);
             }
 
 
