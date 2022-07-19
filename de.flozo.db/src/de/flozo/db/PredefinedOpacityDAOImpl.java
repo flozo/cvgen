@@ -27,9 +27,10 @@ public class PredefinedOpacityDAOImpl implements PredefinedOpacityDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
-    private Connection connection = Datasource2.INSTANCE.getConnection();
+    private final Connection connection;
 
-    public PredefinedOpacityDAOImpl() {
+    public PredefinedOpacityDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override

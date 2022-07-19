@@ -1,17 +1,17 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.LengthUnit;
+import de.flozo.common.appearance.TextFormat;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LengthUnitDAOImpl implements LengthUnitDAO {
+public class TextFormatDAOImpl implements TextFormatDAO {
 
     // content
-    public static final String TABLE_NAME = "length_units";
+    public static final String TABLE_NAME = "text_formats";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_VALUE = "value";
 
     // sql
     public static final char QUESTION_MARK = '?';
@@ -23,17 +23,18 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
 
     // query
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_VALUE + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
+
 
     private final Connection connection;
 
-    public LengthUnitDAOImpl(Connection connection) {
+    public TextFormatDAOImpl(Connection connection) {
         this.connection = connection;
     }
 
     @Override
-    public LengthUnit get(int id) {
+    public TextFormat get(int id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -50,7 +51,7 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
     }
 
     @Override
-    public LengthUnit get(String specifier) {
+    public TextFormat get(String specifier) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -67,27 +68,27 @@ public class LengthUnitDAOImpl implements LengthUnitDAO {
     }
 
     @Override
-    public List<LengthUnit> getAll() {
+    public List<TextFormat> getAll() {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<LengthUnit> lengthUnits = new ArrayList<>();
+            List<TextFormat> textFormats = new ArrayList<>();
             while (resultSet.next()) {
-                lengthUnits.add(extractFromResultSet(resultSet));
+                textFormats.add(extractFromResultSet(resultSet));
             }
-            return lengthUnits;
+            return textFormats;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
     }
 
-    private LengthUnit extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new LengthUnit(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+    private TextFormat extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new TextFormat(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
     }
 
     @Override
     public String toString() {
-        return "LengthUnitDAOImpl{" +
+        return "TextFormatDAOImpl{" +
                 "connection=" + connection +
                 '}';
     }

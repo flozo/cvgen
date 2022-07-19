@@ -1,49 +1,47 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.PredefinedLineWidth;
-import de.flozo.db.Datasource2;
-import de.flozo.db.PredefinedLineWidthDAO;
-import de.flozo.db.PredefinedLineWidthDAOImpl;
+import de.flozo.common.appearance.Length;
+import de.flozo.common.appearance.Position;
+import de.flozo.db.*;
+
+import java.sql.Connection;
+
 
 public class Main {
 
     public static void main(String[] args) {
 
 
+//    Datasource2.INSTANCE.getConnection();
+
+        Datasource2 datasource2 = Datasource2.INSTANCE;
+        Connection connection = datasource2.getConnection();
+
         try {
 
-//            AddressDAO addressDAO = new AddressDAOImpl();
+
+            PositionDAO positionDAO = new PositionDAOImpl(datasource2, connection);
+//            Position position = positionDAO.get("new position");
+//            System.out.println(position);
+
+            LengthDAO lengthDAO = new LengthDAOImpl(datasource2, connection);
+            Length newLength = lengthDAO.get("sender_width");
+//            position.setLengthX(newLength);
+
+
+//            positionDAO.update(position);"
+
+            Position newPosition = positionDAO.get("sender5");
+//            newPosition.setName("sender5");
+
+
+            newPosition.setLengthY(newLength);
 //
-//            addressDAO.showMetadata();
-//            System.out.println(addressDAO.getCount());
-//            System.out.println(addressDAO.get(1));
-//
-//
-//            for (Address address : addressDAO.getAll()) {
-//                System.out.println(address);
-//            }
-
-//            Address address = addressDAO.get(4);
-//            System.out.println(address);
-//            addressDAO.delete(address);
-
-
-//            Address address = new Address(0,"new person", "Prof.","John", "", "Smith", "Main street", "1", "23570", "City", "Country",
-//                    "1357924680", "09876", "address@mail.com", "www.test.org");
-//            addressDAO.add(address);
-
-            PredefinedLineWidthDAO dashPatternDAO = new PredefinedLineWidthDAOImpl();
-//            Length newLength = new Length(0, "my_length", 50.55, new LengthUnit(4, "centimeter", "cm"));
-//            lengthDAO.add(newLength);
-//            Length myLength = lengthDAO.get("my_length");
-//            lengthDAO.delete(myLength);
-            for (PredefinedLineWidth dashPattern : dashPatternDAO.getAll()) {
-                System.out.println(dashPattern);
-            }
+            positionDAO.update(newPosition);
 
 
         } finally {
-            Datasource2.INSTANCE.closeConnection();
+            datasource2.closeConnection();
         }
 
     }

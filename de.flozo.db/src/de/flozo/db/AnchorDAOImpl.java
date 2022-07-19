@@ -27,10 +27,11 @@ public class AnchorDAOImpl implements AnchorDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
-    private Connection connection = Datasource2.INSTANCE.getConnection();
+    private final Connection connection;
 
 
-    public AnchorDAOImpl() {
+    public AnchorDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override

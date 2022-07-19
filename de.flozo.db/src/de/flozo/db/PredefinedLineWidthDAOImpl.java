@@ -27,10 +27,11 @@ public class PredefinedLineWidthDAOImpl implements PredefinedLineWidthDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
-    private Connection connection = Datasource2.INSTANCE.getConnection();
+    private final Connection connection;
 
 
-    public PredefinedLineWidthDAOImpl() {
+    public PredefinedLineWidthDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
@@ -86,4 +87,10 @@ public class PredefinedLineWidthDAOImpl implements PredefinedLineWidthDAO {
         return new PredefinedLineWidth(resultSet.getInt(1), resultSet.getString(2));
     }
 
+    @Override
+    public String toString() {
+        return "PredefinedLineWidthDAOImpl{" +
+                "connection=" + connection +
+                '}';
+    }
 }

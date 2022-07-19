@@ -27,9 +27,10 @@ public class LineJoinDAOImpl implements LineJoinDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
 
-    private Connection connection = Datasource2.INSTANCE.getConnection();
+    private final Connection connection;
 
-    public LineJoinDAOImpl() {
+    public LineJoinDAOImpl(Connection connection) {
+        this.connection = connection;
     }
 
     @Override

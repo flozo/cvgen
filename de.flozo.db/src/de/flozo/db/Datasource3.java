@@ -2,10 +2,7 @@ package de.flozo.db;
 
 import java.sql.*;
 
-public enum Datasource2 {
-
-    INSTANCE;
-
+public class Datasource3 {
 
     // database
     public static final String DB_NAME = "properties.db";
@@ -14,8 +11,16 @@ public enum Datasource2 {
 
     private static final String CONNECTION_STRING = CONNECTION_STRING_PREFIX + RESOURCE_FOLDER + DB_NAME;
 
-    private Connection connection;
+    private static Connection connection;
 
+    private static final Datasource3 INSTANCE = new Datasource3();
+
+    private Datasource3() {
+    }
+
+    public static Datasource3 getInstance() {
+        return INSTANCE;
+    }
 
     public Connection getConnection() {
         System.out.print("[database] Connecting to database \"" + CONNECTION_STRING + "\" ...");
@@ -102,11 +107,4 @@ public enum Datasource2 {
     }
 
 
-    @Override
-    public String toString() {
-        return "Datasource2{" +
-                "connectionString='" + CONNECTION_STRING + '\'' +
-                ", connection=" + connection +
-                '}';
-    }
 }
