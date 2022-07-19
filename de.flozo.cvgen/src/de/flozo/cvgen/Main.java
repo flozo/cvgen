@@ -1,9 +1,9 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.LineJoin;
+import de.flozo.common.appearance.DashPattern;
+import de.flozo.db.DashPatternDAO;
+import de.flozo.db.DashPatternDAOImpl;
 import de.flozo.db.Datasource2;
-import de.flozo.db.LineJoinDAO;
-import de.flozo.db.LineJoinDAOImpl;
 
 public class Main {
 
@@ -32,13 +32,13 @@ public class Main {
 //                    "1357924680", "09876", "address@mail.com", "www.test.org");
 //            addressDAO.add(address);
 
-            LineJoinDAO lengthUnitDAO = new LineJoinDAOImpl();
+            DashPatternDAO dashPatternDAO = new DashPatternDAOImpl();
 //            Length newLength = new Length(0, "my_length", 50.55, new LengthUnit(4, "centimeter", "cm"));
 //            lengthDAO.add(newLength);
 //            Length myLength = lengthDAO.get("my_length");
 //            lengthDAO.delete(myLength);
-            for (LineJoin lengthUnit : lengthUnitDAO.getAll()) {
-                System.out.println(lengthUnit);
+            for (DashPattern dashPattern : dashPatternDAO.getAll()) {
+                System.out.println(dashPattern);
             }
 
 
