@@ -192,8 +192,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
 
     private TextStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new TextStyle(resultSet.getInt(1), resultSet.getString(2),
-                new FontSize(resultSet.getInt(3), resultSet.getString(4),resultSet.getString(5)),
-                new TextFormat(resultSet.getInt(6),resultSet.getString(7), resultSet.getString(8)),
+                new FontSize(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)),
+                new TextFormat(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8)),
                 new BaseColor(resultSet.getInt(9), resultSet.getString(10)),
                 new PredefinedOpacity(resultSet.getInt(11), resultSet.getString(12))
         );
@@ -203,7 +203,7 @@ public class TextStyleDAOImpl implements TextStyleDAO {
         preparedStatement.setString(1, textStyle.getName());
         preparedStatement.setInt(2, textStyle.getFontSize().getId());
         preparedStatement.setInt(3, textStyle.getTextFormat().getId());
-        preparedStatement.setInt(4,textStyle.getOpacity().getId());
+        preparedStatement.setInt(4, textStyle.getOpacity().getId());
     }
 
     @Override

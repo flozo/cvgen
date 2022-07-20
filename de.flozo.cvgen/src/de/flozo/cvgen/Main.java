@@ -18,8 +18,8 @@ public class Main {
         try {
 
 
-            LineWidthDAO textStyleDAO = new LineWidthDAOImpl(datasource2, connection);
-            System.out.println(textStyleDAO.get("marks"));
+            LineStyleDAO lineStyleDAO = new LineStyleDAOImpl(datasource2, connection);
+            System.out.println(lineStyleDAO.get("marks"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 
