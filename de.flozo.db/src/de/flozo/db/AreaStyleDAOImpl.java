@@ -40,13 +40,13 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
 
     // area_style_view created via:
 
-    // CREATE VIEW area_style_view AS
-    // SELECT ast._id, ast.name,
-    //   c._id AS color_id, c.name AS color_name,
-    //   o._id AS opacity_id, o.value AS opacity_value
-    // FROM area_styles AS ast
-    // INNER JOIN base_colors AS c ON ast.color_id = c._id
-    // INNER JOIN predefined_opacities AS o ON ast.opacity_id = o._id
+//     CREATE VIEW area_style_view AS
+//     SELECT ast._id, ast.name,
+//       c._id AS color_id, c.name AS color_name,
+//       o._id AS opacity_id, o.value AS opacity_value
+//     FROM area_styles AS ast
+//     INNER JOIN base_colors AS c ON ast.color_id = c._id
+//     INNER JOIN predefined_opacities AS o ON ast.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;

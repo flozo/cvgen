@@ -41,23 +41,24 @@ public class LineWidthDAOImpl implements LineWidthDAO {
 
     // line_width_view created via:
 
-    // CREATE VIEW line_width_view AS
-    // SELECT lw._id, lw.name, lw.value,
-    //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
-    // FROM line_widths AS lw
-    // INNER JOIN length_units AS lu ON lw.length_unit_id = lu._id
+//     CREATE VIEW line_width_view AS
+//     SELECT lw._id, lw.name, lw.value,
+//       lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
+//     FROM line_widths AS lw
+//     INNER JOIN length_units AS lu ON lw.length_unit_id = lu._id
 
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
+    public static final int NON_ID_COLUMNS = 3;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_VALUE + COMMA +
             COLUMN_LENGTH_UNIT_ID +
-            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(2) + CLOSING_PARENTHESIS;
+            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
@@ -65,7 +66,7 @@ public class LineWidthDAOImpl implements LineWidthDAO {
             COLUMN_VALUE + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_LENGTH_UNIT_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final int UPDATE_WHERE_POSITION = 4;
+    public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
 
     // delete

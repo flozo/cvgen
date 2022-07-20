@@ -19,8 +19,8 @@ public class LengthDAOImpl implements LengthDAO {
 
     // view (read only)
     public static final String VIEW_NAME = "length_view";
-    public static final String VIEW_COLUMN_ID = "length_id";
-    public static final String VIEW_COLUMN_NAME = "length_name";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -44,7 +44,7 @@ public class LengthDAOImpl implements LengthDAO {
     // length_view created via:
 
     // CREATE VIEW length_view AS
-    // SELECT l._id AS length_id, l.name AS length_name, l.value AS length_value,
+    // SELECT l._id, l.name, l.value,
     //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
     // FROM lengths as l
     // INNER JOIN length_units AS lu ON l.length_unit_id = lu._id

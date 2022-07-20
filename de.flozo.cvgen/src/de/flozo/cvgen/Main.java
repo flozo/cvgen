@@ -18,8 +18,8 @@ public class Main {
         try {
 
 
-            AreaStyleDAO areaStyleDAO = new AreaStyleDAOImpl(datasource2, connection);
-            System.out.println(areaStyleDAO.get("default"));
+            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
+            System.out.println(elementDAO.get("sender_field"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 

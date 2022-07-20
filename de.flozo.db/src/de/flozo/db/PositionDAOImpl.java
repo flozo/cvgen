@@ -20,8 +20,8 @@ public class PositionDAOImpl implements PositionDAO {
 
     // view (read only)
     public static final String VIEW_NAME = "position_view";
-    public static final String VIEW_COLUMN_ID = "position_id";
-    public static final String VIEW_COLUMN_NAME = "position_name";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -43,15 +43,15 @@ public class PositionDAOImpl implements PositionDAO {
 
     // position_view created via:
 
-    // CREATE VIEW position_view AS
-    // SELECT p._id AS position_id, p.name AS position_name,
-    //   lx._id AS x_length_id, lx.name AS x_length_name, lx.value AS x_length_value, lux._id AS x_length_unit_id, lux.name AS x_length_unit_name, lux.value AS x_length_unit_value,
-    //   ly._id AS y_length_id, ly.name AS y_length_name, ly.value AS y_length_value, luy._id AS y_length_unit_id, luy.name AS y_length_unit_name, luy.value AS y_length_unit_value
-    // FROM positions AS p
-    // INNER JOIN lengths AS lx ON p.x_length_id = lx._id
-    // INNER JOIN lengths AS ly ON p.y_length_id = ly._id
-    // INNER JOIN length_units AS lux ON lx.length_unit_id = lux._id
-    // INNER JOIN length_units AS luy ON ly.length_unit_id = luy._id;
+//     CREATE VIEW position_view AS
+//     SELECT p._id, p.name,
+//       lx._id AS x_length_id, lx.name AS x_length_name, lx.value AS x_length_value, lux._id AS x_length_unit_id, lux.name AS x_length_unit_name, lux.value AS x_length_unit_value,
+//       ly._id AS y_length_id, ly.name AS y_length_name, ly.value AS y_length_value, luy._id AS y_length_unit_id, luy.name AS y_length_unit_name, luy.value AS y_length_unit_value
+//     FROM positions AS p
+//     INNER JOIN lengths AS lx ON p.x_length_id = lx._id
+//     INNER JOIN lengths AS ly ON p.y_length_id = ly._id
+//     INNER JOIN length_units AS lux ON lx.length_unit_id = lux._id
+//     INNER JOIN length_units AS luy ON ly.length_unit_id = luy._id;
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
