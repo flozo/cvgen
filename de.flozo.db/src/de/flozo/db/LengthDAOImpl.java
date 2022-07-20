@@ -37,14 +37,14 @@ public class LengthDAOImpl implements LengthDAO {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
-    public static final String INNER_JOIN = " INNER JOIN ";
 
 
     // query
 
     // length_view created via:
 
-    // CREATE VIEW length_view AS SELECT l._id AS length_id, l.name AS length_name, l.value AS length_value,
+    // CREATE VIEW length_view AS
+    // SELECT l._id AS length_id, l.name AS length_name, l.value AS length_value,
     //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
     // FROM lengths as l
     // INNER JOIN length_units AS lu ON l.length_unit_id = lu._id
@@ -69,9 +69,9 @@ public class LengthDAOImpl implements LengthDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-
     private final Datasource2 datasource2;
     private final Connection connection;
+
 
     public LengthDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;

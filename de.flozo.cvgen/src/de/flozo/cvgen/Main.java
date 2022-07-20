@@ -1,8 +1,6 @@
 package de.flozo.cvgen;
 
-import de.flozo.db.Datasource2;
-import de.flozo.db.TextStyleDAO;
-import de.flozo.db.TextStyleDAOImpl;
+import de.flozo.db.*;
 
 import java.sql.Connection;
 
@@ -20,8 +18,8 @@ public class Main {
         try {
 
 
-            TextStyleDAO textStyleDAO = new TextStyleDAOImpl(datasource2, connection);
-            System.out.println(textStyleDAO.get("backaddress"));
+            LineWidthDAO textStyleDAO = new LineWidthDAOImpl(datasource2, connection);
+            System.out.println(textStyleDAO.get("marks"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 

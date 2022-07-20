@@ -64,6 +64,7 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_PHONE_NUMBER + EQUALS + QUESTION_MARK + COMMA + COLUMN_MOBILE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA + COLUMN_WEB_PAGE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final int UPDATE_WHERE_POSITION = 15;
 
     // count
     public static final String COUNT = SELECT + "count(*) AS count" + FROM + TABLE_NAME;
@@ -211,7 +212,7 @@ public class AddressDAOImpl implements AddressDAO {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(15, address.getId());
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, address.getId());
             setAllValues(preparedStatement, address);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
