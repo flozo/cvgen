@@ -18,8 +18,8 @@ public class Main {
         try {
 
 
-            LineStyleDAO lineStyleDAO = new LineStyleDAOImpl(datasource2, connection);
-            System.out.println(lineStyleDAO.get("marks"));
+            AreaStyleDAO areaStyleDAO = new AreaStyleDAOImpl(datasource2, connection);
+            System.out.println(areaStyleDAO.get("default"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 

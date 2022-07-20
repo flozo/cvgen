@@ -6,21 +6,17 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LineStyleDAOImpl implements LineStyleDAO {
+public class AreaStyleDAOImpl implements AreaStyleDAO {
 
     // table
-    public static final String TABLE_NAME = "line_styles";
+    public static final String TABLE_NAME = "area_styles";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_LINE_WIDTH_ID = "line_width_id";
-    public static final String COLUMN_LINE_CAP_ID = "line_cap_id";
-    public static final String COLUMN_LINE_JOIN_ID = "line_join_id";
-    public static final String COLUMN_DASH_PATTERN_ID = "dash_pattern_id";
     public static final String COLUMN_COLOR_ID = "color_id";
     public static final String COLUMN_OPACITY_ID = "opacity_id";
 
     // view (read only)
-    public static final String VIEW_NAME = "line_style_view";
+    public static final String VIEW_NAME = "area_style_view";
     public static final String VIEW_COLUMN_ID = "_id";
     public static final String VIEW_COLUMN_NAME = "name";
 
@@ -42,36 +38,24 @@ public class LineStyleDAOImpl implements LineStyleDAO {
 
     // query
 
-    // line_style_view created via:
+    // area_style_view created via:
 
-    // CREATE VIEW line_style_view AS
-    // SELECT ls._id, ls.name,
-    //   lwv._id AS line_width_id, lwv.name AS line_width_name, lwv.value AS line_width_value, lwv.length_unit_id AS line_width_unit_id, lwv.length_unit_name AS line_width_unit_name, lwv.length_unit_value AS line_width_unit_value,
-    //   lc._id AS line_cap_id, lc.name AS line_cap_name, lc.value AS line_cap_value,
-    //   lj._id AS line_join_id, lj.name AS line_join_name, lj.value AS line_join_value,
-    //   dp._id AS dash_pattern_id, dp.name AS dash_pattern_name,
+    // CREATE VIEW area_style_view AS
+    // SELECT ast._id, ast.name,
     //   c._id AS color_id, c.name AS color_name,
-    //   o._id AS opacity_id, o.value AS opacity_name
-    // FROM line_styles AS ls
-    // INNER JOIN line_width_view AS lwv ON ls.line_width_id = lwv._id
-    // INNER JOIN line_caps AS lc ON ls.line_cap_id = lc._id
-    // INNER JOIN line_joins AS lj ON ls.line_join_id = lj._id
-    // INNER JOIN dash_patterns AS dp ON ls.dash_pattern_id = dp._id
-    // INNER JOIN base_colors AS c ON ls.color_id = c._id
-    // INNER JOIN predefined_opacities AS o ON ls.opacity_id = o._id
+    //   o._id AS opacity_id, o.value AS opacity_value
+    // FROM area_styles AS ast
+    // INNER JOIN base_colors AS c ON ast.color_id = c._id
+    // INNER JOIN predefined_opacities AS o ON ast.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 7;
+    public static final int NON_ID_COLUMNS = 3;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
-            COLUMN_LINE_WIDTH_ID + COMMA +
-            COLUMN_LINE_CAP_ID + COMMA +
-            COLUMN_LINE_JOIN_ID + COMMA +
-            COLUMN_DASH_PATTERN_ID + COMMA +
             COLUMN_COLOR_ID + COMMA +
             COLUMN_OPACITY_ID +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
@@ -79,10 +63,6 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LINE_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LINE_CAP_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LINE_JOIN_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_DASH_PATTERN_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
@@ -91,17 +71,18 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
+
     private final Datasource2 datasource2;
     private final Connection connection;
 
 
-    public LineStyleDAOImpl(Datasource2 datasource2, Connection connection) {
+    public AreaStyleDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;
         this.connection = connection;
     }
 
     @Override
-    public LineStyle get(int id) {
+    public AreaStyle get(int id) {
         System.out.println("[database] Executing SQL statement \"" + QUERY_BY_ID + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
@@ -119,7 +100,7 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     }
 
     @Override
-    public LineStyle get(String specifier) {
+    public AreaStyle get(String specifier) {
         System.out.println("[database] Executing SQL statement \"" + QUERY_BY_SPECIFIER + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
@@ -137,16 +118,16 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     }
 
     @Override
-    public List<LineStyle> getAll() {
+    public List<AreaStyle> getAll() {
         System.out.print("[database] Executing SQL statement \"" + QUERY_ALL + "\" ...");
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<LineStyle> lineStyles = new ArrayList<>();
+            List<AreaStyle> areaStyles = new ArrayList<>();
             while (resultSet.next()) {
-                lineStyles.add(extractFromResultSet(resultSet));
+                areaStyles.add(extractFromResultSet(resultSet));
             }
             System.out.println(" done!");
-            return lineStyles;
+            return areaStyles;
         } catch (SQLException e) {
             System.out.println();
             System.out.println("Query failed: " + e.getMessage());
@@ -155,12 +136,12 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     }
 
     @Override
-    public void add(LineStyle lineStyle) {
+    public void add(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
-            setAllValues(preparedStatement, lineStyle);
+            setAllValues(preparedStatement, areaStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -170,20 +151,20 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-lineStyle");
+            datasource2.rollback(e, "Insert-areaStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void update(LineStyle lineStyle) {
+    public void update(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(UPDATE_WHERE_POSITION, lineStyle.getId());
-            setAllValues(preparedStatement, lineStyle);
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, areaStyle.getId());
+            setAllValues(preparedStatement, areaStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -193,19 +174,19 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-lineStyle");
+            datasource2.rollback(e, "Update-areaStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void delete(LineStyle lineStyle) {
+    public void delete(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, lineStyle.getId());
+            preparedStatement.setInt(1, areaStyle.getId());
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -215,37 +196,28 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-lineStyle");
+            datasource2.rollback(e, "Delete-areaStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
-    private LineStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new LineStyle(resultSet.getInt(1), resultSet.getString(2),
-                new LineWidth(resultSet.getInt(3), resultSet.getString(4), resultSet.getDouble(5),
-                        new LengthUnit(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8))),
-                new LineCap(resultSet.getInt(9), resultSet.getString(10), resultSet.getString(11)),
-                new LineJoin(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14)),
-                new DashPattern(resultSet.getInt(15), resultSet.getString(16)),
-                new BaseColor(resultSet.getInt(17), resultSet.getString(18)),
-                new PredefinedOpacity(resultSet.getInt(19), resultSet.getString(20))
+    private AreaStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new AreaStyle(resultSet.getInt(1), resultSet.getString(2),
+                new BaseColor(resultSet.getInt(3), resultSet.getString(4)),
+                new PredefinedOpacity(resultSet.getInt(5), resultSet.getString(6))
         );
     }
 
-    private void setAllValues(PreparedStatement preparedStatement, LineStyle lineStyle) throws SQLException {
-        preparedStatement.setString(1, lineStyle.getName());
-        preparedStatement.setInt(2, lineStyle.getLineWidth().getId());
-        preparedStatement.setInt(3, lineStyle.getLineCap().getId());
-        preparedStatement.setInt(4, lineStyle.getLineJoin().getId());
-        preparedStatement.setInt(5, lineStyle.getDashPattern().getId());
-        preparedStatement.setInt(6, lineStyle.getBaseColor().getId());
-        preparedStatement.setInt(7, lineStyle.getOpacity().getId());
+    private void setAllValues(PreparedStatement preparedStatement, AreaStyle areaStyle) throws SQLException {
+        preparedStatement.setString(1, areaStyle.getName());
+        preparedStatement.setInt(2, areaStyle.getColor().getId());
+        preparedStatement.setInt(3, areaStyle.getOpacity().getId());
     }
 
     @Override
     public String toString() {
-        return "LineStyleDAOImpl{" +
+        return "AreaStyleDAOImpl{" +
                 "datasource2=" + datasource2 +
                 ", connection=" + connection +
                 '}';
