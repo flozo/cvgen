@@ -1,10 +1,5 @@
 package de.flozo.common.appearance;
 
-import de.flozo.common.appearance.BaseColor;
-import de.flozo.common.appearance.FontSize;
-import de.flozo.common.appearance.PredefinedOpacity;
-import de.flozo.common.appearance.TextFormat;
-
 public class TextStyle {
 
     private int id;

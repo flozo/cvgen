@@ -1,7 +1,5 @@
 package de.flozo.common.appearance;
 
-import de.flozo.common.appearance.LengthUnit;
-
 public class LineWidth {
 
     private int id;

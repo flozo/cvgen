@@ -1,26 +1,26 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.Length;
-import de.flozo.common.appearance.LengthUnit;
+import de.flozo.common.appearance.*;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LengthDAOImpl implements LengthDAO {
-
+public class TextStyleDAOImpl implements TextStyleDAO {
 
     // table
-    public static final String TABLE_NAME = "lengths";
+    public static final String TABLE_NAME = "text_styles";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_VALUE = "value";
-    public static final String COLUMN_LENGTH_UNIT_ID = "length_unit_id";
+    public static final String COLUMN_FONT_SIZE_ID = "font_size_id";
+    public static final String COLUMN_TEXT_FORMAT_ID = "text_format_id";
+    public static final String COLUMN_COLOR_ID = "color_id";
+    public static final String COLUMN_OPACITY_ID = "opacity_id";
 
     // view (read only)
-    public static final String VIEW_NAME = "length_view";
-    public static final String VIEW_COLUMN_ID = "length_id";
-    public static final String VIEW_COLUMN_NAME = "length_name";
+    public static final String VIEW_NAME = "text_style_view";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -42,12 +42,18 @@ public class LengthDAOImpl implements LengthDAO {
 
     // query
 
-    // length_view created via:
+    // text_style_view created via:
 
-    // CREATE VIEW length_view AS SELECT l._id AS length_id, l.name AS length_name, l.value AS length_value,
-    //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
-    // FROM lengths as l
-    // INNER JOIN length_units AS lu ON l.length_unit_id = lu._id
+    // CREATE VIEW text_style_view AS SELECT ts._id, ts.name,
+    // fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
+    // tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
+    // c._id AS color_id, c.name AS color_name,
+    // o._id AS opacity_id, o.value AS opacity_value
+    // FROM text_styles AS ts
+    // INNER JOIN font_sizes AS fs ON ts.font_size_id = fs._id
+    // INNER JOIN text_formats AS tf ON ts.text_format_id = tf._id
+    // INNER JOIN base_colors AS c ON ts.color_id = c._id
+    // INNER JOIN predefined_opacities AS o ON ts.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
@@ -55,31 +61,30 @@ public class LengthDAOImpl implements LengthDAO {
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME +
-            OPENING_PARENTHESIS + COLUMN_NAME + COMMA + COLUMN_VALUE + COMMA + COLUMN_LENGTH_UNIT_ID + CLOSING_PARENTHESIS +
-            VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(2) + CLOSING_PARENTHESIS;
+            OPENING_PARENTHESIS + COLUMN_NAME + COMMA + COLUMN_FONT_SIZE_ID + COMMA + COLUMN_TEXT_FORMAT_ID + COMMA + COLUMN_COLOR_ID + COMMA + COLUMN_OPACITY_ID + CLOSING_PARENTHESIS +
+            VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(4) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
-            COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA + COLUMN_VALUE + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LENGTH_UNIT_ID + EQUALS + QUESTION_MARK + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final int UPDATE_WHERE_POSITION = 4;
-
+            COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA + COLUMN_FONT_SIZE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_TEXT_FORMAT_ID + EQUALS + QUESTION_MARK + COMMA + COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA + COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
+            WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final int UPDATE_WHERE_POSITION = 6;
 
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-
-
     private final Datasource2 datasource2;
     private final Connection connection;
 
-    public LengthDAOImpl(Datasource2 datasource2, Connection connection) {
+
+    public TextStyleDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;
         this.connection = connection;
     }
 
     @Override
-    public Length get(int id) {
+    public TextStyle get(int id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -96,7 +101,7 @@ public class LengthDAOImpl implements LengthDAO {
     }
 
     @Override
-    public Length get(String specifier) {
+    public TextStyle get(String specifier) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -113,14 +118,14 @@ public class LengthDAOImpl implements LengthDAO {
     }
 
     @Override
-    public List<Length> getAll() {
+    public List<TextStyle> getAll() {
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<Length> lengths = new ArrayList<>();
+            List<TextStyle> textStyles = new ArrayList<>();
             while (resultSet.next()) {
-                lengths.add(extractFromResultSet(resultSet));
+                textStyles.add(extractFromResultSet(resultSet));
             }
-            return lengths;
+            return textStyles;
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
@@ -128,11 +133,11 @@ public class LengthDAOImpl implements LengthDAO {
     }
 
     @Override
-    public void add(Length length) {
+    public void add(TextStyle textStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
-            setAllValues(preparedStatement, length);
+            setAllValues(preparedStatement, textStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -140,19 +145,19 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-length");
+            datasource2.rollback(e, "Insert-textStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void update(Length length) {
+    public void update(TextStyle textStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(UPDATE_WHERE_POSITION, length.getId());
-            setAllValues(preparedStatement, length);
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, textStyle.getId());
+            setAllValues(preparedStatement, textStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -160,18 +165,18 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-length");
+            datasource2.rollback(e, "Update-textStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void delete(Length length) {
+    public void delete(TextStyle textStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, length.getId());
+            preparedStatement.setInt(1, textStyle.getId());
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -179,26 +184,31 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-length");
+            datasource2.rollback(e, "Delete-textStyle");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
-    private Length extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Length(resultSet.getInt(1), resultSet.getString(2), resultSet.getDouble(3),
-                new LengthUnit(resultSet.getInt(4), resultSet.getString(5), resultSet.getString(6)));
+    private TextStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new TextStyle(resultSet.getInt(1), resultSet.getString(2),
+                new FontSize(resultSet.getInt(3), resultSet.getString(4),resultSet.getString(5)),
+                new TextFormat(resultSet.getInt(6),resultSet.getString(7), resultSet.getString(8)),
+                new BaseColor(resultSet.getInt(9), resultSet.getString(10)),
+                new PredefinedOpacity(resultSet.getInt(11), resultSet.getString(12))
+        );
     }
 
-    private void setAllValues(PreparedStatement preparedStatement, Length length) throws SQLException {
-        preparedStatement.setString(1, length.getName());
-        preparedStatement.setDouble(2, length.getValue());
-        preparedStatement.setInt(3, length.getUnit().getId());
+    private void setAllValues(PreparedStatement preparedStatement, TextStyle textStyle) throws SQLException {
+        preparedStatement.setString(1, textStyle.getName());
+        preparedStatement.setInt(2, textStyle.getFontSize().getId());
+        preparedStatement.setInt(3, textStyle.getTextFormat().getId());
+        preparedStatement.setInt(4,textStyle.getOpacity().getId());
     }
 
     @Override
     public String toString() {
-        return "LengthDAOImpl{" +
+        return "TextStyleDAOImpl{" +
                 "datasource2=" + datasource2 +
                 ", connection=" + connection +
                 '}';

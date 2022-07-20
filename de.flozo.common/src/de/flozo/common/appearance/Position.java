@@ -1,7 +1,5 @@
 package de.flozo.common.appearance;
 
-import de.flozo.common.appearance.Length;
-
 public class Position {
 
     private int id;

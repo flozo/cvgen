@@ -1,8 +1,8 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.Length;
-import de.flozo.common.appearance.Position;
-import de.flozo.db.*;
+import de.flozo.db.Datasource2;
+import de.flozo.db.TextStyleDAO;
+import de.flozo.db.TextStyleDAOImpl;
 
 import java.sql.Connection;
 
@@ -20,25 +20,26 @@ public class Main {
         try {
 
 
-            PositionDAO positionDAO = new PositionDAOImpl(datasource2, connection);
+            TextStyleDAO textStyleDAO = new TextStyleDAOImpl(datasource2, connection);
+            System.out.println(textStyleDAO.get("backaddress"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 
-            LengthDAO lengthDAO = new LengthDAOImpl(datasource2, connection);
-            System.out.println(lengthDAO.get("marks_x"));
-            Length newLength = lengthDAO.get("sender_width");
+//            LengthDAO lengthDAO = new LengthDAOImpl(datasource2, connection);
+//            System.out.println(lengthDAO.get("marks_x"));
+//            Length newLength = lengthDAO.get("sender_width");
 //            position.setLengthX(newLength);
 
 
 //            positionDAO.update(position);"
 
-            Position newPosition = positionDAO.get("sender5");
+//            Position newPosition = positionDAO.get("sender5");
 //            newPosition.setName("sender5");
 
 
-            newPosition.setLengthY(newLength);
+//            newPosition.setLengthY(newLength);
 //
-            positionDAO.update(newPosition);
+//            positionDAO.update(newPosition);
 
 
         } finally {
