@@ -18,8 +18,8 @@ public class Main {
         try {
 
 
-            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
-            System.out.println(elementDAO.get("sender_field"));
+            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
+            System.out.println(elementStyleDAO.get("sender_field"));
 //            Position position = positionDAO.get("new position");
 //            System.out.println(position);
 

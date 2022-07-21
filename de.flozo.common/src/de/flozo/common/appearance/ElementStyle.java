@@ -1,6 +1,6 @@
 package de.flozo.common.appearance;
 
-public class Element {
+public class ElementStyle {
 
     private int id;
     private String name;
@@ -12,7 +12,7 @@ public class Element {
     private LineStyle lineStyle;
     private AreaStyle areaStyle;
 
-    public Element(int id, String name, Position position, Length width, Length height, Anchor anchor, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
+    public ElementStyle(int id, String name, Position position, Length width, Length height, Anchor anchor, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -98,7 +98,7 @@ public class Element {
 
     @Override
     public String toString() {
-        return "Element{" +
+        return "ElementStyle{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", position=" + position +

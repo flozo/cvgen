@@ -1,6 +1,6 @@
 File info:
 This is the config file for the letter fonts.
-It specifies the font sizes in all letter elements.
+It specifies the font sizes in all letter elementStyles.
 
 Format info:
 Please note also the general format info in "master.config".

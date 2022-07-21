@@ -1,6 +1,6 @@
 File info:
 This is the config file for the letter colors.
-It specifies the background colors, border colors, and text colors of all letter elements.
+It specifies the background colors, border colors, and text colors of all letter elementStyles.
 
 Format info:
 Please note also the general format info in "master.config".

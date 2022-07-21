@@ -6,10 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementDAOImpl implements ElementDAO {
+public class ElementStyleDAOImpl implements ElementStyleDAO {
 
     // table
-    public static final String TABLE_NAME = "elements";
+    public static final String TABLE_NAME = "element_styles";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_POSITION_ID = "position_id";
@@ -21,7 +21,7 @@ public class ElementDAOImpl implements ElementDAO {
     public static final String COLUMN_AREA_STYLE_ID = "area_style_id";
 
     // view (read only)
-    public static final String VIEW_NAME = "element_view";
+    public static final String VIEW_NAME = "element_styles_view";
     public static final String VIEW_COLUMN_ID = "_id";
     public static final String VIEW_COLUMN_NAME = "name";
 
@@ -44,32 +44,25 @@ public class ElementDAOImpl implements ElementDAO {
 
     // query
 
-    // element_view created via:
+    // element_styles_view created via:
 
-    // CREATE VIEW element_view AS
-    // SELECT e._id, e.name,
-    //   pv._id AS position_id, pv.name AS position_name,
-    //	 pv.x_length_id AS position_x_length_id, pv.x_length_name AS position_x_length_name, pv.x_length_value AS position_x_length_value, pv.x_length_unit_id AS position_x_length_unit_id, pv.x_length_unit_name AS position_x_length_unit_name, pv.x_length_unit_value AS position_x_length_unit_value,
-    //	 pv.y_length_id AS position_y_length_id, pv.y_length_name AS position_y_length_name, pv.y_length_value AS position_y_length_value, pv.y_length_unit_id AS position_y_length_unit_id, pv.y_length_unit_name AS position_y_length_unit_name, pv.y_length_unit_value AS position_y_length_unit_value,
-    // lvw._id AS width_id, lvw.name AS width_name, lvw.value AS width_value,
-    //	 lvw.length_unit_id AS width_unit_id, lvw.length_unit_name AS width_unit_name, lvw.length_unit_value AS width_unit_value,
-    // lvh._id AS height_id, lvh.name AS height_name, lvh.value AS height_value,
-    //	 lvh.length_unit_id AS height_unit_id, lvh.length_unit_name AS height_unit_name, lvh.length_unit_value AS height_unit_value,
-    // an._id AS anchor_id, an.name AS anchor_name, an.value AS anchor_value,
-    // tsv._id AS text_style_id, tsv.name AS text_style_name,
-    //	 font_size_id, font_size_name, font_size_value, text_format_id, text_format_name, text_format_value, tsv.color_id AS text_color_id, tsv.color_name AS text_color_name, tsv.opacity_id AS text_opacity_id, tsv.opacity_value AS text_opacity_value,
-    // lsv._id AS line_style_id, lsv.name AS line_style_name,
-    //	 line_width_id, line_width_name, line_width_value, line_width_unit_id, line_width_unit_name, line_width_unit_value, line_cap_id, line_cap_name, line_cap_value, line_join_id, line_join_name, line_join_value, dash_pattern_id, dash_pattern_name, lsv.color_id AS line_color_id, lsv.color_name AS line_color_name, lsv.opacity_id AS line_opacity_id, lsv.opacity_name AS line_opacity_name,
-    // asv._id AS area_style_id, asv.name AS area_style_name,
-    //	 asv.color_id AS area_color_id, asv.color_name AS area_color_name, asv.opacity_id AS area_opacity_id, asv.opacity_value AS area_opacity_value
-    // FROM elements AS e
-    // INNER JOIN position_view AS pv ON e.position_id = pv._id
-    // INNER JOIN length_view AS lvw ON e.width_id = lvw._id
-    // INNER JOIN length_view AS lvh ON e.height_id = lvh._id
-    // INNER JOIN anchors AS an ON e.anchor_id = an._id
-    // INNER JOIN text_style_view AS tsv ON e.text_style_id = tsv._id
-    // INNER JOIN line_style_view AS lsv ON e.line_style_id = lsv._id
-    // INNER JOIN area_style_view AS asv ON e.area_style_id = asv._id
+    // CREATE VIEW element_styles_view AS
+    // SELECT es._id, es.name,
+    //	 pv._id AS position_id, pv.name AS position_name, pv.x_length_id AS position_x_length_id, pv.x_length_name AS position_x_length_name, pv.x_length_value AS position_x_length_value, pv.x_length_unit_id AS position_x_length_unit_id, pv.x_length_unit_name AS position_x_length_unit_name, pv.x_length_unit_value AS position_x_length_unit_value, pv.y_length_id AS position_y_length_id, pv.y_length_name AS position_y_length_name, pv.y_length_value AS position_y_length_value, pv.y_length_unit_id AS position_y_length_unit_id, pv.y_length_unit_name AS position_y_length_unit_name, pv.y_length_unit_value AS position_y_length_unit_value,
+    //	 lvw._id AS width_id, lvw.name AS width_name, lvw.value AS width_value, lvw.length_unit_id AS width_unit_id, lvw.length_unit_name AS width_unit_name, lvw.length_unit_value AS width_unit_value,
+    //	 lvh._id AS height_id, lvh.name AS height_name, lvh.value AS height_value, lvh.length_unit_id AS height_unit_id, lvh.length_unit_name AS height_unit_name, lvh.length_unit_value AS height_unit_value,
+    //	 an._id AS anchor_id, an.name AS anchor_name, an.value AS anchor_value,
+    //	 tsv._id AS text_style_id, tsv.name AS text_style_name, font_size_id, font_size_name, font_size_value, text_format_id, text_format_name, text_format_value, tsv.color_id AS text_color_id, tsv.color_name AS text_color_name, tsv.opacity_id AS text_opacity_id, tsv.opacity_value AS text_opacity_value,
+    //	 lsv._id AS line_style_id, lsv.name AS line_style_name, line_width_id, line_width_name, line_width_value, line_width_unit_id, line_width_unit_name, line_width_unit_value, line_cap_id, line_cap_name, line_cap_value, line_join_id, line_join_name, line_join_value, dash_pattern_id, dash_pattern_name, lsv.color_id AS line_color_id, lsv.color_name AS line_color_name, lsv.opacity_id AS line_opacity_id, lsv.opacity_name AS line_opacity_name,
+    //	 asv._id AS area_style_id, asv.name AS area_style_name, asv.color_id AS area_color_id, asv.color_name AS area_color_name, asv.opacity_id AS area_opacity_id, asv.opacity_value AS area_opacity_value
+    // FROM element_styles AS es
+    // INNER JOIN position_view AS pv ON es.position_id = pv._id
+    // INNER JOIN length_view AS lvw ON es.width_id = lvw._id
+    // INNER JOIN length_view AS lvh ON es.height_id = lvh._id
+    // INNER JOIN anchors AS an ON es.anchor_id = an._id
+    // INNER JOIN text_style_view AS tsv ON es.text_style_id = tsv._id
+    // INNER JOIN line_style_view AS lsv ON es.line_style_id = lsv._id
+    // INNER JOIN area_style_view AS asv ON es.area_style_id = asv._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
@@ -108,14 +101,14 @@ public class ElementDAOImpl implements ElementDAO {
     private final Connection connection;
 
 
-    public ElementDAOImpl(Datasource2 datasource2, Connection connection) {
+    public ElementStyleDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;
         this.connection = connection;
     }
 
 
     @Override
-    public Element get(int id) {
+    public ElementStyle get(int id) {
         System.out.println("[database] Executing SQL statement \"" + QUERY_BY_ID + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
@@ -133,7 +126,7 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     @Override
-    public Element get(String specifier) {
+    public ElementStyle get(String specifier) {
         System.out.println("[database] Executing SQL statement \"" + QUERY_BY_SPECIFIER + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
@@ -151,16 +144,16 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     @Override
-    public List<Element> getAll() {
+    public List<ElementStyle> getAll() {
         System.out.print("[database] Executing SQL statement \"" + QUERY_ALL + "\" ...");
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<Element> elements = new ArrayList<>();
+            List<ElementStyle> elementStyles = new ArrayList<>();
             while (resultSet.next()) {
-                elements.add(extractFromResultSet(resultSet));
+                elementStyles.add(extractFromResultSet(resultSet));
             }
             System.out.println(" done!");
-            return elements;
+            return elementStyles;
         } catch (SQLException e) {
             System.out.println();
             System.out.println("Query failed: " + e.getMessage());
@@ -169,12 +162,12 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     @Override
-    public void add(Element element) {
+    public void add(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
-            setAllValues(preparedStatement, element);
+            setAllValues(preparedStatement, elementStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -191,13 +184,13 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     @Override
-    public void update(Element element) {
+    public void update(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(UPDATE_WHERE_POSITION, element.getId());
-            setAllValues(preparedStatement, element);
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, elementStyle.getId());
+            setAllValues(preparedStatement, elementStyle);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -214,12 +207,12 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     @Override
-    public void delete(Element element) {
+    public void delete(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, element.getId());
+            preparedStatement.setInt(1, elementStyle.getId());
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -235,8 +228,8 @@ public class ElementDAOImpl implements ElementDAO {
         }
     }
 
-    private Element extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Element(resultSet.getInt(1), resultSet.getString(2),
+    private ElementStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new ElementStyle(resultSet.getInt(1), resultSet.getString(2),
                 new Position(resultSet.getInt(3), resultSet.getString(4),
                         // position x value
                         new Length(resultSet.getInt(5),resultSet.getString(6), resultSet.getDouble(7),
@@ -270,20 +263,20 @@ public class ElementDAOImpl implements ElementDAO {
         );
     }
 
-    private void setAllValues(PreparedStatement preparedStatement, Element element) throws SQLException {
-        preparedStatement.setString(1, element.getName());
-        preparedStatement.setInt(2, element.getPosition().getId());
-        preparedStatement.setInt(3, element.getWidth().getId());
-        preparedStatement.setInt(4, element.getHeight().getId());
-        preparedStatement.setInt(5, element.getAnchor().getId());
-        preparedStatement.setInt(6, element.getTextStyle().getId());
-        preparedStatement.setInt(7, element.getLineStyle().getId());
-        preparedStatement.setInt(8, element.getAreaStyle().getId());
+    private void setAllValues(PreparedStatement preparedStatement, ElementStyle elementStyle) throws SQLException {
+        preparedStatement.setString(1, elementStyle.getName());
+        preparedStatement.setInt(2, elementStyle.getPosition().getId());
+        preparedStatement.setInt(3, elementStyle.getWidth().getId());
+        preparedStatement.setInt(4, elementStyle.getHeight().getId());
+        preparedStatement.setInt(5, elementStyle.getAnchor().getId());
+        preparedStatement.setInt(6, elementStyle.getTextStyle().getId());
+        preparedStatement.setInt(7, elementStyle.getLineStyle().getId());
+        preparedStatement.setInt(8, elementStyle.getAreaStyle().getId());
     }
 
     @Override
     public String toString() {
-        return "ElementDAOImpl{" +
+        return "ElementStyleDAOImpl{" +
                 "datasource2=" + datasource2 +
                 ", connection=" + connection +
                 '}';

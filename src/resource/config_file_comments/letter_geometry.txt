@@ -1,6 +1,6 @@
 File info:
 This is the config file for the letter geometry.
-It specifies the positions, widths, heights, lengths, and sizes of all letter elements.
+It specifies the positions, widths, heights, lengths, and sizes of all letter elementStyles.
 
 Format info:
 Please note also the general format info in "master.config".
