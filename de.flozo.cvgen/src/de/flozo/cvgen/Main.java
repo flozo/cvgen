@@ -27,21 +27,50 @@ public class Main {
 
 
             Address receiver = letterContent.getReceiver();
-            ContentElement receiverName = new ContentElement(receiver.getFirstName(), receiver.getLastName());
-            ContentElement receiverStreet = new ContentElement(receiver.getStreet(), receiver.getHouseNumber());
-            ContentElement receiverCity = new ContentElement(receiver.getPostalCode(), receiver.getCity());
+            Address sender = letterContent.getSender();
 
-            ContentElement addressFieldText = new ContentElement(receiverName.inline(" "), receiverStreet.inline(" "), receiverCity.inline(" "));
+            ContentElement receiverNameLine = new ContentElement.Builder()
+                    .addComponent(receiver.getFirstName())
+                    .addComponent(receiver.getLastName())
+                    .inlineDelimiter(" ")
+                    .build();
+            ContentElement receiverStreetLine = new ContentElement.Builder()
+                    .addComponent(receiver.getStreet())
+                    .addComponent(receiver.getHouseNumber())
+                    .inlineDelimiter(" ")
+                    .build();
+            ContentElement receiverCityLine = new ContentElement.Builder()
+                    .addComponent(receiver.getPostalCode())
+                    .addComponent(receiver.getCity())
+                    .inlineDelimiter(" ")
+                    .build();
+            ContentElement addressFieldText = new ContentElement.Builder()
+                    .addComponent(receiverNameLine.inline())
+                    .addComponent(receiverStreetLine.inline())
+                    .addComponent(receiverCityLine.inline())
+                    .build();
             System.out.println(addressFieldText.multiline());
+
+            ContentElement dateField = new ContentElement.Builder()
+                    .addComponent(sender.getCity())
+                    .addComponent(letterContent.getDate())
+                    .inlineDelimiter(", ")
+                    .build();
+            System.out.println(dateField.inline());
+
+
 
             ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
             ElementStyle senderField = elementStyleDAO.get("sender_field");
+
+
+
 //            System.out.println(senderField.toString());
 //            System.out.println(senderField.getPosition());
 //            System.out.println(senderField.getAnchor());
 
-            AddressDAO senderDAO = new AddressDAOImpl(datasource2, connection);
-            Address sender = senderDAO.get(2);
+//            AddressDAO senderDAO = new AddressDAOImpl(datasource2, connection);
+//            Address sender = senderDAO.get(2);
 
 
             Command documentclass = Documentclass.createWithOptions(DocumentClassName.STANDALONE, "12pt", "tikz", "multi", "crop");
