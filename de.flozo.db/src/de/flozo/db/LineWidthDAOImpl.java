@@ -41,11 +41,11 @@ public class LineWidthDAOImpl implements LineWidthDAO {
 
     // line_width_view created via:
 
-//     CREATE VIEW line_width_view AS
-//     SELECT lw._id, lw.name, lw.value,
-//       lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
-//     FROM line_widths AS lw
-//     INNER JOIN length_units AS lu ON lw.length_unit_id = lu._id
+    // CREATE VIEW line_width_view AS
+    // SELECT lw._id, lw.name, lw.value,
+    //   lu._id AS length_unit_id, lu.name AS length_unit_name, lu.value AS length_unit_value
+    // FROM line_widths AS lw
+    // INNER JOIN length_units AS lu ON lw.length_unit_id = lu._id
 
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
