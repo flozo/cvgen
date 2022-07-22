@@ -25,16 +25,23 @@ public class Main {
             LetterContent letterContent = letterContentDAO.get("test");
             System.out.println(letterContent);
 
+
+            Address receiver = letterContent.getReceiver();
+            ContentElement receiverName = new ContentElement(receiver.getFirstName(), receiver.getLastName());
+            ContentElement receiverStreet = new ContentElement(receiver.getStreet(), receiver.getHouseNumber());
+            ContentElement receiverCity = new ContentElement(receiver.getPostalCode(), receiver.getCity());
+
+            ContentElement addressFieldText = new ContentElement(receiverName.inline(" "), receiverStreet.inline(" "), receiverCity.inline(" "));
+            System.out.println(addressFieldText.multiline());
+
             ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
             ElementStyle senderField = elementStyleDAO.get("sender_field");
-            System.out.println(senderField.toString());
-            System.out.println(senderField.getPosition());
-            System.out.println(senderField.getAnchor());
+//            System.out.println(senderField.toString());
+//            System.out.println(senderField.getPosition());
+//            System.out.println(senderField.getAnchor());
 
             AddressDAO senderDAO = new AddressDAOImpl(datasource2, connection);
             Address sender = senderDAO.get(2);
-            System.out.println(sender.getFirstName());
-            System.out.println(sender.getLastName());
 
 
             Command documentclass = Documentclass.createWithOptions(DocumentClassName.STANDALONE, "12pt", "tikz", "multi", "crop");
