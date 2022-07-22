@@ -1,12 +1,12 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class Anchor {
+public class LineJoin {
 
     private int id;
     private String name;
     private String value;
 
-    public Anchor(int id, String name, String value) {
+    public LineJoin(int id, String name, String value) {
         this.id = id;
         this.name = name;
         this.value = value;
@@ -38,7 +38,7 @@ public class Anchor {
 
     @Override
     public String toString() {
-        return "Anchor{" +
+        return "LineJoin{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +

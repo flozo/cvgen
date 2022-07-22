@@ -1,8 +1,8 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.*;
-import de.flozo.common.content.Address;
-import de.flozo.common.content.Enclosure;
+import de.flozo.dto.appearance.*;
+import de.flozo.dto.content.Address;
+import de.flozo.dto.content.Enclosure;
 
 import java.sql.*;
 

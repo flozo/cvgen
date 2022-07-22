@@ -1,12 +1,14 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class PredefinedOpacity {
+public class Anchor {
 
     private int id;
+    private String name;
     private String value;
 
-    public PredefinedOpacity(int id, String value) {
+    public Anchor(int id, String name, String value) {
         this.id = id;
+        this.name = name;
         this.value = value;
     }
 
@@ -16,6 +18,14 @@ public class PredefinedOpacity {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getValue() {
@@ -28,8 +38,9 @@ public class PredefinedOpacity {
 
     @Override
     public String toString() {
-        return "PredefinedOpacity{" +
+        return "Anchor{" +
                 "id=" + id +
+                ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 '}';
     }

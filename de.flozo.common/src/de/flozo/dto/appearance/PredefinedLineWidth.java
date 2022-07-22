@@ -1,11 +1,11 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class BaseColor {
+public class PredefinedLineWidth {
 
     private int id;
     private String name;
 
-    public BaseColor(int id, String name) {
+    public PredefinedLineWidth(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,7 +28,7 @@ public class BaseColor {
 
     @Override
     public String toString() {
-        return "BaseColor{" +
+        return "PredefinedLineWidth{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

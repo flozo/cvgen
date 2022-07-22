@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.DashPattern;
+import de.flozo.dto.appearance.DashPattern;
 
 import java.util.List;
 

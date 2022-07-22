@@ -1,11 +1,11 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class PredefinedLineWidth {
+public class DashPattern {
 
     private int id;
     private String name;
 
-    public PredefinedLineWidth(int id, String name) {
+    public DashPattern(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,7 +28,7 @@ public class PredefinedLineWidth {
 
     @Override
     public String toString() {
-        return "PredefinedLineWidth{" +
+        return "DashPattern{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

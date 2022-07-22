@@ -1,15 +1,17 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class LineJoin {
+public class Length {
 
     private int id;
     private String name;
-    private String value;
+    private double value;
+    private LengthUnit unit;
 
-    public LineJoin(int id, String name, String value) {
+    public Length(int id, String name, double value, LengthUnit unit) {
         this.id = id;
         this.name = name;
         this.value = value;
+        this.unit = unit;
     }
 
     public int getId() {
@@ -28,20 +30,29 @@ public class LineJoin {
         this.name = name;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
+    }
+
+    public LengthUnit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(LengthUnit unit) {
+        this.unit = unit;
     }
 
     @Override
     public String toString() {
-        return "LineJoin{" +
+        return "Length{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
+                ", value=" + value +
+                ", unit=" + unit +
                 '}';
     }
 }

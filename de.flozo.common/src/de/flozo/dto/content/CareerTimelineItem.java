@@ -1,6 +1,6 @@
-package de.flozo.common.content;
+package de.flozo.dto.content;
 
-public class EducationTimelineItem {
+public class CareerTimelineItem {
 
     private int id;
     private String name;
@@ -12,7 +12,7 @@ public class EducationTimelineItem {
     private String description;
     private String location;
 
-    public EducationTimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String location) {
+    public CareerTimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String location) {
         this.id = id;
         this.name = name;
         this.periodStartMonth = periodStartMonth;
@@ -98,7 +98,7 @@ public class EducationTimelineItem {
 
     @Override
     public String toString() {
-        return "EducationTimelineItem{" +
+        return "CareerTimelineItem{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", periodStartMonth=" + periodStartMonth +

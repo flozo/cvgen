@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.ElementStyle;
+import de.flozo.dto.appearance.ElementStyle;
 
 import java.util.List;
 

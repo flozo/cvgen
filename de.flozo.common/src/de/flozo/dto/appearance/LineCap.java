@@ -1,17 +1,15 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class LineWidth {
+public class LineCap {
 
     private int id;
     private String name;
-    private double value;
-    private LengthUnit unit;
+    private String value;
 
-    public LineWidth(int id, String name, double value, LengthUnit unit) {
+    public LineCap(int id, String name, String value) {
         this.id = id;
         this.name = name;
         this.value = value;
-        this.unit = unit;
     }
 
     public int getId() {
@@ -30,29 +28,20 @@ public class LineWidth {
         this.name = name;
     }
 
-    public double getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(String value) {
         this.value = value;
-    }
-
-    public LengthUnit getUnit() {
-        return unit;
-    }
-
-    public void setUnit(LengthUnit unit) {
-        this.unit = unit;
     }
 
     @Override
     public String toString() {
-        return "LineWidth{" +
+        return "LineCap{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", value=" + value +
-                ", unit=" + unit +
+                ", value='" + value + '\'' +
                 '}';
     }
 }

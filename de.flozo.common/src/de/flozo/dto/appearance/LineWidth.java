@@ -1,15 +1,17 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class FontSize {
+public class LineWidth {
 
     private int id;
     private String name;
-    private String value;
+    private double value;
+    private LengthUnit unit;
 
-    public FontSize(int id, String name, String value) {
+    public LineWidth(int id, String name, double value, LengthUnit unit) {
         this.id = id;
         this.name = name;
         this.value = value;
+        this.unit = unit;
     }
 
     public int getId() {
@@ -28,20 +30,29 @@ public class FontSize {
         this.name = name;
     }
 
-    public String getValue() {
+    public double getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(double value) {
         this.value = value;
+    }
+
+    public LengthUnit getUnit() {
+        return unit;
+    }
+
+    public void setUnit(LengthUnit unit) {
+        this.unit = unit;
     }
 
     @Override
     public String toString() {
-        return "FontSize{" +
+        return "LineWidth{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
+                ", value=" + value +
+                ", unit=" + unit +
                 '}';
     }
 }

@@ -1,4 +1,4 @@
-package de.flozo.common.content;
+package de.flozo.dto.content;
 
 public class File {
 

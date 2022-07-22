@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.content.Address;
+import de.flozo.dto.content.Address;
 
 import java.util.List;
 

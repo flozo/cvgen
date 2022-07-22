@@ -1,8 +1,8 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.appearance.ElementStyle;
-import de.flozo.common.content.Address;
-import de.flozo.common.content.LetterContent;
+import de.flozo.dto.appearance.ElementStyle;
+import de.flozo.dto.content.Address;
+import de.flozo.dto.content.LetterContent;
 import de.flozo.db.*;
 import de.flozo.latex.core.*;
 

@@ -1,14 +1,12 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
-public class LineCap {
+public class PredefinedOpacity {
 
     private int id;
-    private String name;
     private String value;
 
-    public LineCap(int id, String name, String value) {
+    public PredefinedOpacity(int id, String value) {
         this.id = id;
-        this.name = name;
         this.value = value;
     }
 
@@ -18,14 +16,6 @@ public class LineCap {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getValue() {
@@ -38,9 +28,8 @@ public class LineCap {
 
     @Override
     public String toString() {
-        return "LineCap{" +
+        return "PredefinedOpacity{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
                 '}';
     }

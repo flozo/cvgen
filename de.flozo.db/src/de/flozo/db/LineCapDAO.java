@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.LineCap;
+import de.flozo.dto.appearance.LineCap;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package de.flozo.db;
 
-import de.flozo.common.content.Address;
-import de.flozo.common.content.LetterContent;
+import de.flozo.dto.content.Address;
+import de.flozo.dto.content.LetterContent;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.LineJoin;
+import de.flozo.dto.appearance.LineJoin;
 
 import java.util.List;
 

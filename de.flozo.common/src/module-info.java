@@ -1,4 +1,4 @@
 module de.flozo.common {
-    exports de.flozo.common.appearance;
-    exports de.flozo.common.content;
+    exports de.flozo.dto.appearance;
+    exports de.flozo.dto.content;
 }

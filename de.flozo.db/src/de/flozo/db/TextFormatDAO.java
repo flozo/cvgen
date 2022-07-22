@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.TextFormat;
+import de.flozo.dto.appearance.TextFormat;
 
 import java.util.List;
 

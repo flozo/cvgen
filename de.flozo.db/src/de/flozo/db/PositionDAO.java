@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.Position;
+import de.flozo.dto.appearance.Position;
 
 import java.util.List;
 

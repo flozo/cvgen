@@ -1,7 +1,7 @@
 package de.flozo.db;
 
-import de.flozo.common.appearance.Length;
-import de.flozo.common.appearance.LengthUnit;
+import de.flozo.dto.appearance.Length;
+import de.flozo.dto.appearance.LengthUnit;
 
 import java.sql.*;
 import java.util.ArrayList;

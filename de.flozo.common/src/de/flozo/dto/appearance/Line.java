@@ -1,4 +1,4 @@
-package de.flozo.common.appearance;
+package de.flozo.dto.appearance;
 
 public class Line {
 
