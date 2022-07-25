@@ -1,4 +1,4 @@
-package de.flozo.dto.appearance;
+package de.flozo.dto;
 
 public class LatexPackage {
 

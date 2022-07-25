@@ -20,7 +20,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     public static final String COLUMN_LINE_STYLE_ID = "line_style_id";
     public static final String COLUMN_AREA_STYLE_ID = "area_style_id";
 
-    // view (read only)
+    // view
     public static final String VIEW_NAME = "element_styles_view";
     public static final String VIEW_COLUMN_ID = "_id";
     public static final String VIEW_COLUMN_NAME = "name";
@@ -107,9 +107,14 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     }
 
 
+    private void showSQLMessage(String queryString) {
+        System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
+    }
+
+
     @Override
     public ElementStyle get(int id) {
-        System.out.println("[database] Executing SQL statement \"" + QUERY_BY_ID + "\" ...");
+        showSQLMessage(QUERY_BY_ID);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -127,7 +132,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
 
     @Override
     public ElementStyle get(String specifier) {
-        System.out.println("[database] Executing SQL statement \"" + QUERY_BY_SPECIFIER + "\" ...");
+        showSQLMessage(QUERY_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -145,7 +150,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
 
     @Override
     public List<ElementStyle> getAll() {
-        System.out.print("[database] Executing SQL statement \"" + QUERY_ALL + "\" ...");
+        showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<ElementStyle> elementStyles = new ArrayList<>();
@@ -165,7 +170,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     public void add(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
+        showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, elementStyle);
             // do it
@@ -187,7 +192,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     public void update(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
+        showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, elementStyle.getId());
             setAllValues(preparedStatement, elementStyle);
@@ -210,7 +215,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     public void delete(ElementStyle elementStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
+        showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, elementStyle.getId());
             // do it
