@@ -96,7 +96,7 @@ public class Main {
                             "colorbrewer",
                             "backgrounds",
                             "matrix")
-                    .bodyTerminator(StatementTerminator.COMMA)
+                    .bodyTerminator(Delimiter.COMMA)
                     .build();
             Command standaloneenv = new GenericCommand.Builder(CommandName.STANDALONEENV.getString())
                     .body("tikzpicture")
