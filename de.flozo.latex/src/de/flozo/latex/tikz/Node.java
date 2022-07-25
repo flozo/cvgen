@@ -71,7 +71,7 @@ public class Node extends Path {
         return new FormattedExpressionList.Builder(body)
                 .brackets(Bracket.CURLY_BRACES)
                 .terminator(bodyDelimiter)
-                .skipLastTerminator(skipLastTerminator)
+                .skipLastDelimiter(skipLastDelimiter)
                 .indentBlock(true)
                 .build();
     }
@@ -95,7 +95,7 @@ public class Node extends Path {
         return "Node{" +
                 "body=" + body +
                 ", name='" + name + '\'' +
-                ", bodyTerminator=" + bodyDelimiter +
+                ", bodyDelimiter=" + bodyDelimiter +
                 '}';
     }
 

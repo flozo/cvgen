@@ -26,13 +26,13 @@ public abstract class Path {
     protected LineCap lineCap;
     protected LineJoin lineJoin;
     protected DashPattern dashPattern;
-    protected boolean skipLastTerminator;
+    protected boolean skipLastDelimiter;
 
 
     public Path(Point position, List<String> optionalArguments, String name,
                 BaseColor drawColor, BaseColor fillColor, PredefinedLineWidth predefinedLineWidth,
                 LineCap lineCap, LineJoin lineJoin, DashPattern dashPattern,
-                boolean skipLastTerminator) {
+                boolean skipLastDelimiter) {
         this.position = position;
         this.optionalArguments = optionalArguments;
         this.name = name;
@@ -42,7 +42,7 @@ public abstract class Path {
         this.lineCap = lineCap;
         this.lineJoin = lineJoin;
         this.dashPattern = dashPattern;
-        this.skipLastTerminator = skipLastTerminator;
+        this.skipLastDelimiter = skipLastDelimiter;
     }
 
     public abstract String getInline();
@@ -51,7 +51,7 @@ public abstract class Path {
         return new FormattedExpressionList.Builder(optionalArguments)
                 .brackets(OPTIONS_BRACKETS)
                 .terminator(Delimiter.COMMA)
-                .skipLastTerminator(skipLastTerminator)
+                .skipLastDelimiter(skipLastDelimiter)
                 .inlineSpacing(true);
     }
 
@@ -68,7 +68,6 @@ public abstract class Path {
         return name;
     }
 
-
     @Override
     public String toString() {
         return "Path{" +
@@ -81,7 +80,7 @@ public abstract class Path {
                 ", lineCap=" + lineCap +
                 ", lineJoin=" + lineJoin +
                 ", dashPattern=" + dashPattern +
-                ", skipLastTerminator=" + skipLastTerminator +
+                ", skipLastDelimiter=" + skipLastDelimiter +
                 '}';
     }
 }
