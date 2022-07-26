@@ -32,8 +32,6 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
     public static final String DELETE_FROM = "DELETE FROM ";
 
     // query
-
-
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
