@@ -1,5 +1,7 @@
 package de.flozo.cvgen;
 
+import de.flozo.dto.latex.LatexCommand;
+import de.flozo.dto.latex.LatexPackage;
 import de.flozo.dto.appearance.ElementStyle;
 import de.flozo.dto.content.Address;
 import de.flozo.dto.content.LetterContent;
@@ -21,7 +23,7 @@ public class Main {
 
         try {
 
-            LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2,connection);
+            LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
             System.out.println(letterContent);
 
@@ -59,9 +61,19 @@ public class Main {
             System.out.println(dateField.inline());
 
 
-
             ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
             ElementStyle senderField = elementStyleDAO.get("sender_field");
+
+
+            LatexCommandDAO latexCommandDAO = new LatexCommandDAOImpl(datasource2, connection);
+            LatexCommand documentclass = latexCommandDAO.get("documentclass");
+            LatexCommand usepackage = latexCommandDAO.get("usepackage");
+            LatexCommand usetikzlibrary = latexCommandDAO.get("usetikzlibrary");
+            LatexCommand standaloneenv = latexCommandDAO.get("standaloneenv");
+            LatexCommand node = latexCommandDAO.get("node");
+
+            LatexPackageDAO latexPackageDAO = new LatexPackageDAOImpl(datasource2, connection);
+            LatexPackage standard = latexPackageDAO.get("latex_standard");
 
 
 
@@ -73,7 +85,7 @@ public class Main {
 //            Address sender = senderDAO.get(2);
 
 
-            Command documentclass = Documentclass.createWithOptions(DocumentClassName.STANDALONE, "12pt", "tikz", "multi", "crop");
+            GenericCommand documentclass = Documentclass.createWithOptions(DocumentClassName.STANDALONE, "12pt", "tikz", "multi", "crop");
 
             PackageList packageList = new PackageList(documentclass);
             packageList.add(PackageName.INPUTENC, "utf8")
@@ -89,7 +101,7 @@ public class Main {
                     .add(PackageName.TIKZ)
                     .add(PackageName.HYPERREF, "unicode");
 
-            Command usetikzlibrary = new GenericCommand.Builder(CommandName.USETIKZLIBRARY.getString())
+            GenericCommand usetikzlibrary = new GenericCommand.Builder(CommandName.USETIKZLIBRARY.getString())
                     .body(
                             "positioning",
                             "math",
@@ -98,7 +110,7 @@ public class Main {
                             "matrix")
                     .bodyTerminator(Delimiter.COMMA)
                     .build();
-            Command standaloneenv = new GenericCommand.Builder(CommandName.STANDALONEENV.getString())
+            GenericCommand standaloneenv = new GenericCommand.Builder(CommandName.STANDALONEENV.getString())
                     .body("tikzpicture")
                     .build();
 

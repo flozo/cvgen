@@ -1,15 +1,15 @@
-package de.flozo.dto;
+package de.flozo.dto.latex;
 
-public class LatexPackage {
+public class LatexCommand {
 
     private int id;
     private String name;
-    private String value;
+    private LatexPackage needsPackage;
 
-    public LatexPackage(int id, String name, String value) {
+    public LatexCommand(int id, String name, LatexPackage needsPackage) {
         this.id = id;
         this.name = name;
-        this.value = value;
+        this.needsPackage = needsPackage;
     }
 
     public int getId() {
@@ -28,20 +28,20 @@ public class LatexPackage {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public LatexPackage getNeedsPackage() {
+        return needsPackage;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setNeedsPackage(LatexPackage needsPackage) {
+        this.needsPackage = needsPackage;
     }
 
     @Override
     public String toString() {
-        return "LatexPackage{" +
+        return "LatexCommand{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
+                ", needsPackage=" + needsPackage +
                 '}';
     }
 }
