@@ -40,7 +40,6 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
-    public static final String INNER_JOIN = " INNER JOIN ";
 
     // query
 

@@ -5,11 +5,13 @@ public class LatexPackage {
     private int id;
     private String name;
     private String value;
+    private boolean include;
 
-    public LatexPackage(int id, String name, String value) {
+    public LatexPackage(int id, String name, String value, boolean include) {
         this.id = id;
         this.name = name;
         this.value = value;
+        this.include = include;
     }
 
     public int getId() {
@@ -36,12 +38,21 @@ public class LatexPackage {
         this.value = value;
     }
 
+    public boolean isInclude() {
+        return include;
+    }
+
+    public void setInclude(boolean include) {
+        this.include = include;
+    }
+
     @Override
     public String toString() {
         return "LatexPackage{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", value='" + value + '\'' +
+                ", include=" + include +
                 '}';
     }
 }
