@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.TikzLibrary;
+import de.flozo.common.dto.latex.TikzLibrary;
 
 import java.util.List;
 

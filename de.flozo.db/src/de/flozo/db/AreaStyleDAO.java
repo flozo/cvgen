@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.AreaStyle;
+import de.flozo.common.dto.appearance.AreaStyle;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.FontSize;
+import de.flozo.common.dto.appearance.FontSize;
 
 import java.sql.*;
 import java.util.ArrayList;

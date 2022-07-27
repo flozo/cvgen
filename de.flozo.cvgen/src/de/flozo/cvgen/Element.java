@@ -1,6 +1,6 @@
 package de.flozo.cvgen;
 
-import de.flozo.dto.appearance.ElementStyle;
+import de.flozo.common.dto.appearance.ElementStyle;
 import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.tikz.Node;

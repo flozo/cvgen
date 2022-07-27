@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.LatexPackage;
+import de.flozo.common.dto.latex.LatexPackage;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +12,13 @@ public class LatexPackageDAOImpl implements LatexPackageDAO {
     public static final String TABLE_NAME = "latex_packages";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
+
+    // view
+    public static final String VIEW_NAME = "package_list_with_included_options_view";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
+    public static final String VIEW_COLUMN_INCLUDE = "include";
+
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -28,10 +35,21 @@ public class LatexPackageDAOImpl implements LatexPackageDAO {
 
     // query
 
-    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
+    // package_list_with_included_options_view created via:
 
+    // CREATE VIEW package_list_with_included_options_view AS
+    // SELECT lp._id, lp.name, lp.value, lp.include,
+    //   group_concat(pov.option_string, ", ") AS option_list
+    // FROM latex_packages AS lp
+    // LEFT JOIN (SELECT * FROM package_option_view AS pov WHERE pov.include = 1) AS pov
+    // ON pov.package_id = lp._id
+    // WHERE lp.value IS NOT NULL
+    // GROUP BY lp._id
+
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_INCLUDE + EQUALS + "1";
 
     private final Datasource2 datasource2;
     private final Connection connection;
@@ -98,8 +116,24 @@ public class LatexPackageDAOImpl implements LatexPackageDAO {
         }
     }
 
+    @Override
+    public List<LatexPackage> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
+            List<LatexPackage> latexPackages = new ArrayList<>();
+            while (resultSet.next()) {
+                latexPackages.add(extractFromResultSet(resultSet));
+            }
+            return latexPackages;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
     private LatexPackage extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new LatexPackage(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+        return new LatexPackage(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getBoolean(4), resultSet.getString(5));
     }
 
 

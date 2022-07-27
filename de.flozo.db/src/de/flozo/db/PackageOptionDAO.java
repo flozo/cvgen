@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.PackageOption;
+import de.flozo.common.dto.latex.PackageOption;
 
 import java.util.List;
 

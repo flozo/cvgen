@@ -1,6 +1,9 @@
 package de.flozo.latex.tikz;
 
-import de.flozo.dto.appearance.*;
+import de.flozo.common.dto.appearance.BaseColor;
+import de.flozo.common.dto.appearance.DashPattern;
+import de.flozo.common.dto.appearance.LineCap;
+import de.flozo.common.dto.appearance.LineJoin;
 import de.flozo.latex.core.Bracket;
 import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.FormattedExpressionList;

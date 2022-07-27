@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.PredefinedOpacity;
+import de.flozo.common.dto.appearance.PredefinedOpacity;
 
 import java.util.List;
 

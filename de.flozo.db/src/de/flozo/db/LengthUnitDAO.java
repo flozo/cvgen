@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.LengthUnit;
+import de.flozo.common.dto.appearance.LengthUnit;
 
 import java.util.List;
 

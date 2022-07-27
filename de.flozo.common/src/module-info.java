@@ -1,6 +1,5 @@
 module de.flozo.common {
-    exports de.flozo.dto.appearance;
-    exports de.flozo.dto.content;
-    exports de.flozo.dto;
-    exports de.flozo.dto.latex;
+    exports de.flozo.common.dto.appearance;
+    exports de.flozo.common.dto.content;
+    exports de.flozo.common.dto.latex;
 }

@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.LatexPackage;
+import de.flozo.common.dto.latex.LatexPackage;
 
 import java.util.List;
 
@@ -14,4 +14,6 @@ public interface LatexPackageDAO extends ReadOnlyDAO<LatexPackage> {
 
     @Override
     List<LatexPackage> getAll();
+
+    List<LatexPackage> getAllIncluded();
 }

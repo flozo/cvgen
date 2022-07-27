@@ -1,7 +1,7 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.LatexCommand;
-import de.flozo.dto.latex.LatexPackage;
+import de.flozo.common.dto.latex.LatexCommand;
+import de.flozo.common.dto.latex.LatexPackage;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class LatexCommandDAOImpl implements LatexCommandDAO {
 
     // CREATE VIEW latex_command_view AS
     // SELECT lc._id, lc.name,
-    //   lp._id AS package_id, lp.name AS package_name, lp.value AS package_value
+    //   lp._id AS package_id, lp.name AS package_name, lp.value AS package_value, lp.include AS include_package
     // FROM latex_commands AS lc
     // INNER JOIN latex_packages AS lp ON lc.needs_package = lp._id
 
@@ -117,7 +117,7 @@ public class LatexCommandDAOImpl implements LatexCommandDAO {
 
     private LatexCommand extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new LatexCommand(resultSet.getInt(1), resultSet.getString(2),
-                new LatexPackage(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5))
+                new LatexPackage(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5), resultSet.getBoolean(6))
         );
     }
 

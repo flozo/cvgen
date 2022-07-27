@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.*;
+import de.flozo.common.dto.appearance.*;
 
 import java.sql.*;
 import java.util.ArrayList;

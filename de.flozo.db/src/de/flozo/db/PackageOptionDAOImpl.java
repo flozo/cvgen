@@ -1,7 +1,7 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.LatexPackage;
-import de.flozo.dto.latex.PackageOption;
+import de.flozo.common.dto.latex.LatexPackage;
+import de.flozo.common.dto.latex.PackageOption;
 
 import java.sql.*;
 import java.util.ArrayList;

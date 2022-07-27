@@ -1,6 +1,8 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.*;
+import de.flozo.common.dto.appearance.AreaStyle;
+import de.flozo.common.dto.appearance.BaseColor;
+import de.flozo.common.dto.appearance.PredefinedOpacity;
 
 import java.sql.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package de.flozo.latex.tikz;
 
-import de.flozo.dto.appearance.*;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.latex.core.*;
 
 import java.util.ArrayList;

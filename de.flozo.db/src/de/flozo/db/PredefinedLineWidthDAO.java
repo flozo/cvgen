@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.PredefinedLineWidth;
+import de.flozo.common.dto.appearance.PredefinedLineWidth;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.DocumentClass;
+import de.flozo.common.dto.latex.DocumentClass;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +13,15 @@ public class DocumentClassDAOImpl implements DocumentClassDAO {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_VALUE = "value";
+    public static final String COLUMN_INCLUDE = "include";
+
+    // view
+    public static final String VIEW_NAME = "document_class_view";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
+    public static final String VIEW_COLUMN_VALUE = "value";
+    public static final String VIEW_COLUMN_INCLUDE = "include";
+    public static final String VIEW_COLUMN_OPTION_LIST = "option_list";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -31,22 +40,37 @@ public class DocumentClassDAOImpl implements DocumentClassDAO {
     public static final String DELETE_FROM = "DELETE FROM ";
 
     // query
-    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
-    public static final int NON_ID_COLUMNS = 2;
+    // document_class_view created via:
+
+    // CREATE VIEW document_class_view AS
+    // SELECT dc._id, dc.name, dc.value, dc.include,
+    //   group_concat(dco.option_string, ", ") AS option_list
+    // FROM document_classes AS dc
+    // LEFT JOIN (SELECT * FROM document_class_options AS dco WHERE dco.include = 1) AS dco
+    // ON dco.document_class_id = dc._id
+    // WHERE dc.value IS NOT NULL
+    // GROUP BY dc._id
+    // ORDER BY dco._id
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_INCLUDE + EQUALS + "1";
+
+    public static final int NON_ID_COLUMNS = 3;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_VALUE + COMMA +
+            COLUMN_INCLUDE + COMMA +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_VALUE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK + COMMA +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -122,6 +146,25 @@ public class DocumentClassDAOImpl implements DocumentClassDAO {
     }
 
     @Override
+    public List<DocumentClass> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
+            List<DocumentClass> documentClasses = new ArrayList<>();
+            while (resultSet.next()) {
+                documentClasses.add(extractFromResultSet(resultSet));
+            }
+            System.out.println(" done!");
+            return documentClasses;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    @Override
     public void add(DocumentClass documentClass) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
@@ -189,7 +232,7 @@ public class DocumentClassDAOImpl implements DocumentClassDAO {
     }
 
     private DocumentClass extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new DocumentClass(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
+        return new DocumentClass(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getInt(4), resultSet.getString(5));
     }
 
     private void setAllValues(PreparedStatement preparedStatement, DocumentClass documentClass) throws SQLException {

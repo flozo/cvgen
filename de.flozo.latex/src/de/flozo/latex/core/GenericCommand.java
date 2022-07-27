@@ -3,7 +3,7 @@ package de.flozo.latex.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GenericCommand {
+public class GenericCommand implements Command {
 
 
     // constants
@@ -62,6 +62,7 @@ public class GenericCommand {
         this.interBracketSpace = builder.interBracketSpace;
     }
 
+    @Override
     public List<String> getBlock() {
         List<String> codeLines = new ArrayList<>();
         codeLines.add(getFirstLine());
@@ -77,6 +78,7 @@ public class GenericCommand {
         return codeLines;
     }
 
+    @Override
     public List<String> getInlineOptions() {
         List<String> codeLines = new ArrayList<>();
         codeLines.add(getFirstLineInline());
@@ -84,6 +86,7 @@ public class GenericCommand {
         return codeLines;
     }
 
+    @Override
     public String getInline() {
         return COMMAND_MARKER_CHAR + name + assembleOptionList(false, BracketMode.AFFIXED, BracketMode.AFFIXED).getInline() + assembleBody(false, BracketMode.AFFIXED, BracketMode.AFFIXED).getInline();
     }

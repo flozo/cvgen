@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.appearance.Anchor;
+import de.flozo.common.dto.appearance.Anchor;
 
 import java.sql.*;
 import java.util.ArrayList;

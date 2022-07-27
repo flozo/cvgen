@@ -1,6 +1,6 @@
 package de.flozo.db;
 
-import de.flozo.dto.latex.DocumentClass;
+import de.flozo.common.dto.latex.DocumentClass;
 
 import java.util.List;
 
@@ -23,4 +23,6 @@ public interface DocumentClassDAO extends DAO<DocumentClass> {
 
     @Override
     void delete(DocumentClass documentClass);
+
+    List<DocumentClass> getAllIncluded();
 }
