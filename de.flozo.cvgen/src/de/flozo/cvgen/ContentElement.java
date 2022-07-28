@@ -26,8 +26,6 @@ public class ContentElement {
     }
 
 
-
-
     public static class Builder {
 
         // required

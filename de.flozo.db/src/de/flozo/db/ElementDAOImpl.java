@@ -44,7 +44,7 @@ public class ElementDAOImpl implements ElementDAO {
             COLUMN_NAME + COMMA +
             COLUMN_ELEMENT_STYLE_ID + COMMA +
             COLUMN_ON_PAGE_ID + COMMA +
-            COLUMN_INCLUDE + COMMA +
+            COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -52,7 +52,7 @@ public class ElementDAOImpl implements ElementDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ELEMENT_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ON_PAGE_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_INCLUDE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 

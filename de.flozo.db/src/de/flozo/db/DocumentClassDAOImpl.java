@@ -63,14 +63,14 @@ public class DocumentClassDAOImpl implements DocumentClassDAO {
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_VALUE + COMMA +
-            COLUMN_INCLUDE + COMMA +
+            COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_VALUE + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_INCLUDE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 

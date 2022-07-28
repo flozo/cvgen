@@ -59,7 +59,7 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
             COLUMN_NAME + COMMA +
             COLUMN_PACKAGE_ID + COMMA +
             COLUMN_DESCRIPTION + COMMA +
-            COLUMN_INCLUDE + COMMA +
+            COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -67,7 +67,7 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_PACKAGE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_DESCRIPTION + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_INCLUDE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 

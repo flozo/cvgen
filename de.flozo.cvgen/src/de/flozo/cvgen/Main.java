@@ -52,11 +52,15 @@ public class Main {
             Address receiver = letterContent.getReceiver();
             Address sender = letterContent.getSender();
 
-            ContentElement receiverNameLine = new ContentElement.Builder()
-                    .addComponent(receiver.getFirstName())
-                    .addComponent(receiver.getLastName())
-                    .inlineDelimiter(" ")
-                    .build();
+            ContentElement.Builder receiverNameLineBuilder = new ContentElement.Builder();
+            if (receiver.getCompany() != null && !receiver.getCompany().isBlank()) {
+                receiverNameLineBuilder.addComponent(receiver.getCompany());
+            } else {
+                receiverNameLineBuilder
+                        .addComponent(receiver.getFirstName())
+                        .addComponent(receiver.getLastName());
+            }
+            ContentElement receiverNameLine = receiverNameLineBuilder.inlineDelimiter(" ").build();
             ContentElement receiverStreetLine = new ContentElement.Builder()
                     .addComponent(receiver.getStreet())
                     .addComponent(receiver.getHouseNumber())

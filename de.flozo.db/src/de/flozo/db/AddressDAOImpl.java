@@ -16,6 +16,7 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String COLUMN_FIRST_NAME = "first_name";
     public static final String COLUMN_SECOND_NAME = "second_name";
     public static final String COLUMN_LAST_NAME = "last_name";
+    public static final String COLUMN_COMPANY = "company";
     public static final String COLUMN_STREET = "street";
     public static final String COLUMN_HOUSE_NUMBER = "house_number";
     public static final String COLUMN_POSTAL_CODE = "postal_code";
@@ -47,6 +48,8 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_LABEL + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
+    public static final int NON_ID_COLUMNS = 15;
+
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_LABEL + COMMA +
@@ -54,6 +57,7 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_FIRST_NAME + COMMA +
             COLUMN_SECOND_NAME + COMMA +
             COLUMN_LAST_NAME + COMMA +
+            COLUMN_COMPANY + COMMA +
             COLUMN_STREET + COMMA +
             COLUMN_HOUSE_NUMBER + COMMA +
             COLUMN_POSTAL_CODE + COMMA +
@@ -63,7 +67,7 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_MOBILE_NUMBER + COMMA +
             COLUMN_E_MAIL_ADDRESS + COMMA +
             COLUMN_WEB_PAGE +
-            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(13) + CLOSING_PARENTHESIS;
+            CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
@@ -72,6 +76,7 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_FIRST_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_SECOND_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_LAST_NAME + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_COMPANY + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_STREET + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_HOUSE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_POSTAL_CODE + EQUALS + QUESTION_MARK + COMMA +
@@ -82,7 +87,7 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_WEB_PAGE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final int UPDATE_WHERE_POSITION = 15;
+    public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
     // count
     public static final String COUNT = SELECT + "count(*) AS count" + FROM + TABLE_NAME;
@@ -99,8 +104,14 @@ public class AddressDAOImpl implements AddressDAO {
         this.connection = connection;
     }
 
+
+    private void showSQLMessage(String queryString) {
+        System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
+    }
+
     @Override
     public void showMetadata() {
+        showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             ResultSetMetaData metaData = resultSet.getMetaData();
@@ -123,6 +134,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public int getCount() {
+        showSQLMessage(COUNT);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(COUNT)) {
             return resultSet.getInt("count");
@@ -135,6 +147,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address get(int id) {
+        showSQLMessage(QUERY_BY_ID);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -152,6 +165,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public Address get(String specifier) {
+        showSQLMessage(QUERY_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -169,6 +183,7 @@ public class AddressDAOImpl implements AddressDAO {
 
     @Override
     public List<Address> getAll() {
+        showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<Address> addresses = new ArrayList<>();
@@ -182,34 +197,11 @@ public class AddressDAOImpl implements AddressDAO {
         }
     }
 
-    private Address extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
-    }
-
-    private void setAllValues(PreparedStatement preparedStatement, Address address) throws SQLException {
-        preparedStatement.setString(1, address.getLabel());
-        preparedStatement.setString(2, address.getAcademicTitle());
-        preparedStatement.setString(3, address.getFirstName());
-        preparedStatement.setString(4, address.getSecondName());
-        preparedStatement.setString(5, address.getLastName());
-        preparedStatement.setString(6, address.getStreet());
-        preparedStatement.setString(7, address.getHouseNumber());
-        preparedStatement.setString(8, address.getPostalCode());
-        preparedStatement.setString(9, address.getCity());
-        preparedStatement.setString(10, address.getCountry());
-        preparedStatement.setString(11, address.getPhoneNumber());
-        preparedStatement.setString(12, address.getMobileNumber());
-        preparedStatement.setString(13, address.getEMailAddress());
-        preparedStatement.setString(14, address.getWebPage());
-    }
-
-
     @Override
     public void add(Address address) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, address);
             // do it
@@ -229,6 +221,7 @@ public class AddressDAOImpl implements AddressDAO {
     public void update(Address address) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, address.getId());
             setAllValues(preparedStatement, address);
@@ -249,6 +242,7 @@ public class AddressDAOImpl implements AddressDAO {
     public void delete(Address address) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, address.getId());
             // do it
@@ -264,4 +258,37 @@ public class AddressDAOImpl implements AddressDAO {
         }
     }
 
+    private Address extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
+                resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8),
+                resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15), resultSet.getString(16)
+        );
+    }
+
+    private void setAllValues(PreparedStatement preparedStatement, Address address) throws SQLException {
+        preparedStatement.setString(1, address.getLabel());
+        preparedStatement.setString(2, address.getAcademicTitle());
+        preparedStatement.setString(3, address.getFirstName());
+        preparedStatement.setString(4, address.getSecondName());
+        preparedStatement.setString(5, address.getLastName());
+        preparedStatement.setString(6, address.getCompany());
+        preparedStatement.setString(7, address.getStreet());
+        preparedStatement.setString(8, address.getHouseNumber());
+        preparedStatement.setString(9, address.getPostalCode());
+        preparedStatement.setString(10, address.getCity());
+        preparedStatement.setString(11, address.getCountry());
+        preparedStatement.setString(12, address.getPhoneNumber());
+        preparedStatement.setString(13, address.getMobileNumber());
+        preparedStatement.setString(14, address.getEMailAddress());
+        preparedStatement.setString(15, address.getWebPage());
+    }
+
+    @Override
+    public String toString() {
+        return "AddressDAOImpl{" +
+                "datasource2=" + datasource2 +
+                ", connection=" + connection +
+                '}';
+    }
 }

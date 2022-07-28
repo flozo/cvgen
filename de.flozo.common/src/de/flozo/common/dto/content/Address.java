@@ -8,6 +8,7 @@ public class Address {
     private String firstName;
     private String secondName;
     private String lastName;
+    private String company;
     private String street;
     private String houseNumber;
     private String postalCode;
@@ -18,13 +19,14 @@ public class Address {
     private String eMailAddress;
     private String webPage;
 
-    public Address(int id, String label, String academicTitle, String firstName, String secondName, String lastName, String street, String houseNumber, String postalCode, String city, String country, String phoneNumber, String mobileNumber, String eMailAddress, String webPage) {
+    public Address(int id, String label, String academicTitle, String firstName, String secondName, String lastName, String company, String street, String houseNumber, String postalCode, String city, String country, String phoneNumber, String mobileNumber, String eMailAddress, String webPage) {
         this.id = id;
         this.label = label;
         this.academicTitle = academicTitle;
         this.firstName = firstName;
         this.secondName = secondName;
         this.lastName = lastName;
+        this.company = company;
         this.street = street;
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
@@ -82,6 +84,14 @@ public class Address {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 
     public String getStreet() {
@@ -165,6 +175,7 @@ public class Address {
                 ", firstName='" + firstName + '\'' +
                 ", secondName='" + secondName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", company='" + company + '\'' +
                 ", street='" + street + '\'' +
                 ", houseNumber='" + houseNumber + '\'' +
                 ", postalCode='" + postalCode + '\'' +

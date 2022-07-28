@@ -674,18 +674,18 @@ public class Datasource {
 //    }
 
 
-    public Address addressById(int id) {
-        try {
-            queryAddressById.setInt(1, id);
-            ResultSet resultSet = queryAddressById.executeQuery();
-            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
-                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
-        } catch (SQLException e) {
-            showMessage(queryAddressById, e.getMessage());
-            return null;
-        }
-    }
+//    public Address addressById(int id) {
+//        try {
+//            queryAddressById.setInt(1, id);
+//            ResultSet resultSet = queryAddressById.executeQuery();
+//            return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+//                    resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
+//                    resultSet.getString(13), resultSet.getString(14), resultSet.getString(15));
+//        } catch (SQLException e) {
+//            showMessage(queryAddressById, e.getMessage());
+//            return null;
+//        }
+//    }
 //
 //    public Address addressByLabel(String label) {
 //        try {

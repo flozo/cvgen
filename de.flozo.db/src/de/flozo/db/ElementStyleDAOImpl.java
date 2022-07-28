@@ -77,7 +77,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
             COLUMN_ANCHOR_ID + COMMA +
             COLUMN_TEXT_STYLE_ID + COMMA +
             COLUMN_LINE_STYLE_ID + COMMA +
-            COLUMN_AREA_STYLE_ID + COMMA +
+            COLUMN_AREA_STYLE_ID +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -86,9 +86,9 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
             COLUMN_POSITION_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_HEIGHT_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_ANCHOR_ID + EQUALS + QUESTION_MARK +
-            COLUMN_TEXT_STYLE_ID + EQUALS + QUESTION_MARK +
-            COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK +
+            COLUMN_ANCHOR_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_TEXT_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_AREA_STYLE_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
@@ -236,16 +236,16 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
         return new ElementStyle(resultSet.getInt(1), resultSet.getString(2),
                 new Position(resultSet.getInt(3), resultSet.getString(4),
                         // position x value
-                        new Length(resultSet.getInt(5),resultSet.getString(6), resultSet.getDouble(7),
-                                new LengthUnit(resultSet.getInt(8), resultSet.getString(9),resultSet.getString(10))),
+                        new Length(resultSet.getInt(5), resultSet.getString(6), resultSet.getDouble(7),
+                                new LengthUnit(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10))),
                         // position y value
-                        new Length(resultSet.getInt(11),resultSet.getString(12), resultSet.getDouble(13),
-                                new LengthUnit(resultSet.getInt(14), resultSet.getString(15),resultSet.getString(16)))),
+                        new Length(resultSet.getInt(11), resultSet.getString(12), resultSet.getDouble(13),
+                                new LengthUnit(resultSet.getInt(14), resultSet.getString(15), resultSet.getString(16)))),
                 // width
-                new Length(resultSet.getInt(17), resultSet.getString(18),resultSet.getDouble(19),
+                new Length(resultSet.getInt(17), resultSet.getString(18), resultSet.getDouble(19),
                         new LengthUnit(resultSet.getInt(20), resultSet.getString(21), resultSet.getString(22))),
                 // height
-                new Length(resultSet.getInt(23), resultSet.getString(24),resultSet.getDouble(25),
+                new Length(resultSet.getInt(23), resultSet.getString(24), resultSet.getDouble(25),
                         new LengthUnit(resultSet.getInt(26), resultSet.getString(27), resultSet.getString(28))),
                 new Anchor(resultSet.getInt(29), resultSet.getString(30), resultSet.getString(31)),
                 new TextStyle(resultSet.getInt(32), resultSet.getString(33),
@@ -255,7 +255,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
                         new PredefinedOpacity(resultSet.getInt(42), resultSet.getString(43))),
                 new LineStyle(resultSet.getInt(44), resultSet.getString(45),
                         new LineWidth(resultSet.getInt(46), resultSet.getString(47), resultSet.getDouble(48),
-                                new LengthUnit(resultSet.getInt(49), resultSet.getString(50),resultSet.getString(51))),
+                                new LengthUnit(resultSet.getInt(49), resultSet.getString(50), resultSet.getString(51))),
                         new LineCap(resultSet.getInt(52), resultSet.getString(53), resultSet.getString(54)),
                         new LineJoin(resultSet.getInt(55), resultSet.getString(56), resultSet.getString(57)),
                         new DashPattern(resultSet.getInt(58), resultSet.getString(59)),
