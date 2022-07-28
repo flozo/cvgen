@@ -1,5 +1,6 @@
 package de.flozo.cvgen;
 
+import de.flozo.common.dto.appearance.Layer;
 import de.flozo.common.dto.latex.TikzLibrary;
 import de.flozo.db.*;
 import de.flozo.common.dto.appearance.ElementStyle;
@@ -133,10 +134,20 @@ public class Main {
             hyperOptions.add(String.format("pdfcontactcountry={%s}", sender.getCountry()));
             hyperOptions.add(String.format("pdfcontactemail={%s}", sender.getEMailAddress()));
 
+
+
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
             for (String line : preamble.getPreambleCode()) {
                 System.out.println(line);
             }
+
+            LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
+
+            for (Layer layer :layerDAO.getAll()) {
+                System.out.println(layer.getName());
+            }
+
+            
 
 //            PackageList packageList = new PackageList(documentclass);
 //            packageList.add(PackageName.INPUTENC, "utf8")
