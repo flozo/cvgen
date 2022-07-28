@@ -174,7 +174,7 @@ public class FormattedExpressionList implements ExpressionList {
             return this;
         }
 
-        public Builder terminator(Delimiter delimiter) {
+        public Builder delimiter(Delimiter delimiter) {
             this.delimiter = delimiter;
             return this;
         }

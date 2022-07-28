@@ -70,7 +70,7 @@ public class Node extends Path {
     private ExpressionList buildBody() {
         return new FormattedExpressionList.Builder(body)
                 .brackets(Bracket.CURLY_BRACES)
-                .terminator(bodyDelimiter)
+                .delimiter(bodyDelimiter)
                 .skipLastDelimiter(skipLastDelimiter)
                 .indentBlock(true)
                 .build();

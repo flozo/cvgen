@@ -53,7 +53,7 @@ public abstract class Path {
     private FormattedExpressionList.Builder buildOptionList() {
         return new FormattedExpressionList.Builder(optionalArguments)
                 .brackets(OPTIONS_BRACKETS)
-                .terminator(Delimiter.COMMA)
+                .delimiter(Delimiter.COMMA)
                 .skipLastDelimiter(skipLastDelimiter)
                 .inlineSpacing(true);
     }

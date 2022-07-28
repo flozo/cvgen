@@ -104,7 +104,7 @@ public class GenericCommand implements Command {
 
     private ExpressionList assembleOptionList(boolean indent, BracketMode openingBracketMode, BracketMode closingBracketMode) {
         return new FormattedExpressionList.Builder(optionList)
-                .terminator(optionDelimiter)
+                .delimiter(optionDelimiter)
                 .brackets(optionBrackets)
                 .skipLastDelimiter(skipLastDelimiterOptions)
                 .indentBlock(indent)
@@ -116,7 +116,7 @@ public class GenericCommand implements Command {
 
     private ExpressionList assembleBody(boolean indent, BracketMode openingBracketMode, BracketMode closingBracketMode) {
         return new FormattedExpressionList.Builder(body)
-                .terminator(bodyDelimiter)
+                .delimiter(bodyDelimiter)
                 .brackets(bodyBrackets)
                 .skipLastDelimiter(skipLastDelimiterBody)
                 .indentBlock(indent)
