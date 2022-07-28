@@ -136,7 +136,6 @@ public class Main {
             hyperOptions.add(String.format("pdfcontactemail={%s}", sender.getEMailAddress()));
 
 
-
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
             for (String line : preamble.getPreambleCode()) {
                 System.out.println(line);
@@ -147,11 +146,9 @@ public class Main {
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
-            for (String layer :layerDeclarationBlock) {
+            for (String layer : layerDeclarationBlock) {
                 System.out.println(layer);
             }
-
-
 
 
 //            PackageList packageList = new PackageList(documentclass);
