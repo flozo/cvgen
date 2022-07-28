@@ -1,15 +1,16 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.Layer;
-import de.flozo.common.dto.latex.TikzLibrary;
-import de.flozo.db.*;
 import de.flozo.common.dto.appearance.ElementStyle;
+import de.flozo.common.dto.appearance.Layer;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.LetterContent;
 import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
+import de.flozo.common.dto.latex.TikzLibrary;
+import de.flozo.db.*;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
+import de.flozo.latex.tikz.LayerList;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -142,12 +143,16 @@ public class Main {
             }
 
             LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
+            List<String> layers = layerDAO.getAll().stream().map(Layer::getName).collect(Collectors.toList());
+            LayerList layerList = new LayerList.Builder(layers).build();
+            List<String> layerDeclarationBlock = layerList.getLayerCode();
 
-            for (Layer layer :layerDAO.getAll()) {
-                System.out.println(layer.getName());
+            for (String layer :layerDeclarationBlock) {
+                System.out.println(layer);
             }
 
-            
+
+
 
 //            PackageList packageList = new PackageList(documentclass);
 //            packageList.add(PackageName.INPUTENC, "utf8")

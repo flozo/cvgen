@@ -30,12 +30,13 @@ public class LayerDAOImpl implements LayerDAO {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
+    public static final String ORDER_BY = " ORDER BY ";
 
     // query
 
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME + ORDER_BY + COLUMN_POSITION;
 
     public static final int NON_ID_COLUMNS = 2;
 
