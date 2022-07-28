@@ -7,20 +7,37 @@ import de.flozo.latex.tikz.Node;
 import de.flozo.latex.tikz.Point;
 
 
-public class Element {
+public class DocumentElement {
 
     private final String elementName;
     private final ContentElement content;
     private final ElementStyle style;
 
-    public Element(String elementName, ContentElement content, ElementStyle style) {
+    public DocumentElement(String elementName, ContentElement content, ElementStyle style) {
         this.elementName = elementName;
         this.content = content;
         this.style = style;
     }
 
-    public String getElementField() {
+    public String getElementFieldInline() {
         return new Node.Builder(content.inline())
+                .name(elementName)
+                .position(Point.fromNumbers(style.getPosition().getLengthX().getValue(), style.getPosition().getLengthY().getValue()))
+//                .anchor(style.getAnchor())
+                .minimumWidth(LengthExpression.fromLength(style.getWidth()))
+                .minimumHeight(LengthExpression.fromLength(style.getHeight()))
+                .fillColor(style.getAreaStyle().getColor())
+                .drawColor(style.getLineStyle().getBaseColor())
+                .textColor(style.getTextStyle().getColor())
+                .textWidth(LengthExpression.fromLength(style.getWidth()))
+//                .alignment(style.getTextStyle().)
+                .fontSize(style.getTextStyle().getFontSize())
+                .bodyDelimiter(Delimiter.DOUBLE_BACKSLASH)
+                .build().getInline();
+    }
+
+    public String getElementFieldMultiline() {
+        return new Node.Builder(content.multiline())
                 .name(elementName)
                 .position(Point.fromNumbers(style.getPosition().getLengthX().getValue(), style.getPosition().getLengthY().getValue()))
 //                .anchor(style.getAnchor())

@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ContentElement {
 
+    public static final String DEFAULT_DELIMITER = "";
     private final List<String> components;
-
     private final String delimiter;
 
     private ContentElement(Builder builder) {
@@ -17,6 +17,7 @@ public class ContentElement {
     private String joinComponentsWithDelimiter(String delimiter) {
         return String.join(delimiter, components);
     }
+
     public String inline() {
         return joinComponentsWithDelimiter(delimiter);
     }
@@ -32,7 +33,7 @@ public class ContentElement {
         private final List<String> components;
 
         // optional
-        private String delimiter;
+        private String delimiter = DEFAULT_DELIMITER;
 
         public Builder(List<String> components) {
             this.components = components;

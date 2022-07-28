@@ -1,0 +1,31 @@
+## images
+*.jpg binary
+*.jpeg binary
+*.bmp binary
+*.png binary
+*.xcf binary
+*.tif binary
+*.tiff binary
+*.gif binary
+*.svg binary
+*.eps binary
+
+## documents
+*.pdf binary
+*.ps binary
+*.dvi binary
+
+## audio
+*.mp3 binary
+*.flac binary
+*.ogg binary
+*.wav binary
+*.au binary
+
+## video
+*.mp4 binary
+*.flv binary
+
+## databases
+*.db binary
+

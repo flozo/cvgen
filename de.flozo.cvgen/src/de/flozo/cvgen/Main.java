@@ -76,7 +76,15 @@ public class Main {
                     .addComponent(receiverStreetLine.inline())
                     .addComponent(receiverCityLine.inline())
                     .build();
-            System.out.println(addressFieldText.multiline());
+
+            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
+            ElementStyle senderFieldStyle = elementStyleDAO.get("sender_field");
+            ElementStyle addressFieldStyle = elementStyleDAO.get("address_field");
+
+            DocumentElement addressField = new DocumentElement("address", addressFieldText, addressFieldStyle);
+
+            System.out.println(addressField.getElementFieldMultiline());
+
 
             ContentElement dateField = new ContentElement.Builder()
                     .addComponent(sender.getCity())
@@ -85,9 +93,6 @@ public class Main {
                     .build();
             System.out.println(dateField.inline());
 
-
-            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
-            ElementStyle senderField = elementStyleDAO.get("sender_field");
 
             ContentElement senderNameLine = new ContentElement.Builder()
                     .addComponent(sender.getFirstName())
