@@ -69,13 +69,19 @@ public class Preamble {
                 .build().getBlock();
     }
 
+    private List<String> getPackageSettings() {
+        List<String> packageSettings = new ArrayList<>();
+        packageSettings.add(getUseTikzLibraryCommand());
+        packageSettings.add(getStandaloneEnvironmentCommand());
+        packageSettings.addAll(getHypersetupCommand());
+        return packageSettings;
+    }
+
     public List<String> getPreambleCode() {
         List<String> preambleLines = new ArrayList<>();
         preambleLines.add(getDocumentClassCommand());
         preambleLines.addAll(getUsepackageBlock());
-        preambleLines.add(getUseTikzLibraryCommand());
-        preambleLines.add(getStandaloneEnvironmentCommand());
-        preambleLines.addAll(getHypersetupCommand());
+        preambleLines.addAll(getPackageSettings());
         return preambleLines;
     }
 
