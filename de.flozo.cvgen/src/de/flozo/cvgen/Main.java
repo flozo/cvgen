@@ -10,7 +10,7 @@ import de.flozo.common.dto.latex.TikzLibrary;
 import de.flozo.db.*;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
-import de.flozo.latex.tikz.LayerList;
+import de.flozo.latex.assembly.LayerList;
 
 import java.sql.Connection;
 import java.time.LocalDate;

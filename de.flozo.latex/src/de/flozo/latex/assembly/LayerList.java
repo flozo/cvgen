@@ -1,4 +1,4 @@
-package de.flozo.latex.tikz;
+package de.flozo.latex.assembly;
 
 import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.GenericCommand;
@@ -20,14 +20,19 @@ public class LayerList {
         List<String> codeLines = new ArrayList<>();
         for (String layer : layers) {
             if (!Objects.equals(layer, "main")) {
-                codeLines.add(new GenericCommand.Builder("pgfdeclarelayer").body(layer).build().getInline());
+                codeLines.add(new GenericCommand.Builder("pgfdeclarelayer")
+                        .body(layer)
+                        .build().getInline());
             }
         }
         return codeLines;
     }
 
     private String getSetLayers() {
-        return new GenericCommand.Builder("pgfsetlayers").body(layers).bodyDelimiter(Delimiter.COMMA).build().getInline();
+        return new GenericCommand.Builder("pgfsetlayers")
+                .body(layers)
+                .bodyDelimiter(Delimiter.COMMA)
+                .build().getInline();
     }
     public List<String> getLayerCode() {
         List<String> codeLines = new ArrayList<>(getDeclarationBlock());
