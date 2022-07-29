@@ -14,6 +14,7 @@ public class ElementDAOImpl implements ElementDAO {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_ELEMENT_STYLE_ID = "element_style_id";
     public static final String COLUMN_ON_PAGE_ID = "on_page_id";
+    public static final String COLUMN_ON_LAYER_ID = "on_layer_id";
     public static final String COLUMN_INCLUDE = "include";
 
     // sql
@@ -36,14 +37,16 @@ public class ElementDAOImpl implements ElementDAO {
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
-    public static final int NON_ID_COLUMNS = 4;
+    public static final int NON_ID_COLUMNS = 5;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_ELEMENT_STYLE_ID + COMMA +
             COLUMN_ON_PAGE_ID + COMMA +
+            COLUMN_ON_LAYER_ID + COMMA +
             COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
@@ -52,6 +55,7 @@ public class ElementDAOImpl implements ElementDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ELEMENT_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ON_PAGE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ON_LAYER_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
@@ -114,6 +118,24 @@ public class ElementDAOImpl implements ElementDAO {
         showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
+            List<Element> elements = new ArrayList<>();
+            while (resultSet.next()) {
+                elements.add(extractFromResultSet(resultSet));
+            }
+            System.out.println(" done!");
+            return elements;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<Element> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
             List<Element> elements = new ArrayList<>();
             while (resultSet.next()) {
                 elements.add(extractFromResultSet(resultSet));
@@ -195,7 +217,7 @@ public class ElementDAOImpl implements ElementDAO {
     }
 
     private Element extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Element(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getBoolean(5));
+        return new Element(resultSet.getInt(1), resultSet.getString(2), resultSet.getInt(3), resultSet.getInt(4), resultSet.getInt(5), resultSet.getBoolean(6));
     }
 
     private void setAllValues(PreparedStatement preparedStatement, Element element) throws SQLException {
@@ -203,7 +225,8 @@ public class ElementDAOImpl implements ElementDAO {
         preparedStatement.setString(2, element.getName());
         preparedStatement.setInt(3, element.getElementStyleId());
         preparedStatement.setInt(4, element.getOnPageId());
-        preparedStatement.setBoolean(5, element.isInclude());
+        preparedStatement.setInt(5, element.getOnLayerId());
+        preparedStatement.setBoolean(6, element.isInclude());
     }
 
     @Override

@@ -6,13 +6,15 @@ public class Element {
     private String name;
     private int elementStyleId;
     private int onPageId;
+    private int onLayerId;
     private boolean include;
 
-    public Element(int id, String name, int elementStyleId, int onPageId, boolean include) {
+    public Element(int id, String name, int elementStyleId, int onPageId, int onLayerId, boolean include) {
         this.id = id;
         this.name = name;
         this.elementStyleId = elementStyleId;
         this.onPageId = onPageId;
+        this.onLayerId = onLayerId;
         this.include = include;
     }
 
@@ -48,6 +50,14 @@ public class Element {
         this.onPageId = onPageId;
     }
 
+    public int getOnLayerId() {
+        return onLayerId;
+    }
+
+    public void setOnLayerId(int onLayerId) {
+        this.onLayerId = onLayerId;
+    }
+
     public boolean isInclude() {
         return include;
     }
@@ -63,6 +73,7 @@ public class Element {
                 ", name='" + name + '\'' +
                 ", elementStyleId=" + elementStyleId +
                 ", onPageId=" + onPageId +
+                ", onLayerId=" + onLayerId +
                 ", include=" + include +
                 '}';
     }

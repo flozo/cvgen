@@ -15,6 +15,7 @@ public interface ElementDAO extends DAO<Element> {
     @Override
     List<Element> getAll();
 
+    List<Element> getAllIncluded();
     @Override
     void add(Element element);
 

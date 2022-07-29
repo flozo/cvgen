@@ -8,9 +8,9 @@ import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
 import de.flozo.common.dto.latex.TikzLibrary;
 import de.flozo.db.*;
+import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
-import de.flozo.latex.assembly.LayerList;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -71,28 +71,44 @@ public class Main {
                     .addComponent(receiver.getCity())
                     .inlineDelimiter(" ")
                     .build();
-            ContentElement addressFieldText = new ContentElement.Builder()
+            ContentElement addressFieldContent = new ContentElement.Builder()
                     .addComponent(receiverNameLine.inline())
                     .addComponent(receiverStreetLine.inline())
                     .addComponent(receiverCityLine.inline())
                     .build();
 
-            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
-            ElementStyle senderFieldStyle = elementStyleDAO.get("sender_field");
-            ElementStyle addressFieldStyle = elementStyleDAO.get("address_field");
-
-            DocumentElement addressField = new DocumentElement("address", addressFieldText, addressFieldStyle);
-
-            System.out.println(addressField.getElementFieldMultiline());
-
-
-            ContentElement dateField = new ContentElement.Builder()
+            ContentElement dateFieldContent = new ContentElement.Builder()
                     .addComponent(sender.getCity())
                     .addComponent(letterContent.getDate())
                     .inlineDelimiter(", ")
                     .build();
-            System.out.println(dateField.inline());
 
+            ContentElement subjectFieldContent = new ContentElement.Builder()
+                    .addComponent(letterContent.getSubject())
+                    .build();
+
+            ContentElement bodyContent = new ContentElement.Builder()
+                    .addComponent(letterContent.getBodyText())
+                    .build();
+
+//            ElementDAO receiverAddress = new ElementDAOImpl(datasource2, connection);
+//
+//            for (Element element : receiverAddress.getAllIncluded()) {
+//
+//            }
+
+
+            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
+            ElementStyle senderFieldStyle = elementStyleDAO.get("sender_field");
+            ElementStyle addressFieldStyle = elementStyleDAO.get("address_field");
+            ElementStyle dateFieldStyle = elementStyleDAO.get("date_field");
+            ElementStyle subjectFieldStyle = elementStyleDAO.get("subject_field");
+            ElementStyle bodyFieldStyle = elementStyleDAO.get("letter_body");
+
+            DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, addressFieldStyle);
+            DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, dateFieldStyle);
+            DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, subjectFieldStyle);
+            DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, bodyFieldStyle);
 
             ContentElement senderNameLine = new ContentElement.Builder()
                     .addComponent(sender.getFirstName())
