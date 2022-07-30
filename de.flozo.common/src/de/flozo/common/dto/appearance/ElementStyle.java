@@ -4,21 +4,13 @@ public class ElementStyle {
 
     private int id;
     private String name;
-    private Position position;
-    private Length width;
-    private Length height;
-    private Anchor anchor;
     private TextStyle textStyle;
     private LineStyle lineStyle;
     private AreaStyle areaStyle;
 
-    public ElementStyle(int id, String name, Position position, Length width, Length height, Anchor anchor, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
+    public ElementStyle(int id, String name, TextStyle textStyle, LineStyle lineStyle, AreaStyle areaStyle) {
         this.id = id;
         this.name = name;
-        this.position = position;
-        this.width = width;
-        this.height = height;
-        this.anchor = anchor;
         this.textStyle = textStyle;
         this.lineStyle = lineStyle;
         this.areaStyle = areaStyle;
@@ -38,38 +30,6 @@ public class ElementStyle {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
-    public Length getWidth() {
-        return width;
-    }
-
-    public void setWidth(Length width) {
-        this.width = width;
-    }
-
-    public Length getHeight() {
-        return height;
-    }
-
-    public void setHeight(Length height) {
-        this.height = height;
-    }
-
-    public Anchor getAnchor() {
-        return anchor;
-    }
-
-    public void setAnchor(Anchor anchor) {
-        this.anchor = anchor;
     }
 
     public TextStyle getTextStyle() {
@@ -101,10 +61,6 @@ public class ElementStyle {
         return "ElementStyle{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", position=" + position +
-                ", width=" + width +
-                ", height=" + height +
-                ", anchor=" + anchor +
                 ", textStyle=" + textStyle +
                 ", lineStyle=" + lineStyle +
                 ", areaStyle=" + areaStyle +
