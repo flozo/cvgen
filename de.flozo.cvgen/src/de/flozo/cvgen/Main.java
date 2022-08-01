@@ -1,6 +1,5 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.ElementStyle;
 import de.flozo.common.dto.appearance.Layer;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.LetterContent;
@@ -23,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "CVgen";
-    public static final String VERSION_NUMBER = "0.1";
-    public static final String VERSION_DATE = "2022-07-28";
+    public static final String VERSION_NUMBER = "0.2";
+    public static final String VERSION_DATE = "2022-07-30";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -77,6 +76,31 @@ public class Main {
                     .addComponent(receiverCityLine.inline())
                     .build();
 
+
+            ContentElement senderNameLine = new ContentElement.Builder()
+                    .addComponent(sender.getFirstName())
+                    .addComponent(sender.getLastName())
+                    .inlineDelimiter(" ")
+                    .build();
+
+            ContentElement senderStreetLine = new ContentElement.Builder()
+                    .addComponent(sender.getStreet())
+                    .addComponent(sender.getHouseNumber())
+                    .inlineDelimiter(" ")
+                    .build();
+            ContentElement senderCityLine = new ContentElement.Builder()
+                    .addComponent(sender.getPostalCode())
+                    .addComponent(sender.getCity())
+                    .inlineDelimiter(" ")
+                    .build();
+
+            ContentElement backaddressFieldContent = new ContentElement.Builder()
+                    .addComponent(senderNameLine.inline())
+                    .addComponent(senderStreetLine.inline())
+                    .addComponent(senderCityLine.inline())
+                    .inlineDelimiter("\\hspace{8pt}$\\bullet$\\hspace{8pt}")
+                    .build();
+
             ContentElement dateFieldContent = new ContentElement.Builder()
                     .addComponent(sender.getCity())
                     .addComponent(letterContent.getDate())
@@ -91,50 +115,27 @@ public class Main {
                     .addComponent(letterContent.getBodyText())
                     .build();
 
-//            ElementDAO receiverAddress = new ElementDAOImpl(datasource2, connection);
-//
-//            for (Element element : receiverAddress.getAllIncluded()) {
-//
-//            }
 
 
-            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
-            ElementStyle senderFieldStyle = elementStyleDAO.get("sender_field");
-            ElementStyle addressFieldStyle = elementStyleDAO.get("address_field");
-            ElementStyle dateFieldStyle = elementStyleDAO.get("date_field");
-            ElementStyle subjectFieldStyle = elementStyleDAO.get("subject_field");
-            ElementStyle bodyFieldStyle = elementStyleDAO.get("letter_body");
 
-            DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, addressFieldStyle);
-            DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, dateFieldStyle);
-            DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, subjectFieldStyle);
-            DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, bodyFieldStyle);
+            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
 
-            ContentElement senderNameLine = new ContentElement.Builder()
-                    .addComponent(sender.getFirstName())
-                    .addComponent(sender.getLastName())
-                    .inlineDelimiter(" ")
-                    .build();
-
-//            LatexCommandDAO latexCommandDAO = new LatexCommandDAOImpl(datasource2, connection);
-//            LatexCommand documentclass = latexCommandDAO.get("documentclass");
-//            LatexCommand usepackage = latexCommandDAO.get("usepackage");
-//            LatexCommand usetikzlibrary = latexCommandDAO.get("usetikzlibrary");
-//            LatexCommand standaloneenv = latexCommandDAO.get("standaloneenv");
-//            LatexCommand node = latexCommandDAO.get("node");
-//
-//            LatexPackage standard = latexPackageDAO.get("latex_standard");
+            DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, elementDAO.get("address"));
+            DocumentElement backaddressField = new DocumentElement("backaddress", backaddressFieldContent, elementDAO.get("backaddress"));
+            DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, elementDAO.get("date"));
+            DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
+            DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
 
 
-//            System.out.println(senderField.toString());
-//            System.out.println(senderField.getPosition());
-//            System.out.println(senderField.getAnchor());
+            DocumentPage motivationalLetter = new DocumentPage(addressField, backaddressField, dateField, subjectField, bodyField);
 
-//            AddressDAO senderDAO = new AddressDAOImpl(datasource2, connection);
-//            Address sender = senderDAO.get(2);
+            System.out.println("77777777777777");
+            for (String line : motivationalLetter.getCode()) {
+                System.out.println(line);
+            }
+            System.out.println("77777777888888888888");
 
 
-//            GenericCommand documentclass = Documentclass.createWithOptions(DocumentClassName.STANDALONE, "12pt", "tikz", "multi", "crop");
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);

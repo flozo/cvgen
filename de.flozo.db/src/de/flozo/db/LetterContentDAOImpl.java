@@ -19,7 +19,7 @@ public class LetterContentDAOImpl implements LetterContentDAO {
     public static final String COLUMN_LETTER_DATE = "letter_date";
     public static final String COLUMN_BODY_TEXT = "body_text";
 
-    // view (read only)
+    // view
     public static final String VIEW_NAME = "letter_content_view";
     public static final String VIEW_COLUMN_ID = "_id";
     public static final String VIEW_COLUMN_NAME = "name";

@@ -242,10 +242,10 @@ public class SeparationSpaceDAOImpl implements SeparationSpaceDAO {
 
     private void setAllValues(PreparedStatement preparedStatement, SeparationSpace separationSpace) throws SQLException {
         preparedStatement.setString(1, separationSpace.getName());
-        preparedStatement.setInt(2, separationSpace.getInnerXSepId().getId());
-        preparedStatement.setInt(3, separationSpace.getInnerYSepId().getId());
-        preparedStatement.setInt(4, separationSpace.getOuterXSepId().getId());
-        preparedStatement.setInt(5, separationSpace.getOuterYSepId().getId());
+        preparedStatement.setInt(2, separationSpace.getInnerXSep().getId());
+        preparedStatement.setInt(3, separationSpace.getInnerYSep().getId());
+        preparedStatement.setInt(4, separationSpace.getOuterXSep().getId());
+        preparedStatement.setInt(5, separationSpace.getOuterYSep().getId());
     }
 
 }
