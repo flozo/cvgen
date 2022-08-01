@@ -34,11 +34,14 @@ public class DocumentElement {
                 .textWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .alignment(element.getElementStyle().getTextStyle().getAlignment())
                 .textColor(element.getElementStyle().getTextStyle().getColor())
+                .textOpacity(element.getElementStyle().getTextStyle().getOpacity())
                 .lineCap(element.getElementStyle().getLineStyle().getLineCap())
                 .lineJoin(element.getElementStyle().getLineStyle().getLineJoin())
                 .dashPatternStyle(element.getElementStyle().getLineStyle().getDashPattern())
                 .drawColor(element.getElementStyle().getLineStyle().getBaseColor())
+                .lineOpacity(element.getElementStyle().getLineStyle().getOpacity())
                 .fillColor(element.getElementStyle().getAreaStyle().getColor())
+                .areaOpacity(element.getElementStyle().getAreaStyle().getOpacity())
                 .bodyDelimiter(Delimiter.DOUBLE_BACKSLASH)
                 .build();
     }

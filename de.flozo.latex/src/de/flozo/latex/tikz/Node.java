@@ -132,6 +132,9 @@ public class Node extends Path {
         private LengthExpression innerYSep;
         private LengthExpression outerXSep;
         private LengthExpression outerYSep;
+        private PredefinedOpacity textOpacity;
+        private PredefinedOpacity lineOpacity;
+        private PredefinedOpacity areaOpacity;
         private boolean isMatrix = DEFAULT_IS_MATRIX;
 
         public Builder(String... body) {
@@ -193,6 +196,30 @@ public class Node extends Path {
         public Builder fillColor(BaseColor fillColor) {
             this.fillColor = fillColor;
             addOption(NodeOption.FILL, fillColor.getName());
+            return this;
+        }
+
+        public Builder textOpacity(PredefinedOpacity textOpacity) {
+            this.textOpacity = textOpacity;
+            if (!Objects.equals(textOpacity.getValue(), "opaque")) {
+                addOption(NodeOption.TEXT_OPACITY, textOpacity.getValue());
+            }
+            return this;
+        }
+
+        public Builder lineOpacity(PredefinedOpacity lineOpacity) {
+            this.lineOpacity = lineOpacity;
+            if (!Objects.equals(lineOpacity.getValue(), "opaque")) {
+                addOption(NodeOption.DRAW_OPACITY, lineOpacity.getValue());
+            }
+            return this;
+        }
+
+        public Builder areaOpacity(PredefinedOpacity areaOpacity) {
+            this.areaOpacity = areaOpacity;
+            if (!Objects.equals(areaOpacity.getValue(), "opaque")) {
+                addOption(NodeOption.FILL_OPACITY, areaOpacity.getValue());
+            }
             return this;
         }
 
