@@ -9,12 +9,12 @@ public class Element {
     private Length minimumWidth;
     private Length minimumHeight;
     private SeparationSpace separationSpace;
-    private ElementStyle elementStyleId;
+    private ElementStyle elementStyle;
     private int onPageId;
     private int onLayerId;
     private boolean include;
 
-    public Element(int id, String name, Position position, Anchor anchor, Length minimumWidth, Length minimumHeight, SeparationSpace separationSpace, ElementStyle elementStyleId, int onPageId, int onLayerId, boolean include) {
+    public Element(int id, String name, Position position, Anchor anchor, Length minimumWidth, Length minimumHeight, SeparationSpace separationSpace, ElementStyle elementStyle, int onPageId, int onLayerId, boolean include) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -22,7 +22,7 @@ public class Element {
         this.minimumWidth = minimumWidth;
         this.minimumHeight = minimumHeight;
         this.separationSpace = separationSpace;
-        this.elementStyleId = elementStyleId;
+        this.elementStyle = elementStyle;
         this.onPageId = onPageId;
         this.onLayerId = onLayerId;
         this.include = include;
@@ -84,12 +84,12 @@ public class Element {
         this.separationSpace = separationSpace;
     }
 
-    public ElementStyle getElementStyleId() {
-        return elementStyleId;
+    public ElementStyle getElementStyle() {
+        return elementStyle;
     }
 
-    public void setElementStyleId(ElementStyle elementStyleId) {
-        this.elementStyleId = elementStyleId;
+    public void setElementStyle(ElementStyle elementStyle) {
+        this.elementStyle = elementStyle;
     }
 
     public int getOnPageId() {
@@ -126,7 +126,7 @@ public class Element {
                 ", minimumWidth=" + minimumWidth +
                 ", minimumHeight=" + minimumHeight +
                 ", separationSpace=" + separationSpace +
-                ", elementStyleId=" + elementStyleId +
+                ", elementStyle=" + elementStyle +
                 ", onPageId=" + onPageId +
                 ", onLayerId=" + onLayerId +
                 ", include=" + include +

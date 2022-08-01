@@ -4,18 +4,18 @@ public class SeparationSpace {
 
     private int id;
     private String name;
-    private Length innerXSepId;
-    private Length innerYSepId;
-    private Length outerXSepId;
-    private Length outerYSepId;
+    private Length innerXSep;
+    private Length innerYSep;
+    private Length outerXSep;
+    private Length outerYSep;
 
-    public SeparationSpace(int id, String name, Length innerXSepId, Length innerYSepId, Length outerXSepId, Length outerYSepId) {
+    public SeparationSpace(int id, String name, Length innerXSep, Length innerYSep, Length outerXSep, Length outerYSep) {
         this.id = id;
         this.name = name;
-        this.innerXSepId = innerXSepId;
-        this.innerYSepId = innerYSepId;
-        this.outerXSepId = outerXSepId;
-        this.outerYSepId = outerYSepId;
+        this.innerXSep = innerXSep;
+        this.innerYSep = innerYSep;
+        this.outerXSep = outerXSep;
+        this.outerYSep = outerYSep;
     }
 
     public int getId() {
@@ -34,36 +34,36 @@ public class SeparationSpace {
         this.name = name;
     }
 
-    public Length getInnerXSepId() {
-        return innerXSepId;
+    public Length getInnerXSep() {
+        return innerXSep;
     }
 
-    public void setInnerXSepId(Length innerXSepId) {
-        this.innerXSepId = innerXSepId;
+    public void setInnerXSep(Length innerXSep) {
+        this.innerXSep = innerXSep;
     }
 
-    public Length getInnerYSepId() {
-        return innerYSepId;
+    public Length getInnerYSep() {
+        return innerYSep;
     }
 
-    public void setInnerYSepId(Length innerYSepId) {
-        this.innerYSepId = innerYSepId;
+    public void setInnerYSep(Length innerYSep) {
+        this.innerYSep = innerYSep;
     }
 
-    public Length getOuterXSepId() {
-        return outerXSepId;
+    public Length getOuterXSep() {
+        return outerXSep;
     }
 
-    public void setOuterXSepId(Length outerXSepId) {
-        this.outerXSepId = outerXSepId;
+    public void setOuterXSep(Length outerXSep) {
+        this.outerXSep = outerXSep;
     }
 
-    public Length getOuterYSepId() {
-        return outerYSepId;
+    public Length getOuterYSep() {
+        return outerYSep;
     }
 
-    public void setOuterYSepId(Length outerYSepId) {
-        this.outerYSepId = outerYSepId;
+    public void setOuterYSep(Length outerYSep) {
+        this.outerYSep = outerYSep;
     }
 
     @Override
@@ -71,10 +71,10 @@ public class SeparationSpace {
         return "SeparationSpace{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", innerXSepId=" + innerXSepId +
-                ", innerYSepId=" + innerYSepId +
-                ", outerXSepId=" + outerXSepId +
-                ", outerYSepId=" + outerYSepId +
+                ", innerXSep=" + innerXSep +
+                ", innerYSep=" + innerYSep +
+                ", outerXSep=" + outerXSep +
+                ", outerYSep=" + outerYSep +
                 '}';
     }
 }
