@@ -28,6 +28,8 @@ public class DocumentElement {
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
                 .innerXSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()))
                 .innerYSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerYSep()))
+                .outerXSep(LengthExpression.fromLength(element.getSeparationSpace().getOuterXSep()))
+                .outerYSep(LengthExpression.fromLength(element.getSeparationSpace().getOuterYSep()))
                 .fontSize(element.getElementStyle().getTextStyle().getFontSize())
                 .textWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .alignment(element.getElementStyle().getTextStyle().getAlignment())

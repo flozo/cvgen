@@ -130,6 +130,8 @@ public class Node extends Path {
         private Alignment alignment;
         private LengthExpression innerXSep;
         private LengthExpression innerYSep;
+        private LengthExpression outerXSep;
+        private LengthExpression outerYSep;
         private boolean isMatrix = DEFAULT_IS_MATRIX;
 
         public Builder(String... body) {
@@ -285,6 +287,22 @@ public class Node extends Path {
             this.innerYSep = innerYSep;
             if (innerYSep.getNumericalValue() != 0) {
                 addOption(NodeOption.INNER_Y_SEP, innerYSep.getFormatted());
+            }
+            return this;
+        }
+
+        public Builder outerXSep(LengthExpression outerXSep) {
+            this.outerXSep = outerXSep;
+            if (outerXSep.getNumericalValue() != 0) {
+                addOption(NodeOption.OUTER_X_SEP, outerXSep.getFormatted());
+            }
+            return this;
+        }
+
+        public Builder outerYSep(LengthExpression outerYSep) {
+            this.outerYSep = outerYSep;
+            if (outerYSep.getNumericalValue() != 0) {
+                addOption(NodeOption.OUTER_Y_SEP, outerYSep.getFormatted());
             }
             return this;
         }

@@ -14,6 +14,8 @@ public enum NodeOption {
     INNER_SEP("inner sep"),
     INNER_X_SEP("inner xsep"),
     INNER_Y_SEP("inner ysep"),
+    OUTER_X_SEP("outer xsep"),
+    OUTER_Y_SEP("outer ysep"),
     ALIGN("align"),
     FONT("font"),
     X_SHIFT("xshift"),
