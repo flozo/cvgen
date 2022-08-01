@@ -22,6 +22,11 @@ public class ElementDAOImpl implements ElementDAO {
     public static final String COLUMN_ON_LAYER_ID = "on_layer_id";
     public static final String COLUMN_INCLUDE = "include";
 
+    // view
+    public static final String VIEW_NAME = "element_view";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_NAME = "name";
+
     // sql
     public static final char OPENING_PARENTHESIS = '(';
     public static final char CLOSING_PARENTHESIS = ')';
@@ -44,17 +49,17 @@ public class ElementDAOImpl implements ElementDAO {
 
     // CREATE VIEW element_view AS
     // SELECT e._id, e.name,
-    //	 pv._id AS position_id, pv.name AS position_name, pv.x_length_id AS position_x_length_id, pv.x_length_name AS position_x_length_name, pv.x_length_value AS position_x_length_value, pv.x_length_unit_id AS position_x_length_unit_id, pv.x_length_unit_name AS position_x_length_unit_name, pv.x_length_unit_value AS position_x_length_unit_value, pv.y_length_id AS position_y_length_id, pv.y_length_name AS position_y_length_name, pv.y_length_value AS position_y_length_value, pv.y_length_unit_id AS position_y_length_unit_id, pv.y_length_unit_name AS position_y_length_unit_name, pv.y_length_unit_value AS position_y_length_unit_value,
-    //	 a._id AS anchor_id, a.name AS anchor_name, a.value AS anchor_value,
-    //	 lvmw._id AS minimum_width_id, lvmw.name AS minimum_width_name, lvmw.value AS minimum_width_value, lvmw.length_unit_id AS minimum_width_unit_id, lvmw.length_unit_name AS minimum_width_unit_name, lvmw.length_unit_value AS minimum_width_unit_value,
-    //	 lvmh._id AS minimum_height_id, lvmh.name AS minimum_height_name, lvmh.value AS minimum_height_value, lvmh.length_unit_id AS minimum_height_unit_id, lvmh.length_unit_name AS minimum_height_unit_name, lvmh.length_unit_value AS minimum_height_unit_value,
-    //	 ssv._id AS separation_spaces_id, ssv.name AS separation_spaces_name,
-    //		inner_x_sep_length_id, inner_x_sep_length_name, inner_x_sep_length_value, inner_x_sep_length_unit_id, inner_x_sep_length_unit_name, inner_x_sep_length_unit_value,
-    //		inner_y_sep_length_id, inner_y_sep_length_name, inner_y_sep_length_value, inner_y_sep_length_unit_id, inner_y_sep_length_unit_name, inner_y_sep_length_unit_value,
-    //		outer_x_sep_length_id, outer_x_sep_length_name, outer_x_sep_length_value, outer_x_sep_length_unit_id, outer_x_sep_length_unit_name, outer_x_sep_length_unit_value,
-    //		outer_y_sep_length_id, outer_y_sep_length_name, outer_y_sep_length_value, outer_y_sep_length_unit_id, outer_y_sep_length_unit_name, outer_y_sep_length_unit_value,
-    //	 esv.*,
-    //	 e.on_page_id, e.on_layer_id, e.include
+    //   pv._id AS position_id, pv.name AS position_name, pv.x_length_id AS position_x_length_id, pv.x_length_name AS position_x_length_name, pv.x_length_value AS position_x_length_value, pv.x_length_unit_id AS position_x_length_unit_id, pv.x_length_unit_name AS position_x_length_unit_name, pv.x_length_unit_value AS position_x_length_unit_value, pv.y_length_id AS position_y_length_id, pv.y_length_name AS position_y_length_name, pv.y_length_value AS position_y_length_value, pv.y_length_unit_id AS position_y_length_unit_id, pv.y_length_unit_name AS position_y_length_unit_name, pv.y_length_unit_value AS position_y_length_unit_value,
+    //   a._id AS anchor_id, a.name AS anchor_name, a.value AS anchor_value,
+    //   lvmw._id AS minimum_width_id, lvmw.name AS minimum_width_name, lvmw.value AS minimum_width_value, lvmw.length_unit_id AS minimum_width_unit_id, lvmw.length_unit_name AS minimum_width_unit_name, lvmw.length_unit_value AS minimum_width_unit_value,
+    //   lvmh._id AS minimum_height_id, lvmh.name AS minimum_height_name, lvmh.value AS minimum_height_value, lvmh.length_unit_id AS minimum_height_unit_id, lvmh.length_unit_name AS minimum_height_unit_name, lvmh.length_unit_value AS minimum_height_unit_value,
+    //   ssv._id AS separation_spaces_id, ssv.name AS separation_spaces_name,
+    //     inner_x_sep_length_id, inner_x_sep_length_name, inner_x_sep_length_value, inner_x_sep_length_unit_id, inner_x_sep_length_unit_name, inner_x_sep_length_unit_value,
+    //     inner_y_sep_length_id, inner_y_sep_length_name, inner_y_sep_length_value, inner_y_sep_length_unit_id, inner_y_sep_length_unit_name, inner_y_sep_length_unit_value,
+    //     outer_x_sep_length_id, outer_x_sep_length_name, outer_x_sep_length_value, outer_x_sep_length_unit_id, outer_x_sep_length_unit_name, outer_x_sep_length_unit_value,
+    //     outer_y_sep_length_id, outer_y_sep_length_name, outer_y_sep_length_value, outer_y_sep_length_unit_id, outer_y_sep_length_unit_name, outer_y_sep_length_unit_value,
+    //   esv.*,
+    //   e.on_page_id, e.on_layer_id, e.include
     // FROM elements AS e
     // INNER JOIN position_view AS pv ON e.position_id = pv._id
     // INNER JOIN anchors AS a ON e.anchor_id = a._id
@@ -63,10 +68,10 @@ public class ElementDAOImpl implements ElementDAO {
     // INNER JOIN separation_spaces_view AS ssv ON e.separation_spaces_id = ssv._id
     // INNER JOIN element_styles_view AS esv ON e.element_style_id = esv._id
 
-    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
-    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
     public static final int NON_ID_COLUMNS = 10;
 
@@ -311,7 +316,7 @@ public class ElementDAOImpl implements ElementDAO {
         preparedStatement.setInt(4, element.getMinimumWidth().getId());
         preparedStatement.setInt(5, element.getMinimumHeight().getId());
         preparedStatement.setInt(6, element.getSeparationSpace().getId());
-        preparedStatement.setInt(7, element.getElementStyleId().getId());
+        preparedStatement.setInt(7, element.getElementStyle().getId());
         preparedStatement.setInt(8, element.getOnPageId());
         preparedStatement.setInt(9, element.getOnLayerId());
         preparedStatement.setBoolean(10, element.isInclude());
