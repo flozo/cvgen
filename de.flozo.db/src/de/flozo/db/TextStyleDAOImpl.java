@@ -14,6 +14,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_FONT_SIZE_ID = "font_size_id";
     public static final String COLUMN_TEXT_FORMAT_ID = "text_format_id";
+    public static final String COLUMN_TEXT_WIDTH_ID = "text_width_id";
+    public static final String COLUMN_ALIGNMENT_ID = "alignment_id";
     public static final String COLUMN_COLOR_ID = "color_id";
     public static final String COLUMN_OPACITY_ID = "opacity_id";
 
@@ -44,27 +46,32 @@ public class TextStyleDAOImpl implements TextStyleDAO {
 
     // text_style_view created via:
 
-    // CREATE VIEW text_style_view AS SELECT ts._id, ts.name,
-    // fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
-    // tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
-    // c._id AS color_id, c.name AS color_name,
-    // o._id AS opacity_id, o.value AS opacity_value
+    // CREATE VIEW text_style_view AS
+    // SELECT ts._id, ts.name,
+    //   fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
+    //   tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
+    //   lv._id AS text_width_id, lv.name AS text_width_name, lv.value AS text_width_value, lv.length_unit_id AS text_width_unit_id, lv.length_unit_name AS text_width_unit_name, lv.length_unit_value AS text_width_unit_value,
+    //   c._id AS color_id, c.name AS color_name,
+    //   o._id AS opacity_id, o.value AS opacity_value
     // FROM text_styles AS ts
     // INNER JOIN font_sizes AS fs ON ts.font_size_id = fs._id
     // INNER JOIN text_formats AS tf ON ts.text_format_id = tf._id
+    // INNER JOIN length_view AS lv ON ts.text_width_id = lv._id
     // INNER JOIN base_colors AS c ON ts.color_id = c._id
     // INNER JOIN predefined_opacities AS o ON ts.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 5;
+    public static final int NON_ID_COLUMNS = 7;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_FONT_SIZE_ID + COMMA +
             COLUMN_TEXT_FORMAT_ID + COMMA +
+            COLUMN_TEXT_WIDTH_ID + COMMA +
+            COLUMN_ALIGNMENT_ID + COMMA +
             COLUMN_COLOR_ID + COMMA +
             COLUMN_OPACITY_ID +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
@@ -74,6 +81,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_FONT_SIZE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_TEXT_FORMAT_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_TEXT_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ALIGNMENT_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
@@ -202,8 +211,11 @@ public class TextStyleDAOImpl implements TextStyleDAO {
         return new TextStyle(resultSet.getInt(1), resultSet.getString(2),
                 new FontSize(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)),
                 new TextFormat(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8)),
-                new BaseColor(resultSet.getInt(9), resultSet.getString(10)),
-                new PredefinedOpacity(resultSet.getInt(11), resultSet.getString(12))
+                new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
+                        new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
+                new Alignment(resultSet.getInt(15), resultSet.getString(16), resultSet.getString(17)),
+                new BaseColor(resultSet.getInt(18), resultSet.getString(19)),
+                new PredefinedOpacity(resultSet.getInt(20), resultSet.getString(21))
         );
     }
 
@@ -211,7 +223,9 @@ public class TextStyleDAOImpl implements TextStyleDAO {
         preparedStatement.setString(1, textStyle.getName());
         preparedStatement.setInt(2, textStyle.getFontSize().getId());
         preparedStatement.setInt(3, textStyle.getTextFormat().getId());
-        preparedStatement.setInt(4, textStyle.getOpacity().getId());
+        preparedStatement.setInt(4,textStyle.getTextWidth().getId());
+        preparedStatement.setInt(5, textStyle.getAlignment().getId());
+        preparedStatement.setInt(6, textStyle.getOpacity().getId());
     }
 
     @Override
