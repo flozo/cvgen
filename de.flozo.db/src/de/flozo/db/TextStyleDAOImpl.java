@@ -39,7 +39,6 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
-    public static final String INNER_JOIN = " INNER JOIN ";
 
 
     // query
@@ -51,12 +50,14 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     //   fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
     //   tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
     //   lv._id AS text_width_id, lv.name AS text_width_name, lv.value AS text_width_value, lv.length_unit_id AS text_width_unit_id, lv.length_unit_name AS text_width_unit_name, lv.length_unit_value AS text_width_unit_value,
+    //   a._id AS alignment_id, a.name AS alignment_name, a.value AS alignment_value,
     //   c._id AS color_id, c.name AS color_name,
     //   o._id AS opacity_id, o.value AS opacity_value
     // FROM text_styles AS ts
     // INNER JOIN font_sizes AS fs ON ts.font_size_id = fs._id
     // INNER JOIN text_formats AS tf ON ts.text_format_id = tf._id
     // INNER JOIN length_view AS lv ON ts.text_width_id = lv._id
+    // INNER JOIN alignments AS a ON ts.alignment_id = a._id
     // INNER JOIN base_colors AS c ON ts.color_id = c._id
     // INNER JOIN predefined_opacities AS o ON ts.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;

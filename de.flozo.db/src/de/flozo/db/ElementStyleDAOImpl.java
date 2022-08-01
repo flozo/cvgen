@@ -43,7 +43,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
 
     // CREATE VIEW element_styles_view AS
     // SELECT es._id, es.name,
-    //   tsv._id AS text_style_id, tsv.name AS text_style_name, font_size_id, font_size_name, font_size_value, text_format_id, text_format_name, text_format_value, tsv.color_id AS text_color_id, tsv.color_name AS text_color_name, tsv.opacity_id AS text_opacity_id, tsv.opacity_value AS text_opacity_value,
+    //   tsv._id AS text_style_id, tsv.name AS text_style_name, font_size_id, font_size_name, font_size_value, text_format_id, text_format_name, text_format_value, text_width_id, text_width_name, text_width_value, text_width_unit_id, text_width_unit_name, text_width_unit_value, alignment_id, alignment_name, alignment_value, tsv.color_id AS text_color_id, tsv.color_name AS text_color_name, tsv.opacity_id AS text_opacity_id, tsv.opacity_value AS text_opacity_value,
     //   lsv._id AS line_style_id, lsv.name AS line_style_name, line_width_id, line_width_name, line_width_value, line_width_unit_id, line_width_unit_name, line_width_unit_value, line_cap_id, line_cap_name, line_cap_value, line_join_id, line_join_name, line_join_value, dash_pattern_id, dash_pattern_name, lsv.color_id AS line_color_id, lsv.color_name AS line_color_name, lsv.opacity_id AS line_opacity_id, lsv.opacity_name AS line_opacity_name,
     //   asv._id AS area_style_id, asv.name AS area_style_name, asv.color_id AS area_color_id, asv.color_name AS area_color_name, asv.opacity_id AS area_opacity_id, asv.opacity_value AS area_opacity_value
     // FROM element_styles AS es
@@ -217,19 +217,22 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
                 new TextStyle(resultSet.getInt(3), resultSet.getString(4),
                         new FontSize(resultSet.getInt(5), resultSet.getString(6), resultSet.getString(7)),
                         new TextFormat(resultSet.getInt(8), resultSet.getString(9), resultSet.getString(10)),
-                        new BaseColor(resultSet.getInt(11), resultSet.getString(12)),
-                        new PredefinedOpacity(resultSet.getInt(13), resultSet.getString(14))),
-                new LineStyle(resultSet.getInt(15), resultSet.getString(16),
-                        new LineWidth(resultSet.getInt(17), resultSet.getString(18), resultSet.getDouble(19),
-                                new LengthUnit(resultSet.getInt(20), resultSet.getString(21), resultSet.getString(22))),
-                        new LineCap(resultSet.getInt(23), resultSet.getString(24), resultSet.getString(25)),
-                        new LineJoin(resultSet.getInt(26), resultSet.getString(27), resultSet.getString(28)),
-                        new DashPattern(resultSet.getInt(29), resultSet.getString(30)),
-                        new BaseColor(resultSet.getInt(31), resultSet.getString(32)),
-                        new PredefinedOpacity(resultSet.getInt(33), resultSet.getString(34))),
-                new AreaStyle(resultSet.getInt(35), resultSet.getString(36),
-                        new BaseColor(resultSet.getInt(37), resultSet.getString(38)),
-                        new PredefinedOpacity(resultSet.getInt(39), resultSet.getString(40)))
+                        new Length(resultSet.getInt(11), resultSet.getString(12), resultSet.getDouble(13),
+                                new LengthUnit(resultSet.getInt(14), resultSet.getString(15), resultSet.getString(16))),
+                        new Alignment(resultSet.getInt(17), resultSet.getString(18), resultSet.getString(19)),
+                        new BaseColor(resultSet.getInt(20), resultSet.getString(21)),
+                        new PredefinedOpacity(resultSet.getInt(22), resultSet.getString(23))),
+                new LineStyle(resultSet.getInt(24), resultSet.getString(25),
+                        new LineWidth(resultSet.getInt(26), resultSet.getString(27), resultSet.getDouble(28),
+                                new LengthUnit(resultSet.getInt(29), resultSet.getString(30), resultSet.getString(31))),
+                        new LineCap(resultSet.getInt(32), resultSet.getString(33), resultSet.getString(34)),
+                        new LineJoin(resultSet.getInt(35), resultSet.getString(36), resultSet.getString(37)),
+                        new DashPattern(resultSet.getInt(38), resultSet.getString(39)),
+                        new BaseColor(resultSet.getInt(40), resultSet.getString(41)),
+                        new PredefinedOpacity(resultSet.getInt(42), resultSet.getString(43))),
+                new AreaStyle(resultSet.getInt(44), resultSet.getString(45),
+                        new BaseColor(resultSet.getInt(46), resultSet.getString(47)),
+                        new PredefinedOpacity(resultSet.getInt(48), resultSet.getString(49)))
         );
     }
 
