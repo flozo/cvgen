@@ -1,6 +1,7 @@
 package de.flozo.latex.tikz;
 
 import de.flozo.common.dto.appearance.*;
+import de.flozo.common.dto.appearance.Alignment;
 import de.flozo.latex.core.*;
 
 import java.util.ArrayList;
@@ -173,13 +174,17 @@ public class Node extends Path {
 
         public Builder drawColor(BaseColor drawColor) {
             this.drawColor = drawColor;
-            addOption(NodeOption.DRAW, drawColor.getName());
+            if (!Objects.equals(textColor.getName(), "black")) {
+                addOption(NodeOption.DRAW, drawColor.getName());
+            }
             return this;
         }
 
         public Builder textColor(BaseColor textColor) {
             this.textColor = textColor;
-            addOption(NodeOption.TEXT, textColor.getName());
+            if (!Objects.equals(textColor.getName(), "black")) {
+                addOption(NodeOption.TEXT, textColor.getName());
+            }
             return this;
         }
 
@@ -208,8 +213,10 @@ public class Node extends Path {
         }
 
         public Builder dashPatternStyle(DashPattern dashPattern) {
-            this.dashPattern = dashPattern;
-            this.optionalArguments.add(dashPattern.getName());
+            if (!Objects.equals(dashPattern.getName(), "default")) {
+                this.dashPattern = dashPattern;
+                this.optionalArguments.add(dashPattern.getName());
+            }
             return this;
         }
 
@@ -246,31 +253,39 @@ public class Node extends Path {
 
         public Builder minimumWidth(LengthExpression minimumWidth) {
             this.minimumWidth = minimumWidth;
-            addOption(NodeOption.MINIMUM_WIDTH, minimumWidth.getFormatted());
+            if (minimumWidth.getNumericalValue() != 0) {
+                addOption(NodeOption.MINIMUM_WIDTH, minimumWidth.getFormatted());
+            }
             return this;
         }
 
         public Builder minimumHeight(LengthExpression minimumHeight) {
             this.minimumHeight = minimumHeight;
-            addOption(NodeOption.MINIMUM_HEIGHT, minimumHeight.getFormatted());
+            if (minimumHeight.getNumericalValue() != 0) {
+                addOption(NodeOption.MINIMUM_HEIGHT, minimumHeight.getFormatted());
+            }
             return this;
         }
 
         public Builder alignment(Alignment alignment) {
             this.alignment = alignment;
-            addOption(NodeOption.ALIGN, alignment.getString());
+            addOption(NodeOption.ALIGN, alignment.getValue());
             return this;
         }
 
         public Builder innerXSep(LengthExpression innerXSep) {
             this.innerXSep = innerXSep;
-            addOption(NodeOption.INNER_X_SEP, innerXSep.getFormatted());
+            if (innerXSep.getNumericalValue() != 0) {
+                addOption(NodeOption.INNER_X_SEP, innerXSep.getFormatted());
+            }
             return this;
         }
 
         public Builder innerYSep(LengthExpression innerYSep) {
             this.innerYSep = innerYSep;
-            addOption(NodeOption.INNER_Y_SEP, innerYSep.getFormatted());
+            if (innerYSep.getNumericalValue() != 0) {
+                addOption(NodeOption.INNER_Y_SEP, innerYSep.getFormatted());
+            }
             return this;
         }
 
@@ -285,9 +300,9 @@ public class Node extends Path {
             return this;
         }
 
-        private String createColorPropertyString(BaseColor color, String property) {
-            return !Objects.equals(color.getName(), "default") ? property + "=" + color.getName() : "";
-        }
+//        private String createColorPropertyString(BaseColor color, String property) {
+//            return !Objects.equals(color.getName(), "default") ? property + "=" + color.getName() : "";
+//        }
 
         private void addOption(NodeOption key, String value) {
             // Skip empty keys or values
