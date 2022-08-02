@@ -1,31 +1,54 @@
 package de.flozo.cvgen;
 
+import de.flozo.latex.core.Delimiter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ContentElement {
 
     public static final String DEFAULT_DELIMITER = "";
+    public static final boolean DEFAULT_MULTILINE_CONTENT = false;
+    public static final boolean DEFAULT_DELIMITER_SPACE = false;
+
     private final List<String> components;
     private final String delimiter;
+    private final boolean multilineContent;
+    private final boolean insertSpaceAfterDelimiter;
 
     private ContentElement(Builder builder) {
         this.components = builder.components;
         this.delimiter = builder.delimiter;
+        this.multilineContent = builder.multilineContent;
+        this.insertSpaceAfterDelimiter = builder.insertSpaceAfterDelimiter;
     }
 
     private String joinComponentsWithDelimiter(String delimiter) {
         return String.join(delimiter, components);
     }
 
-    public String inline() {
-        return joinComponentsWithDelimiter(delimiter);
+    private String inline() {
+        String additionalSpace = insertSpaceAfterDelimiter ? Delimiter.SPACE.getString() : Delimiter.NONE.getString();
+        return joinComponentsWithDelimiter(delimiter + additionalSpace);
     }
 
-    public String multiline() {
+    private String multiline() {
         return joinComponentsWithDelimiter("\\\\");      // join components with LaTeX line breaks
     }
 
+    public String getContentElement() {
+        return multilineContent ? multiline() : inline();
+    }
+
+    @Override
+    public String toString() {
+        return "ContentElement{" +
+                "components=" + components +
+                ", delimiter='" + delimiter + '\'' +
+                ", multilineContent=" + multilineContent +
+                ", insertSpaceAfterDelimiter=" + insertSpaceAfterDelimiter +
+                '}';
+    }
 
     public static class Builder {
 
@@ -34,6 +57,8 @@ public class ContentElement {
 
         // optional
         private String delimiter = DEFAULT_DELIMITER;
+        private boolean multilineContent = DEFAULT_MULTILINE_CONTENT;
+        private boolean insertSpaceAfterDelimiter = DEFAULT_DELIMITER_SPACE;
 
         public Builder(List<String> components) {
             this.components = components;
@@ -67,13 +92,23 @@ public class ContentElement {
             return this;
         }
 
+        public Builder inlineDelimiter(Delimiter delimiter) {
+            return inlineDelimiter(delimiter.getString());
+        }
+
+        public Builder multilineContent(boolean multilineContent) {
+            this.multilineContent = multilineContent;
+            return this;
+        }
+
+        public Builder insertSpaceAfterDelimiter(boolean insertSpaceAfterDelimiter) {
+            this.insertSpaceAfterDelimiter = insertSpaceAfterDelimiter;
+            return this;
+        }
 
         public ContentElement build() {
             return new ContentElement(this);
         }
 
     }
-
-
-
 }

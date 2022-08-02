@@ -10,6 +10,7 @@ import de.flozo.db.*;
 import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
+import de.flozo.latex.core.Delimiter;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -45,7 +46,6 @@ public class Main {
 
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
-            System.out.println(letterContent);
 
 
             Address receiver = letterContent.getReceiver();
@@ -59,52 +59,54 @@ public class Main {
                         .addComponent(receiver.getFirstName())
                         .addComponent(receiver.getLastName());
             }
-            ContentElement receiverNameLine = receiverNameLineBuilder.inlineDelimiter(" ").build();
+            ContentElement receiverNameLine = receiverNameLineBuilder.inlineDelimiter(Delimiter.SPACE).build();
             ContentElement receiverStreetLine = new ContentElement.Builder()
                     .addComponent(receiver.getStreet())
                     .addComponent(receiver.getHouseNumber())
-                    .inlineDelimiter(" ")
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement receiverCityLine = new ContentElement.Builder()
                     .addComponent(receiver.getPostalCode())
                     .addComponent(receiver.getCity())
-                    .inlineDelimiter(" ")
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement addressFieldContent = new ContentElement.Builder()
-                    .addComponent(receiverNameLine.inline())
-                    .addComponent(receiverStreetLine.inline())
-                    .addComponent(receiverCityLine.inline())
+                    .addComponent(receiverNameLine.getContentElement())
+                    .addComponent(receiverStreetLine.getContentElement())
+                    .addComponent(receiverCityLine.getContentElement())
+                    .multilineContent(true)
                     .build();
 
 
             ContentElement senderNameLine = new ContentElement.Builder()
                     .addComponent(sender.getFirstName())
                     .addComponent(sender.getLastName())
-                    .inlineDelimiter(" ")
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
 
             ContentElement senderStreetLine = new ContentElement.Builder()
                     .addComponent(sender.getStreet())
                     .addComponent(sender.getHouseNumber())
-                    .inlineDelimiter(" ")
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement senderCityLine = new ContentElement.Builder()
                     .addComponent(sender.getPostalCode())
                     .addComponent(sender.getCity())
-                    .inlineDelimiter(" ")
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
 
             ContentElement backaddressFieldContent = new ContentElement.Builder()
-                    .addComponent(senderNameLine.inline())
-                    .addComponent(senderStreetLine.inline())
-                    .addComponent(senderCityLine.inline())
+                    .addComponent(senderNameLine.getContentElement())
+                    .addComponent(senderStreetLine.getContentElement())
+                    .addComponent(senderCityLine.getContentElement())
                     .inlineDelimiter("\\hspace{8pt}$\\bullet$\\hspace{8pt}")
                     .build();
 
             ContentElement dateFieldContent = new ContentElement.Builder()
                     .addComponent(sender.getCity())
                     .addComponent(letterContent.getDate())
-                    .inlineDelimiter(", ")
+                    .insertSpaceAfterDelimiter(true)
+                    .inlineDelimiter(Delimiter.COMMA)
                     .build();
 
             ContentElement subjectFieldContent = new ContentElement.Builder()
@@ -125,6 +127,11 @@ public class Main {
             DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, elementDAO.get("date"));
             DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
             DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
+
+
+            for (String line : bodyField.getElementFieldBlock()) {
+                System.out.println(line);
+            }
 
 
             DocumentPage motivationalLetter = new DocumentPage(addressField, backaddressField, dateField, subjectField, bodyField);
@@ -154,7 +161,7 @@ public class Main {
             hyperOptions.add("urlcolor=Blues-K");
             hyperOptions.add(String.format("pdftitle={%s}", pdfTitle));
             hyperOptions.add(String.format("pdfsubject={%s}", pdfSubject));
-            hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.inline()));
+            hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.getContentElement()));
             hyperOptions.add(String.format("pdfdate={%s}", LocalDate.now()));
             hyperOptions.add(String.format("pdfproducer={%s}", VERSION_INFO_PDF_META_DATA));
             hyperOptions.add(String.format("pdfcontactcity={%s}", sender.getCity()));

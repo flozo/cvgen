@@ -6,6 +6,8 @@ import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.tikz.Node;
 import de.flozo.latex.tikz.Point;
 
+import java.util.List;
+
 
 public class DocumentElement {
 
@@ -23,6 +25,7 @@ public class DocumentElement {
         return new Node.Builder(elementContent)
                 .name(elementName)
                 .position(Point.fromNumbers(element.getPosition().getLengthX().getValue(), element.getPosition().getLengthY().getValue()))
+//                .position(Point.fromLengths(LengthExpression.fromLength(element.getPosition().getLengthX()), LengthExpression.fromLength(element.getPosition().getLengthY())))
                 .anchor(element.getAnchor())
                 .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
@@ -47,11 +50,11 @@ public class DocumentElement {
     }
 
     public String getElementFieldInline() {
-        return getNode(content.inline()).getInline();
+        return getNode(content.getContentElement()).getInline();
     }
 
-    public String getElementFieldMultiline() {
-        return getNode(content.multiline()).getInline();
+    public List<String> getElementFieldBlock() {
+        return getNode(content.getContentElement()).getBlock();
     }
 
 
