@@ -1,6 +1,7 @@
 package de.flozo.cvgen;
 
 import de.flozo.common.dto.appearance.Layer;
+import de.flozo.common.dto.appearance.Page;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.LetterContent;
 import de.flozo.common.dto.latex.DocumentClass;
@@ -11,6 +12,9 @@ import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
 import de.flozo.latex.core.Delimiter;
+import de.flozo.latex.core.ExpressionList;
+import de.flozo.latex.core.FormattedExpressionList;
+import de.flozo.latex.core.LengthExpression;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -118,8 +122,6 @@ public class Main {
                     .build();
 
 
-
-
             ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
 
             DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, elementDAO.get("address"));
@@ -133,15 +135,18 @@ public class Main {
                 System.out.println(line);
             }
 
+            PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
+            Page letterPage = pageDAO.get("cv_motivational_letter");
+            ExpressionList pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(letterPage.getWidth())).build();
+            DocumentPage motivationalLetter = new DocumentPage(pageOptions, addressField, backaddressField, dateField, subjectField, bodyField);
 
-            DocumentPage motivationalLetter = new DocumentPage(addressField, backaddressField, dateField, subjectField, bodyField);
+
 
             System.out.println("77777777777777");
             for (String line : motivationalLetter.getCode()) {
                 System.out.println(line);
             }
             System.out.println("77777777888888888888");
-
 
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);

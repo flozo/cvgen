@@ -6,6 +6,7 @@ import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.tikz.Node;
 import de.flozo.latex.tikz.Point;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -49,9 +50,13 @@ public class DocumentElement {
                 .build();
     }
 
-    public String getElementFieldInline() {
-        return getNode(content.getContentElement()).getInline();
+    //    public String getElementFieldInline() {
+//        return getNode(content.getContentElement()).getInline();
+//    }
+    public List<String> getElementFieldInline() {
+        return new ArrayList<>(List.of(getNode(content.getContentElement()).getInline()));
     }
+
 
     public List<String> getElementFieldBlock() {
         return getNode(content.getContentElement()).getBlock();
