@@ -1,4 +1,4 @@
-package de.flozo.latex;
+package de.flozo.cvgen;
 
 public class LatexCompilationException extends Exception {
 
