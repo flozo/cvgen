@@ -14,7 +14,6 @@ public class OutputFile {
 
     private final String outputDirectory;
     private final String fileNameLatex;
-    private final String versionInfo;
     private final List<String> fileContent;
     private final String fileExtension = "pdf";
     private final String latexCommand = "pdflatex";
@@ -25,10 +24,9 @@ public class OutputFile {
     private final String fileNameErrorLog = "pdfLaTeX_last_error.log";
 
 
-    public OutputFile(String outputDirectory, String fileNameLatex, String versionInfo, List<String> fileContent) {
+    public OutputFile(String outputDirectory, String fileNameLatex, List<String> fileContent) {
         this.outputDirectory = outputDirectory;
         this.fileNameLatex = fileNameLatex;
-        this.versionInfo =  versionInfo;
         this.fileContent = fileContent;
     }
 
@@ -63,7 +61,6 @@ public class OutputFile {
     private boolean writeToFile(List<String> codeLines, String outputFile) {
         System.out.println("[output] Writing LaTeX code to file \"" + outputFile + "\" ...");
         try (PrintWriter printWriter = new PrintWriter(outputFile)) {
-            printWriter.println(versionInfo);
             for (String codeLine : codeLines) {
                 printWriter.println(codeLine);
             }
@@ -128,5 +125,19 @@ public class OutputFile {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return "OutputFile{" +
+                "outputDirectory='" + outputDirectory + '\'' +
+                ", fileNameLatex='" + fileNameLatex + '\'' +
+                ", fileContent=" + fileContent +
+                ", fileExtension='" + fileExtension + '\'' +
+                ", latexCommand='" + latexCommand + '\'' +
+                ", option1='" + option1 + '\'' +
+                ", option2='" + option2 + '\'' +
+                ", option3='" + option3 + '\'' +
+                ", fileNameOutputLog='" + fileNameOutputLog + '\'' +
+                ", fileNameErrorLog='" + fileNameErrorLog + '\'' +
+                '}';
+    }
 }

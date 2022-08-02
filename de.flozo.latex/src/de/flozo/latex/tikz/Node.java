@@ -173,7 +173,9 @@ public class Node extends Path {
 
         public Builder fontSize(FontSize fontSize) {
             this.fontSize = fontSize;
-            addOption(NodeOption.FONT, fontSize.getValue());
+            if (!fontSize.getValue().isBlank()) {
+                addOption(NodeOption.FONT, new GenericCommand.Builder(fontSize.getValue()).build().getInline());
+            }
             return this;
         }
 

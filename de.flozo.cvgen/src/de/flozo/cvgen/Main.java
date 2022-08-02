@@ -201,6 +201,15 @@ public class Main {
                 System.out.println(line);
             }
 
+            String fileName = "test_output.tex";
+            String directory = "/tmp";
+
+            OutputFile outputFile = new OutputFile(directory, fileName, laTeXCode.getCode());
+            if (outputFile.create(true, true)) {
+                System.out.println("[output] Done!");
+            } else {
+                System.out.println("[output] Something went wrong!");
+            }
 
 //            PackageList packageList = new PackageList(documentclass);
 //            packageList.add(PackageName.INPUTENC, "utf8")
