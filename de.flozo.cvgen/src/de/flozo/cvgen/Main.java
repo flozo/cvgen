@@ -11,10 +11,7 @@ import de.flozo.db.*;
 import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
-import de.flozo.latex.core.Delimiter;
-import de.flozo.latex.core.ExpressionList;
-import de.flozo.latex.core.FormattedExpressionList;
-import de.flozo.latex.core.LengthExpression;
+import de.flozo.latex.core.*;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -137,9 +134,8 @@ public class Main {
 
             PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
             Page letterPage = pageDAO.get("cv_motivational_letter");
-            ExpressionList pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(letterPage.getWidth())).build();
+            ExpressionList pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(letterPage.getWidth()).getFormatted()).build();
             DocumentPage motivationalLetter = new DocumentPage(pageOptions, addressField, backaddressField, dateField, subjectField, bodyField);
-
 
 
             System.out.println("77777777777777");
@@ -175,17 +171,34 @@ public class Main {
 
 
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
-            for (String line : preamble.getPreambleCode()) {
-                System.out.println(line);
-            }
+//            for (String line : preamble.getPreambleCode()) {
+//                System.out.println(line);
+//            }
 
             LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
             List<String> layers = layerDAO.getAll().stream().map(Layer::getName).collect(Collectors.toList());
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
-            for (String layer : layerDeclarationBlock) {
-                System.out.println(layer);
+//            for (String layer : layerDeclarationBlock) {
+//                System.out.println(layer);
+//            }
+
+
+            ExpressionList documentBody = new FormattedExpressionList.Builder()
+                    .append(layerDeclarationBlock)
+                    .append(motivationalLetter.getCode())
+                    .build();
+
+            Environment document = new Environment.Builder(EnvironmentName.DOCUMENT)
+                    .body(documentBody.getBlock())
+                    .build();
+
+
+            LaTeXCode laTeXCode = new LaTeXCode(VERSION_INFO_LATEX_HEADER, preamble, document);
+
+            for (String line : laTeXCode.getCode()) {
+                System.out.println(line);
             }
 
 
