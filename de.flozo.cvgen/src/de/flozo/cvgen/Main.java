@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class Main {
 
     // constants
-    public static final String APPLICATION_NAME = "CVgen";
+    public static final String APPLICATION_NAME = "cvgen";
     public static final String VERSION_NUMBER = "0.2";
     public static final String VERSION_DATE = "2022-07-30";
 
@@ -38,7 +38,6 @@ public class Main {
     public static void main(String[] args) {
 
 
-//    Datasource2.INSTANCE.getConnection();
 
         Datasource2 datasource2 = Datasource2.INSTANCE;
         Connection connection = datasource2.getConnection();
@@ -127,23 +126,10 @@ public class Main {
             DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
             DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
 
-
-            for (String line : bodyField.getElementFieldBlock()) {
-                System.out.println(line);
-            }
-
             PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
             Page letterPage = pageDAO.get("cv_motivational_letter");
             ExpressionList pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(letterPage.getWidth()).getFormatted()).build();
             DocumentPage motivationalLetter = new DocumentPage(pageOptions, addressField, backaddressField, dateField, subjectField, bodyField);
-
-
-            System.out.println("77777777777777");
-            for (String line : motivationalLetter.getCode()) {
-                System.out.println(line);
-            }
-            System.out.println("77777777888888888888");
-
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
@@ -171,18 +157,12 @@ public class Main {
 
 
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
-//            for (String line : preamble.getPreambleCode()) {
-//                System.out.println(line);
-//            }
 
             LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
             List<String> layers = layerDAO.getAll().stream().map(Layer::getName).collect(Collectors.toList());
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
-//            for (String layer : layerDeclarationBlock) {
-//                System.out.println(layer);
-//            }
 
 
             ExpressionList documentBody = new FormattedExpressionList.Builder()
@@ -211,32 +191,6 @@ public class Main {
                 System.out.println("[output] Something went wrong!");
             }
 
-//            PackageList packageList = new PackageList(documentclass);
-//            packageList.add(PackageName.INPUTENC, "utf8")
-//                    .add(PackageName.FONTENC, "T1")
-//                    .add(PackageName.BABEL, "german")
-//                    .add(PackageName.HYPERXMP)
-//                    .add(PackageName.FIRASANS, "sfdefault", "scaled=1.0098")
-//                    .add(PackageName.NEWTXSF)
-//                    .add(PackageName.FONTAWESOME5)
-//                    .add(PackageName.CSQUOTES, "autostyle=true")
-//                    .add(PackageName.ENUMITEM)
-//                    .add(PackageName.MICROTYPE, "activate={true, nocompatibility}", "final", "tracking=true", "kerning=true", "spacing=true", "factor=1100", "stretch=8", "shrink=8")
-//                    .add(PackageName.TIKZ)
-//                    .add(PackageName.HYPERREF, "unicode");
-//
-//            GenericCommand usetikzlibrary = new GenericCommand.Builder(CommandName.USETIKZLIBRARY.getString())
-//                    .body(
-//                            "positioning",
-//                            "math",
-//                            "colorbrewer",
-//                            "backgrounds",
-//                            "matrix")
-//                    .bodyTerminator(Delimiter.COMMA)
-//                    .build();
-//            GenericCommand standaloneenv = new GenericCommand.Builder(CommandName.STANDALONEENV.getString())
-//                    .body("tikzpicture")
-//                    .build();
 
 
         } finally {
