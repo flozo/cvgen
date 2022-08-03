@@ -265,19 +265,25 @@ public class Node extends Path {
 
         public Builder textWidth(LengthExpression textWidth) {
             this.textWidth = textWidth;
-            addOption(NodeOption.TEXT_WIDTH, textWidth.getFormatted());
+            if (textWidth.getNumericalValue() != 0) {
+                addOption(NodeOption.TEXT_WIDTH, textWidth.getFormatted());
+            }
             return this;
         }
 
         public Builder textHeight(LengthExpression textHeight) {
             this.textHeight = textHeight;
-            addOption(NodeOption.TEXT_HEIGHT, textHeight.getFormatted());
+            if (textHeight.getNumericalValue() != 0) {
+                addOption(NodeOption.TEXT_HEIGHT, textHeight.getFormatted());
+            }
             return this;
         }
 
         public Builder textDepth(LengthExpression textDepth) {
             this.textDepth = textDepth;
-            addOption(NodeOption.TEXT_DEPTH, textDepth.getFormatted());
+            if (textDepth.getNumericalValue() != 0) {
+                addOption(NodeOption.TEXT_DEPTH, textDepth.getFormatted());
+            }
             return this;
         }
 
