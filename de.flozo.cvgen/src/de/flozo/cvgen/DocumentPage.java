@@ -22,6 +22,14 @@ public class DocumentPage {
         this(pageOptions, new ArrayList<>(List.of(documentElements)));
     }
 
+//    private Rectangle getBackgroundRectangle() {
+//        return new Rectangle.Builder(0, 0, totalWidth.getNumericalValue(), totalHeight.getNumericalValue())
+//                .fillColor(backgroundColor)
+//                .drawColor(StandardColor.NONE)
+//                .skipLastTerminator(true)
+//                .build();
+//    }
+//
 
     private List<String> assembleDocumentElements() {
         List<String> codeLines = new ArrayList<>();

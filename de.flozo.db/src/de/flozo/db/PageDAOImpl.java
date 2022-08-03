@@ -14,6 +14,7 @@ public class PageDAOImpl implements PageDAO {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_WIDTH_ID = "text_style_id";
     public static final String COLUMN_HEIGHT_ID = "line_style_id";
+    public static final String COLUMN_AREA_STYLE_ID = "area_style_id";
 
     // view
     public static final String VIEW_NAME = "page_view";
@@ -42,30 +43,33 @@ public class PageDAOImpl implements PageDAO {
 
     // CREATE VIEW page_view AS
     // SELECT p._id, p.name,
-    //	 lvw._id AS width_id, lvw.name AS width_name, lvw.value AS width_value, lvw.length_unit_id AS width_unit_id, lvw.length_unit_name AS width_unit_name, lvw.length_unit_value AS width_unit_value,
-    //	 lvh._id AS height_id, lvh.name AS height_name, lvh.value AS height_value, lvh.length_unit_id AS height_unit_id, lvh.length_unit_name AS height_unit_name, lvh.length_unit_value AS height_unit_value
+    //   lvw._id AS width_id, lvw.name AS width_name, lvw.value AS width_value, lvw.length_unit_id AS width_unit_id, lvw.length_unit_name AS width_unit_name, lvw.length_unit_value AS width_unit_value,
+    //   lvh._id AS height_id, lvh.name AS height_name, lvh.value AS height_value, lvh.length_unit_id AS height_unit_id, lvh.length_unit_name AS height_unit_name, lvh.length_unit_value AS height_unit_value,
+    //   asv._id AS area_style_id, asv.name AS area_style_name, asv.color_id AS background_color_id, asv.color_name AS background_color_name, asv.opacity_id AS background_opacity_id, asv.opacity_value AS background_opacity_value
     // FROM pages AS p
     // INNER JOIN length_view AS lvw ON p.width_id = lvw._id
     // INNER JOIN length_view AS lvh ON p.height_id = lvh._id
-
+    // INNER JOIN area_style_view AS asv ON p.area_style_id = asv._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 3;
+    public static final int NON_ID_COLUMNS = 4;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_WIDTH_ID + COMMA +
-            COLUMN_HEIGHT_ID +
+            COLUMN_HEIGHT_ID + COMMA +
+            COLUMN_AREA_STYLE_ID +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_HEIGHT_ID + EQUALS + QUESTION_MARK +
+            COLUMN_HEIGHT_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_AREA_STYLE_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -212,7 +216,10 @@ public class PageDAOImpl implements PageDAO {
                 new Length(resultSet.getInt(3), resultSet.getString(4), resultSet.getDouble(5),
                         new LengthUnit(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8))),
                 new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
-                        new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14)))
+                        new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
+                new AreaStyle(resultSet.getInt(15), resultSet.getString(16),
+                        new BaseColor(resultSet.getInt(17), resultSet.getString(18)),
+                        new PredefinedOpacity(resultSet.getInt(19), resultSet.getString(20)))
         );
     }
 
@@ -220,6 +227,7 @@ public class PageDAOImpl implements PageDAO {
         preparedStatement.setString(1, page.getName());
         preparedStatement.setInt(2, page.getWidth().getId());
         preparedStatement.setInt(3, page.getHeight().getId());
+        preparedStatement.setInt(4,page.getAreaStyle().getId());
     }
 
     @Override

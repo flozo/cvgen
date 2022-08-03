@@ -6,12 +6,14 @@ public class Page {
     private String name;
     private Length width;
     private Length height;
+    private AreaStyle areaStyle;
 
-    public Page(int id, String name, Length width, Length height) {
+    public Page(int id, String name, Length width, Length height, AreaStyle areaStyle) {
         this.id = id;
         this.name = name;
         this.width = width;
         this.height = height;
+        this.areaStyle = areaStyle;
     }
 
     public int getId() {
@@ -46,6 +48,14 @@ public class Page {
         this.height = height;
     }
 
+    public AreaStyle getAreaStyle() {
+        return areaStyle;
+    }
+
+    public void setAreaStyle(AreaStyle areaStyle) {
+        this.areaStyle = areaStyle;
+    }
+
     @Override
     public String toString() {
         return "Page{" +
@@ -53,6 +63,7 @@ public class Page {
                 ", name='" + name + '\'' +
                 ", width=" + width +
                 ", height=" + height +
+                ", areaStyle=" + areaStyle +
                 '}';
     }
 }
