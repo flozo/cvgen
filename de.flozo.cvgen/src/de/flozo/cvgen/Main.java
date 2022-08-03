@@ -1,8 +1,10 @@
 package de.flozo.cvgen;
 
 import de.flozo.common.dto.appearance.Layer;
+import de.flozo.common.dto.appearance.Line;
 import de.flozo.common.dto.appearance.Page;
 import de.flozo.common.dto.content.Address;
+import de.flozo.common.dto.content.Enclosure;
 import de.flozo.common.dto.content.LetterContent;
 import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
@@ -36,7 +38,6 @@ public class Main {
 
 
     public static void main(String[] args) {
-
 
 
         Datasource2 datasource2 = Datasource2.INSTANCE;
@@ -117,6 +118,18 @@ public class Main {
                     .addComponent(letterContent.getBodyText())
                     .build();
 
+            EnclosureDAO enclosureDAO = new EnclosureDAOImpl(datasource2, connection);
+            List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
+
+            ContentElement enclosures = new ContentElement.Builder()
+                    .addComponents(enclosureList.stream().map(Enclosure::getCaption).collect(Collectors.toList()))
+                    .inlineDelimiter(Delimiter.COMMA)
+                    .insertSpaceAfterDelimiter(true)
+                    .build();
+            ContentElement enclosureLine = new ContentElement.Builder()
+                    .addComponent("Enclosures: ")
+                    .addComponent(enclosures.getContentElement())
+                    .build();
 
             ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
 
@@ -125,11 +138,23 @@ public class Main {
             DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, elementDAO.get("date"));
             DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
             DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
+            DocumentElement enclosureTagLine = new DocumentElement("enclosures", enclosureLine, elementDAO.get("enclosures"));
+
+            System.out.println(elementDAO.get("body"));
 
             PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
             Page letterPage = pageDAO.get("cv_motivational_letter");
-            ExpressionList pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(letterPage.getWidth()).getFormatted()).build();
-            DocumentPage motivationalLetter = new DocumentPage(pageOptions, addressField, backaddressField, dateField, subjectField, bodyField);
+
+            LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
+            List<Line> lineList = lineDAO.getAll();
+
+            DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
+                    .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
+                    .addLine(lineList)
+                    .build();
+
+//            DocumentPage motivationalLetter = new DocumentPage(letterPage, addressField, backaddressField,
+//                    dateField, subjectField, bodyField, enclosureTagLine);
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
@@ -164,7 +189,6 @@ public class Main {
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
 
-
             ExpressionList documentBody = new FormattedExpressionList.Builder()
                     .append(layerDeclarationBlock)
                     .append(motivationalLetter.getCode())
@@ -177,9 +201,9 @@ public class Main {
 
             LaTeXCode laTeXCode = new LaTeXCode(VERSION_INFO_LATEX_HEADER, preamble, document);
 
-            for (String line : laTeXCode.getCode()) {
-                System.out.println(line);
-            }
+//            for (String line : laTeXCode.getCode()) {
+//                System.out.println(line);
+//            }
 
             String fileName = "test_output.tex";
             String directory = "/tmp";
@@ -190,7 +214,6 @@ public class Main {
             } else {
                 System.out.println("[output] Something went wrong!");
             }
-
 
 
         } finally {

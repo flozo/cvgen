@@ -5,16 +5,15 @@ public class Enclosure {
     private int id;
     private String name;
     private String caption;
-    private String fileId;
+    private File file;
     private boolean includeCaption;
     private boolean includeFile;
 
-
-    public Enclosure(int id, String name, String caption, String fileId, boolean includeCaption, boolean includeFile) {
+    public Enclosure(int id, String name, String caption, File file, boolean includeCaption, boolean includeFile) {
         this.id = id;
         this.name = name;
         this.caption = caption;
-        this.fileId = fileId;
+        this.file = file;
         this.includeCaption = includeCaption;
         this.includeFile = includeFile;
     }
@@ -43,12 +42,12 @@ public class Enclosure {
         this.caption = caption;
     }
 
-    public String getFileId() {
-        return fileId;
+    public File getFile() {
+        return file;
     }
 
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
+    public void setFile(File file) {
+        this.file = file;
     }
 
     public boolean isIncludeCaption() {
@@ -73,7 +72,7 @@ public class Enclosure {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", caption='" + caption + '\'' +
-                ", fileId='" + fileId + '\'' +
+                ", file=" + file +
                 ", includeCaption=" + includeCaption +
                 ", includeFile=" + includeFile +
                 '}';
