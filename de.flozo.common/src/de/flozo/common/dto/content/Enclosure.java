@@ -4,12 +4,19 @@ public class Enclosure {
 
     private int id;
     private String name;
+    private String caption;
     private String fileId;
+    private boolean includeCaption;
+    private boolean includeFile;
 
-    public Enclosure(int id, String name, String fileId) {
+
+    public Enclosure(int id, String name, String caption, String fileId, boolean includeCaption, boolean includeFile) {
         this.id = id;
         this.name = name;
+        this.caption = caption;
         this.fileId = fileId;
+        this.includeCaption = includeCaption;
+        this.includeFile = includeFile;
     }
 
     public int getId() {
@@ -28,6 +35,14 @@ public class Enclosure {
         this.name = name;
     }
 
+    public String getCaption() {
+        return caption;
+    }
+
+    public void setCaption(String caption) {
+        this.caption = caption;
+    }
+
     public String getFileId() {
         return fileId;
     }
@@ -36,12 +51,31 @@ public class Enclosure {
         this.fileId = fileId;
     }
 
+    public boolean isIncludeCaption() {
+        return includeCaption;
+    }
+
+    public void setIncludeCaption(boolean includeCaption) {
+        this.includeCaption = includeCaption;
+    }
+
+    public boolean isIncludeFile() {
+        return includeFile;
+    }
+
+    public void setIncludeFile(boolean includeFile) {
+        this.includeFile = includeFile;
+    }
+
     @Override
     public String toString() {
         return "Enclosure{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", caption='" + caption + '\'' +
                 ", fileId='" + fileId + '\'' +
+                ", includeCaption=" + includeCaption +
+                ", includeFile=" + includeFile +
                 '}';
     }
 }
