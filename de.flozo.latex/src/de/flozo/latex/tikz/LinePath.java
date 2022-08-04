@@ -1,14 +1,12 @@
 package de.flozo.latex.tikz;
 
-import de.flozo.common.dto.appearance.BaseColor;
-import de.flozo.common.dto.appearance.DashPattern;
-import de.flozo.common.dto.appearance.LineCap;
-import de.flozo.common.dto.appearance.LineJoin;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.core.LengthUnit;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class LinePath extends Path {
 
@@ -36,7 +34,7 @@ public class LinePath extends Path {
                 builder.lineCap,
                 builder.lineJoin,
                 builder.dashPattern,
-                builder.skipLastTerminator);
+                builder.skipLastDelimiter);
         this.next = builder.next;
         this.coordinateList = builder.coordinateList;
         this.cycle = builder.cycle;
@@ -98,11 +96,11 @@ public class LinePath extends Path {
         private BaseColor drawColor;
         private BaseColor fillColor;
         private PredefinedLineWidth predefinedLineWidth;
-        private LengthExpression lineWidth;
+        private LineWidth lineWidth;
         private LineCap lineCap;
         private LineJoin lineJoin;
         private DashPattern dashPattern;
-        private boolean skipLastTerminator;
+        private boolean skipLastDelimiter;
 
 
         public Builder(Point origin, Point next) {
@@ -166,9 +164,9 @@ public class LinePath extends Path {
             return this;
         }
 
-        public Builder lineWidth(LengthExpression lineWidth) {
+        public Builder lineWidth(LineWidth lineWidth) {
             this.lineWidth = lineWidth;
-            addOption(NodeOption.LINE_WIDTH, lineWidth.getFormatted());
+            addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
             return this;
         }
 
@@ -185,13 +183,15 @@ public class LinePath extends Path {
         }
 
         public Builder dashPattern(DashPattern dashPattern) {
-            this.dashPattern = dashPattern;
-            this.optionalArguments.add(dashPattern.getName());
+            if (!Objects.equals(dashPattern.getName(), "default")) {
+                this.dashPattern = dashPattern;
+                this.optionalArguments.add(dashPattern.getName());
+            }
             return this;
         }
 
-        public Builder skipLastTerminator(boolean skipLastTerminator) {
-            this.skipLastTerminator = skipLastTerminator;
+        public Builder skipLastDelimiter(boolean skipLastDelimiter) {
+            this.skipLastDelimiter = skipLastDelimiter;
             return this;
         }
 

@@ -2,6 +2,7 @@ package de.flozo.latex.core;
 
 import de.flozo.common.dto.appearance.Length;
 import de.flozo.common.dto.appearance.LengthUnit;
+import de.flozo.common.dto.appearance.LineWidth;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -30,6 +31,10 @@ public class LengthExpression {
 
     public static LengthExpression fromLength(Length length) {
         return new LengthExpression(length.getValue(), length.getUnit());
+    }
+
+    public static LengthExpression fromLineWidth(LineWidth lineWidth) {
+        return new LengthExpression(lineWidth.getValue(), lineWidth.getUnit());
     }
 
 

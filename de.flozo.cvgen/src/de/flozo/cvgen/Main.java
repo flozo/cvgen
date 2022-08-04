@@ -147,6 +147,7 @@ public class Main {
 
             LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
             List<Line> lineList = lineDAO.getAll();
+            lineList.remove(0);
 
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
