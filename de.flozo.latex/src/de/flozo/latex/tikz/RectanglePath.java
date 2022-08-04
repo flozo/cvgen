@@ -6,7 +6,7 @@ import de.flozo.latex.core.LengthExpression;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rectangle extends Path {
+public class RectanglePath extends Path {
 
     // constants
     public static final String KEYWORD = "filldraw";
@@ -16,7 +16,7 @@ public class Rectangle extends Path {
     private final Point oppositeCorner;
 
 
-    private Rectangle(Builder builder) {
+    private RectanglePath(Builder builder) {
         super(builder.origin,
                 builder.optionalArguments,
                 builder.name,
@@ -147,8 +147,8 @@ public class Rectangle extends Path {
         }
 
 
-        public Rectangle build() {
-            return new Rectangle(this);
+        public RectanglePath build() {
+            return new RectanglePath(this);
         }
     }
 }

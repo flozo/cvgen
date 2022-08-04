@@ -10,7 +10,7 @@ import de.flozo.latex.core.LengthUnit;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Line extends Path {
+public class LinePath extends Path {
 
     // constants
     public static final String KEYWORD = "filldraw";
@@ -26,7 +26,7 @@ public class Line extends Path {
     private final List<Point> coordinateList;
     private final boolean cycle;
 
-    public Line(Builder builder) {
+    public LinePath(Builder builder) {
         super(builder.origin,
                 builder.optionalArguments,
                 builder.name,
@@ -204,8 +204,8 @@ public class Line extends Path {
             }
         }
 
-        public Line build() {
-            return new Line(this);
+        public LinePath build() {
+            return new LinePath(this);
         }
     }
 }

@@ -3,7 +3,8 @@ package de.flozo.cvgen;
 import de.flozo.common.dto.appearance.Line;
 import de.flozo.common.dto.appearance.Page;
 import de.flozo.latex.core.*;
-import de.flozo.latex.tikz.Rectangle;
+import de.flozo.latex.tikz.LinePath;
+import de.flozo.latex.tikz.RectanglePath;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +25,24 @@ public class DocumentPage {
         this.documentElements = builder.documentElements;
         this.pageProperties = builder.pageProperties;
         this.lines = builder.lines;
-        this.pageOptions = new FormattedExpressionList.Builder("inner xsep=0pt", "inner ysep=0pt", "trim left=0pt", "trim right=" + LengthExpression.fromLength(pageProperties.getWidth()).getFormatted()).build();
+        this.pageOptions = new FormattedExpressionList.Builder(
+                "inner xsep=0pt",
+                "inner ysep=0pt",
+                "trim left=0pt",
+                "trim right=" + LengthExpression.fromLength(pageProperties.getWidth()).getFormatted())
+                .build();
     }
 
-    private Rectangle getBackgroundRectangle() {
-        return new Rectangle.Builder(0, 0, pageProperties.getWidth().getValue(), pageProperties.getHeight().getValue())
+    private RectanglePath getBackgroundRectangle() {
+        return new RectanglePath.Builder(0, 0, pageProperties.getWidth().getValue(), pageProperties.getHeight().getValue())
                 .fillColor(pageProperties.getAreaStyle().getColor())
                 .skipLastTerminator(true)
                 .build();
+    }
+
+
+    private LinePath getLine(Line line) {
+        return new LinePath.Builder(line.getPosition())
     }
 
     private List<String> assembleDocumentElements() {
