@@ -7,13 +7,15 @@ public class Line {
     private Position position;
     private Length length;
     private LineStyle lineStyle;
+    private String orientation;
 
-    public Line(int id, String name, Position position, Length length, LineStyle lineStyle) {
+    public Line(int id, String name, Position position, Length length, LineStyle lineStyle, String orientation) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.length = length;
         this.lineStyle = lineStyle;
+        this.orientation = orientation;
     }
 
     public int getId() {
@@ -56,6 +58,14 @@ public class Line {
         this.lineStyle = lineStyle;
     }
 
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
+    }
+
     @Override
     public String toString() {
         return "Line{" +
@@ -64,6 +74,7 @@ public class Line {
                 ", position=" + position +
                 ", length=" + length +
                 ", lineStyle=" + lineStyle +
+                ", orientation='" + orientation + '\'' +
                 '}';
     }
 }

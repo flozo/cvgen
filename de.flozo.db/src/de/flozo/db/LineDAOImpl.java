@@ -15,6 +15,7 @@ public class LineDAOImpl implements LineDAO {
     public static final String COLUMN_POSITION_ID = "position_id";
     public static final String COLUMN_LENGTH_ID = "length_id";
     public static final String COLUMN_LINE_STYLE_ID = "line_style_id";
+    public static final String COLUMN_ORIENTATION = "orientation";
 
     // view
     public static final String VIEW_NAME = "lines_view";
@@ -43,16 +44,17 @@ public class LineDAOImpl implements LineDAO {
 
     // CREATE VIEW lines_view AS
     // SELECT l._id, l.name,
-    //	 pv._id AS position_id, pv.name AS position_name,
-    //		pv.x_length_id, pv.x_length_name, pv.x_length_value, pv.x_length_unit_id, pv.x_length_unit_name, pv.x_length_unit_value,
-    //		pv.y_length_id, pv.y_length_name, pv.y_length_value, pv.y_length_unit_id, pv.y_length_unit_name, pv.y_length_unit_value,
-    // 	 lv._id AS length_id, lv.name AS length_name, lv.value AS length_value, lv.length_unit_id, lv.length_unit_name, lv.length_unit_value,
-    // 	 lsv._id AS line_style_id, lsv.name AS line_style_name, lsv.line_width_id, lsv.line_width_name, lsv.line_width_value, lsv.line_width_unit_id, lsv.line_width_unit_name, lsv.line_width_unit_value,
-    //		lsv.line_cap_id, lsv.line_cap_name, lsv.line_cap_value,
-    //		lsv.line_join_id, lsv.line_join_name, lsv.line_join_value,
-    //		lsv.dash_pattern_id, lsv.dash_pattern_name,
-    //		lsv.color_id, lsv.color_name,
-    //		lsv.opacity_id, lsv.opacity_name
+    //   pv._id AS position_id, pv.name AS position_name,
+    //     pv.x_length_id, pv.x_length_name, pv.x_length_value, pv.x_length_unit_id, pv.x_length_unit_name, pv.x_length_unit_value,
+    //     pv.y_length_id, pv.y_length_name, pv.y_length_value, pv.y_length_unit_id, pv.y_length_unit_name, pv.y_length_unit_value,
+    //   lv._id AS length_id, lv.name AS length_name, lv.value AS length_value, lv.length_unit_id, lv.length_unit_name, lv.length_unit_value,
+    //   lsv._id AS line_style_id, lsv.name AS line_style_name, lsv.line_width_id, lsv.line_width_name, lsv.line_width_value, lsv.line_width_unit_id, lsv.line_width_unit_name, lsv.line_width_unit_value,
+    //     lsv.line_cap_id, lsv.line_cap_name, lsv.line_cap_value,
+    //     lsv.line_join_id, lsv.line_join_name, lsv.line_join_value,
+    //     lsv.dash_pattern_id, lsv.dash_pattern_name,
+    //     lsv.color_id, lsv.color_name,
+    //     lsv.opacity_id, lsv.opacity_name,
+    //     l.orientation
     // FROM lines AS l
     // INNER JOIN position_view AS pv ON l.position_id = pv._id
     // INNER JOIN length_view AS lv ON l.length_id = lv._id
@@ -61,14 +63,15 @@ public class LineDAOImpl implements LineDAO {
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 4;
+    public static final int NON_ID_COLUMNS = 5;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_POSITION_ID + COMMA +
             COLUMN_LENGTH_ID + COMMA +
-            COLUMN_LINE_STYLE_ID +
+            COLUMN_LINE_STYLE_ID + COMMA +
+            COLUMN_ORIENTATION +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -76,7 +79,8 @@ public class LineDAOImpl implements LineDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_POSITION_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_LENGTH_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK +
+            COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_ORIENTATION + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -227,8 +231,9 @@ public class LineDAOImpl implements LineDAO {
                         new LineJoin(resultSet.getInt(34), resultSet.getString(35), resultSet.getString(36)),
                         new DashPattern(resultSet.getInt(37), resultSet.getString(38)),
                         new BaseColor(resultSet.getInt(39), resultSet.getString(40)),
-                        new PredefinedOpacity(resultSet.getInt(41), resultSet.getString(42)))
-                );
+                        new PredefinedOpacity(resultSet.getInt(41), resultSet.getString(42))),
+                resultSet.getString(43)
+        );
     }
 
     private void setAllValues(PreparedStatement preparedStatement, Line line) throws SQLException {
@@ -236,6 +241,7 @@ public class LineDAOImpl implements LineDAO {
         preparedStatement.setInt(2, line.getPosition().getId());
         preparedStatement.setInt(3, line.getLength().getId());
         preparedStatement.setInt(4, line.getLineStyle().getId());
+        preparedStatement.setString(5, line.getOrientation());
     }
 
     @Override
