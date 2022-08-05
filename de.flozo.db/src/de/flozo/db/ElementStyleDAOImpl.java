@@ -220,7 +220,7 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
                         new Length(resultSet.getInt(11), resultSet.getString(12), resultSet.getDouble(13),
                                 new LengthUnit(resultSet.getInt(14), resultSet.getString(15), resultSet.getString(16))),
                         new Alignment(resultSet.getInt(17), resultSet.getString(18), resultSet.getString(19)),
-                        new BaseColor(resultSet.getInt(20), resultSet.getString(21)),
+                        new Color(resultSet.getInt(20), resultSet.getString(21)),
                         new PredefinedOpacity(resultSet.getInt(22), resultSet.getString(23))),
                 new LineStyle(resultSet.getInt(24), resultSet.getString(25),
                         new LineWidth(resultSet.getInt(26), resultSet.getString(27), resultSet.getDouble(28),
@@ -228,10 +228,10 @@ public class ElementStyleDAOImpl implements ElementStyleDAO {
                         new LineCap(resultSet.getInt(32), resultSet.getString(33), resultSet.getString(34)),
                         new LineJoin(resultSet.getInt(35), resultSet.getString(36), resultSet.getString(37)),
                         new DashPattern(resultSet.getInt(38), resultSet.getString(39)),
-                        new BaseColor(resultSet.getInt(40), resultSet.getString(41)),
+                        new Color(resultSet.getInt(40), resultSet.getString(41)),
                         new PredefinedOpacity(resultSet.getInt(42), resultSet.getString(43))),
                 new AreaStyle(resultSet.getInt(44), resultSet.getString(45),
-                        new BaseColor(resultSet.getInt(46), resultSet.getString(47)),
+                        new Color(resultSet.getInt(46), resultSet.getString(47)),
                         new PredefinedOpacity(resultSet.getInt(48), resultSet.getString(49)))
         );
     }

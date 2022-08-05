@@ -8,17 +8,17 @@ public class LineStyle {
     private LineCap lineCap;
     private LineJoin lineJoin;
     private DashPattern dashPattern;
-    private BaseColor baseColor;
+    private Color color;
     private PredefinedOpacity opacity;
 
-    public LineStyle(int id, String name, LineWidth lineWidth, LineCap lineCap, LineJoin lineJoin, DashPattern dashPattern, BaseColor baseColor, PredefinedOpacity opacity) {
+    public LineStyle(int id, String name, LineWidth lineWidth, LineCap lineCap, LineJoin lineJoin, DashPattern dashPattern, Color color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
         this.lineWidth = lineWidth;
         this.lineCap = lineCap;
         this.lineJoin = lineJoin;
         this.dashPattern = dashPattern;
-        this.baseColor = baseColor;
+        this.color = color;
         this.opacity = opacity;
     }
 
@@ -70,12 +70,12 @@ public class LineStyle {
         this.dashPattern = dashPattern;
     }
 
-    public BaseColor getBaseColor() {
-        return baseColor;
+    public Color getColor() {
+        return color;
     }
 
-    public void setBaseColor(BaseColor baseColor) {
-        this.baseColor = baseColor;
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public PredefinedOpacity getOpacity() {
@@ -95,7 +95,7 @@ public class LineStyle {
                 ", lineCap=" + lineCap +
                 ", lineJoin=" + lineJoin +
                 ", dashPattern=" + dashPattern +
-                ", baseColor=" + baseColor +
+                ", color=" + color +
                 ", opacity=" + opacity +
                 '}';
     }

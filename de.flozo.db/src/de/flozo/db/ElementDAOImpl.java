@@ -292,7 +292,7 @@ public class ElementDAOImpl implements ElementDAO {
                                 new Length(resultSet.getInt(68), resultSet.getString(69), resultSet.getDouble(70),
                                         new LengthUnit(resultSet.getInt(71), resultSet.getString(72), resultSet.getString(73))),
                                 new Alignment(resultSet.getInt(74), resultSet.getString(75), resultSet.getString(76)),
-                                new BaseColor(resultSet.getInt(77), resultSet.getString(78)),
+                                new Color(resultSet.getInt(77), resultSet.getString(78)),
                                 new PredefinedOpacity(resultSet.getInt(79), resultSet.getString(80))),
                         new LineStyle(resultSet.getInt(81), resultSet.getString(82),
                                 new LineWidth(resultSet.getInt(83), resultSet.getString(84), resultSet.getDouble(85),
@@ -300,10 +300,10 @@ public class ElementDAOImpl implements ElementDAO {
                                 new LineCap(resultSet.getInt(89), resultSet.getString(90), resultSet.getString(91)),
                                 new LineJoin(resultSet.getInt(92), resultSet.getString(93), resultSet.getString(94)),
                                 new DashPattern(resultSet.getInt(95), resultSet.getString(96)),
-                                new BaseColor(resultSet.getInt(97), resultSet.getString(98)),
+                                new Color(resultSet.getInt(97), resultSet.getString(98)),
                                 new PredefinedOpacity(resultSet.getInt(99), resultSet.getString(100))),
                         new AreaStyle(resultSet.getInt(101), resultSet.getString(102),
-                                new BaseColor(resultSet.getInt(103), resultSet.getString(104)),
+                                new Color(resultSet.getInt(103), resultSet.getString(104)),
                                 new PredefinedOpacity(resultSet.getInt(105), resultSet.getString(106)))),
                 resultSet.getInt(107), resultSet.getInt(108), resultSet.getBoolean(109)
         );

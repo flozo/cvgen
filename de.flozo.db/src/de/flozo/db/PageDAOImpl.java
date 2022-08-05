@@ -218,7 +218,7 @@ public class PageDAOImpl implements PageDAO {
                 new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
                         new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
                 new AreaStyle(resultSet.getInt(15), resultSet.getString(16),
-                        new BaseColor(resultSet.getInt(17), resultSet.getString(18)),
+                        new Color(resultSet.getInt(17), resultSet.getString(18)),
                         new PredefinedOpacity(resultSet.getInt(19), resultSet.getString(20)))
         );
     }

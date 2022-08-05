@@ -36,8 +36,7 @@ public class DocumentElement {
     private Node getNode(String elementContent) {
         return new Node.Builder(applyTextFormat(elementContent))
                 .name(elementName)
-                .position(Point.fromNumbers(element.getPosition().getLengthX().getValue(), element.getPosition().getLengthY().getValue()))
-//                .position(Point.fromLengths(LengthExpression.fromLength(element.getPosition().getLengthX()), LengthExpression.fromLength(element.getPosition().getLengthY())))
+                .position(Point.fromLengths(LengthExpression.fromLength(element.getPosition().getLengthX()), LengthExpression.fromLength(element.getPosition().getLengthY())))
                 .anchor(element.getAnchor())
                 .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
@@ -53,7 +52,7 @@ public class DocumentElement {
                 .lineCap(element.getElementStyle().getLineStyle().getLineCap())
                 .lineJoin(element.getElementStyle().getLineStyle().getLineJoin())
                 .dashPatternStyle(element.getElementStyle().getLineStyle().getDashPattern())
-                .drawColor(element.getElementStyle().getLineStyle().getBaseColor())
+                .drawColor(element.getElementStyle().getLineStyle().getColor())
                 .lineOpacity(element.getElementStyle().getLineStyle().getOpacity())
                 .fillColor(element.getElementStyle().getAreaStyle().getColor())
                 .areaOpacity(element.getElementStyle().getAreaStyle().getOpacity())

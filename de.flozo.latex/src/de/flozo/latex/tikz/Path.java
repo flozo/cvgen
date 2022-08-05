@@ -1,9 +1,6 @@
 package de.flozo.latex.tikz;
 
-import de.flozo.common.dto.appearance.BaseColor;
-import de.flozo.common.dto.appearance.DashPattern;
-import de.flozo.common.dto.appearance.LineCap;
-import de.flozo.common.dto.appearance.LineJoin;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.latex.core.Bracket;
 import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.FormattedExpressionList;
@@ -23,8 +20,8 @@ public abstract class Path {
     protected Point position;
     protected List<String> optionalArguments;
     protected String name;
-    protected BaseColor drawColor;
-    protected BaseColor fillColor;
+    protected Color drawColor;
+    protected Color fillColor;
     protected PredefinedLineWidth predefinedLineWidth;
     protected LineCap lineCap;
     protected LineJoin lineJoin;
@@ -33,7 +30,7 @@ public abstract class Path {
 
 
     public Path(Point position, List<String> optionalArguments, String name,
-                BaseColor drawColor, BaseColor fillColor, PredefinedLineWidth predefinedLineWidth,
+                Color drawColor, Color fillColor, PredefinedLineWidth predefinedLineWidth,
                 LineCap lineCap, LineJoin lineJoin, DashPattern dashPattern,
                 boolean skipLastDelimiter) {
         this.position = position;

@@ -93,8 +93,8 @@ public class LinePath extends Path {
         private final List<Point> coordinateList = new ArrayList<>();
         private boolean cycle = false;
         private final List<String> optionalArguments = new ArrayList<>();
-        private BaseColor drawColor;
-        private BaseColor fillColor;
+        private Color drawColor;
+        private Color fillColor;
         private PredefinedLineWidth predefinedLineWidth;
         private LineWidth lineWidth;
         private LineCap lineCap;
@@ -122,39 +122,21 @@ public class LinePath extends Path {
             return this;
         }
 
-        // Point coordinates with optional CoordinateMode parameter
-
-//        public Builder nextPoint(double x, double y) {
-//            return nextPoint(x, y, DEFAULT_COORDINATE_MODE);
-//        }
-//
-//        public Builder nextPoint(double x, double y, CoordinateMode coordinateMode) {
-//            return nextPoint(x, y, coordinateMode, DEFAULT_LENGTH_UNIT);
-//        }
-//
-//        public Builder nextPoint(double x, double y, LengthUnit lengthUnit) {
-//            return nextPoint(x, y, DEFAULT_COORDINATE_MODE, lengthUnit);
-//        }
-
-//        public Builder nextPoint(double x, double y, CoordinateMode coordinateMode, LengthUnit lengthUnit) {
-//            this.coordinateList.add(Point.fromLengthsInMode(LengthExpression.fromLength(, lengthUnit), LengthExpression.fromLength(y, lengthUnit), coordinateMode));
-//            return this;
-//        }
 
         public Builder cycle(boolean cycle) {
             this.cycle = cycle;
             return this;
         }
 
-        public Builder drawColor(BaseColor drawColor) {
+        public Builder drawColor(Color drawColor) {
             this.drawColor = drawColor;
-            addOption(NodeOption.DRAW, drawColor.getName());
+            addOption(NodeOption.DRAW, drawColor.getSpecifier());
             return this;
         }
 
-        public Builder fillColor(BaseColor fillColor) {
+        public Builder fillColor(Color fillColor) {
             this.fillColor = fillColor;
-            addOption(NodeOption.FILL, fillColor.getName());
+            addOption(NodeOption.FILL, fillColor.getSpecifier());
             return this;
         }
 
@@ -198,7 +180,7 @@ public class LinePath extends Path {
         private void addOption(NodeOption key, String value) {
             // Skip empty keys or values
             if (key != null && value != null) {
-                if (!key.getString().isEmpty() && !value.isEmpty()) {
+                if (!key.getString().isBlank() && !value.isBlank()) {
                     this.optionalArguments.add(key.getString() + "=" + value);
                 }
             }

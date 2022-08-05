@@ -113,9 +113,9 @@ public class Node extends Path {
         private boolean skipLastDelimiter = DEFAULT_SKIP_LAST_DELIMITER;
         private Anchor anchor;
         private FontSize fontSize = new FontSize(1, "default", "");
-        private BaseColor textColor;
-        private BaseColor drawColor;
-        private BaseColor fillColor;
+        private Color textColor;
+        private Color drawColor;
+        private Color fillColor;
         private PredefinedLineWidth predefinedLineWidth;
         private LineCap lineCap;
         private LineJoin lineJoin;
@@ -179,25 +179,25 @@ public class Node extends Path {
             return this;
         }
 
-        public Builder drawColor(BaseColor drawColor) {
+        public Builder drawColor(Color drawColor) {
             this.drawColor = drawColor;
-            if (!Objects.equals(textColor.getName(), "black")) {
-                addOption(NodeOption.DRAW, drawColor.getName());
+            if (!Objects.equals(textColor.getSpecifier(), "black")) {
+                addOption(NodeOption.DRAW, drawColor.getSpecifier());
             }
             return this;
         }
 
-        public Builder textColor(BaseColor textColor) {
+        public Builder textColor(Color textColor) {
             this.textColor = textColor;
-            if (!Objects.equals(textColor.getName(), "black")) {
-                addOption(NodeOption.TEXT, textColor.getName());
+            if (!Objects.equals(textColor.getSpecifier(), "black")) {
+                addOption(NodeOption.TEXT, textColor.getSpecifier());
             }
             return this;
         }
 
-        public Builder fillColor(BaseColor fillColor) {
+        public Builder fillColor(Color fillColor) {
             this.fillColor = fillColor;
-            addOption(NodeOption.FILL, fillColor.getName());
+            addOption(NodeOption.FILL, fillColor.getSpecifier());
             return this;
         }
 
@@ -360,7 +360,7 @@ public class Node extends Path {
         private void addOption(NodeOption key, String value) {
             // Skip empty keys or values
             if (key != null && value != null) {
-                if (!key.getString().isEmpty() && !value.isEmpty()) {
+                if (!key.getString().isBlank() && !value.isBlank()) {
                     this.optionalArguments.add(key.getString() + "=" + value);
                 }
             }

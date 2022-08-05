@@ -65,8 +65,8 @@ public class RectanglePath extends Path {
         // optional
         private String name;
         private final List<String> optionalArguments = new ArrayList<>();
-        private BaseColor drawColor;
-        private BaseColor fillColor;
+        private Color drawColor;
+        private Color fillColor;
         private PredefinedLineWidth predefinedLineWidth;
         private LengthExpression lineWidth;
         private LineCap lineCap;
@@ -89,15 +89,15 @@ public class RectanglePath extends Path {
             return this;
         }
 
-        public Builder drawColor(BaseColor drawColor) {
+        public Builder drawColor(Color drawColor) {
             this.drawColor = drawColor;
-            addOption(NodeOption.DRAW, drawColor.getName());
+            addOption(NodeOption.DRAW, drawColor.getSpecifier());
             return this;
         }
 
-        public Builder fillColor(BaseColor fillColor) {
+        public Builder fillColor(Color fillColor) {
             this.fillColor = fillColor;
-            addOption(NodeOption.FILL, fillColor.getName());
+            addOption(NodeOption.FILL, fillColor.getSpecifier());
             return this;
         }
 
@@ -140,7 +140,7 @@ public class RectanglePath extends Path {
         private void addOption(NodeOption key, String value) {
             // Skip empty keys or values
             if (key != null && value != null) {
-                if (!key.getString().isEmpty() && !value.isEmpty()) {
+                if (!key.getString().isBlank() && !value.isBlank()) {
                     this.optionalArguments.add(key.getString() + "=" + value);
                 }
             }

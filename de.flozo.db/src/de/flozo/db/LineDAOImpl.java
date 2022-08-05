@@ -230,7 +230,7 @@ public class LineDAOImpl implements LineDAO {
                         new LineCap(resultSet.getInt(31), resultSet.getString(32), resultSet.getString(33)),
                         new LineJoin(resultSet.getInt(34), resultSet.getString(35), resultSet.getString(36)),
                         new DashPattern(resultSet.getInt(37), resultSet.getString(38)),
-                        new BaseColor(resultSet.getInt(39), resultSet.getString(40)),
+                        new Color(resultSet.getInt(39), resultSet.getString(40)),
                         new PredefinedOpacity(resultSet.getInt(41), resultSet.getString(42))),
                 resultSet.getString(43)
         );

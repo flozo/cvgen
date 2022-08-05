@@ -71,7 +71,7 @@ public class DocumentPage {
         System.out.println(target.getStatement());
         return new LinePath.Builder(origin, target)
                 .lineWidth(line.getLineStyle().getLineWidth())
-                .drawColor(line.getLineStyle().getBaseColor())
+                .drawColor(line.getLineStyle().getColor())
                 .lineCap(line.getLineStyle().getLineCap())
                 .lineJoin(line.getLineStyle().getLineJoin())
                 .dashPattern(line.getLineStyle().getDashPattern())

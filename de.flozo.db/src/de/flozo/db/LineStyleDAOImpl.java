@@ -50,14 +50,14 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     //   lc._id AS line_cap_id, lc.name AS line_cap_name, lc.value AS line_cap_value,
     //   lj._id AS line_join_id, lj.name AS line_join_name, lj.value AS line_join_value,
     //   dp._id AS dash_pattern_id, dp.name AS dash_pattern_name,
-    //   c._id AS color_id, c.name AS color_name,
+    //   c._id AS color_id, c.color_string AS color_name,
     //   o._id AS opacity_id, o.value AS opacity_name
     // FROM line_styles AS ls
     // INNER JOIN line_width_view AS lwv ON ls.line_width_id = lwv._id
     // INNER JOIN line_caps AS lc ON ls.line_cap_id = lc._id
     // INNER JOIN line_joins AS lj ON ls.line_join_id = lj._id
     // INNER JOIN dash_patterns AS dp ON ls.dash_pattern_id = dp._id
-    // INNER JOIN base_colors AS c ON ls.color_id = c._id
+    // INNER JOIN colors AS c ON ls.color_id = c._id
     // INNER JOIN predefined_opacities AS o ON ls.opacity_id = o._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
@@ -228,7 +228,7 @@ public class LineStyleDAOImpl implements LineStyleDAO {
                 new LineCap(resultSet.getInt(9), resultSet.getString(10), resultSet.getString(11)),
                 new LineJoin(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14)),
                 new DashPattern(resultSet.getInt(15), resultSet.getString(16)),
-                new BaseColor(resultSet.getInt(17), resultSet.getString(18)),
+                new Color(resultSet.getInt(17), resultSet.getString(18)),
                 new PredefinedOpacity(resultSet.getInt(19), resultSet.getString(20))
         );
     }
@@ -239,7 +239,7 @@ public class LineStyleDAOImpl implements LineStyleDAO {
         preparedStatement.setInt(3, lineStyle.getLineCap().getId());
         preparedStatement.setInt(4, lineStyle.getLineJoin().getId());
         preparedStatement.setInt(5, lineStyle.getDashPattern().getId());
-        preparedStatement.setInt(6, lineStyle.getBaseColor().getId());
+        preparedStatement.setInt(6, lineStyle.getColor().getId());
         preparedStatement.setInt(7, lineStyle.getOpacity().getId());
     }
 

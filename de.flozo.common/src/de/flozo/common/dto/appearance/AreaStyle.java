@@ -4,10 +4,10 @@ public class AreaStyle {
 
     private int id;
     private String name;
-    private BaseColor color;
+    private Color color;
     private PredefinedOpacity opacity;
 
-    public AreaStyle(int id, String name, BaseColor color, PredefinedOpacity opacity) {
+    public AreaStyle(int id, String name, Color color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -30,11 +30,11 @@ public class AreaStyle {
         this.name = name;
     }
 
-    public BaseColor getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(BaseColor color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 

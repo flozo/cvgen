@@ -8,10 +8,10 @@ public class TextStyle {
     private TextFormat textFormat;
     private Length textWidth;
     private Alignment alignment;
-    private BaseColor color;
+    private Color color;
     private PredefinedOpacity opacity;
 
-    public TextStyle(int id, String name, FontSize fontSize, TextFormat textFormat, Length textWidth, Alignment alignment, BaseColor color, PredefinedOpacity opacity) {
+    public TextStyle(int id, String name, FontSize fontSize, TextFormat textFormat, Length textWidth, Alignment alignment, Color color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
         this.fontSize = fontSize;
@@ -70,11 +70,11 @@ public class TextStyle {
         this.alignment = alignment;
     }
 
-    public BaseColor getColor() {
+    public Color getColor() {
         return color;
     }
 
-    public void setColor(BaseColor color) {
+    public void setColor(Color color) {
         this.color = color;
     }
 
