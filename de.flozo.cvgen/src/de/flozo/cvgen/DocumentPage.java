@@ -146,7 +146,7 @@ public class DocumentPage {
         private final Page pageProperties;
 
         // optional
-        private List<DocumentElement> documentElements;
+        private List<DocumentElement> documentElements = new ArrayList<>();
         private List<Line> lines;
         private boolean insertLatexComments = DEFAULT_INSERT_LATEX_COMMENTS;
 
@@ -156,7 +156,7 @@ public class DocumentPage {
         }
 
         public Builder addElement(List<DocumentElement> documentElements) {
-            this.documentElements = documentElements;
+            this.documentElements.addAll(documentElements);
             return this;
         }
 

@@ -4,6 +4,7 @@ import de.flozo.common.dto.appearance.Layer;
 import de.flozo.common.dto.appearance.Line;
 import de.flozo.common.dto.appearance.Page;
 import de.flozo.common.dto.content.Address;
+import de.flozo.common.dto.content.EmbeddedFile;
 import de.flozo.common.dto.content.Enclosure;
 import de.flozo.common.dto.content.LetterContent;
 import de.flozo.common.dto.latex.DocumentClass;
@@ -150,10 +151,27 @@ public class Main {
             lineList.remove(0);
 
 
+            EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
+            List<EmbeddedFile> embeddedFiles = embeddedFileDAO.getAllIncluded();
+            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
+            EmbeddedFile photo = embeddedFileDAO.get("photo");
+            String absoluteFilePath = signatureFile.getFile().getPath().replaceFirst("^~",System.getProperty("user.home"));
+//            String absoluteFilePath = Paths.get().toAbsolutePath().toString());
+            ContentElement includegraphicsOption = new ContentElement.Builder()
+                    .addComponent("scale")
+                    .addComponent(String.valueOf(signatureFile.getScaleFactor()))
+                    .inlineDelimiter(Delimiter.EQUALS)
+                    .build();
+            Command includeSignature = new GenericCommand.Builder("includegraphics")
+                    .optionList(includegraphicsOption.getContentElement())
+                    .body(absoluteFilePath)
+                    .build();
+            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInlineOptions()).build();
 
-
+            DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
+                    .addElement(signature)
                     .addLine(lineList)
                     .insertLatexComments(true)
                     .build();

@@ -6,7 +6,8 @@ public enum Delimiter {
     SPACE(" "),
     SEMICOLON(";"),
     COMMA(","),
-    DOUBLE_BACKSLASH("\\\\");
+    DOUBLE_BACKSLASH("\\\\"),
+    EQUALS("=");
 
 
     private final String delimiter;

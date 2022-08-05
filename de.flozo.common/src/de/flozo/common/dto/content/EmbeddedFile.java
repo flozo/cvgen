@@ -4,11 +4,13 @@ public class EmbeddedFile {
 
     private int id;
     private File file;
+    private double scaleFactor;
     private boolean include;
 
-    public EmbeddedFile(int id, File file, boolean include) {
+    public EmbeddedFile(int id, File file, double scaleFactor, boolean include) {
         this.id = id;
         this.file = file;
+        this.scaleFactor = scaleFactor;
         this.include = include;
     }
 
@@ -28,6 +30,14 @@ public class EmbeddedFile {
         this.file = file;
     }
 
+    public double getScaleFactor() {
+        return scaleFactor;
+    }
+
+    public void setScaleFactor(double scaleFactor) {
+        this.scaleFactor = scaleFactor;
+    }
+
     public boolean isInclude() {
         return include;
     }
@@ -41,6 +51,7 @@ public class EmbeddedFile {
         return "EmbeddedFile{" +
                 "id=" + id +
                 ", file=" + file +
+                ", scaleFactor=" + scaleFactor +
                 ", include=" + include +
                 '}';
     }

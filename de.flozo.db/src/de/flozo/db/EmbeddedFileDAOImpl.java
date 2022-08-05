@@ -13,12 +13,13 @@ public class EmbeddedFileDAOImpl implements EmbeddedFileDAO {
     public static final String TABLE_NAME = "embedded_files";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_FILE_ID = "file_id";
+    public static final String COLUMN_SCALE_FACTOR = "scale_factor";
     public static final String COLUMN_INCLUDE = "include";
 
     // view
     public static final String VIEW_NAME = "embedded_files_view";
     public static final String VIEW_COLUMN_ID = "_id";
-    public static final String VIEW_COLUMN_DESCRIPTION = "description";
+    public static final String VIEW_COLUMN_DESCRIPTION = "file_description";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -43,7 +44,7 @@ public class EmbeddedFileDAOImpl implements EmbeddedFileDAO {
     // CREATE VIEW embedded_files_view AS
     // SELECT ef._id,
     //	 f._id AS file_id, f.description AS file_description, f.path AS file_path,
-    //	 ef.include
+    //	 ef.scale_factor, ef.include
     // FROM embedded_files AS ef
     // INNER JOIN files AS f ON ef.file_id = f._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
@@ -51,17 +52,19 @@ public class EmbeddedFileDAOImpl implements EmbeddedFileDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
     public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
-    public static final int NON_ID_COLUMNS = 2;
+    public static final int NON_ID_COLUMNS = 3;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_FILE_ID + COMMA +
+            COLUMN_SCALE_FACTOR + COMMA +
             COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_FILE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_SCALE_FACTOR + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
@@ -224,13 +227,14 @@ public class EmbeddedFileDAOImpl implements EmbeddedFileDAO {
     private EmbeddedFile extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new EmbeddedFile(resultSet.getInt(1),
                 new File(resultSet.getInt(2), resultSet.getString(3), resultSet.getString(4)),
-                resultSet.getBoolean(5)
+                resultSet.getDouble(5), resultSet.getBoolean(6)
         );
     }
 
     private void setAllValues(PreparedStatement preparedStatement, EmbeddedFile embeddedFile) throws SQLException {
         preparedStatement.setInt(1, embeddedFile.getFile().getId());
-        preparedStatement.setBoolean(2, embeddedFile.isInclude());
+        preparedStatement.setDouble(2, embeddedFile.getScaleFactor());
+        preparedStatement.setBoolean(3, embeddedFile.isInclude());
     }
 
     @Override
