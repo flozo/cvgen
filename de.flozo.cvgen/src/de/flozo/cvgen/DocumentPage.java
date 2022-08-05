@@ -86,7 +86,7 @@ public class DocumentPage {
     }
 
     private String getCommentLine(String comment) {
-        return "% " + comment;
+        return "% " + comment.toUpperCase();
     }
 
     private List<String> assembleDocumentElements() {

@@ -150,6 +150,8 @@ public class Main {
             lineList.remove(0);
 
 
+
+
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
                     .addLine(lineList)

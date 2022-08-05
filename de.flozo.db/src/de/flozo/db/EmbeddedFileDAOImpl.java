@@ -1,28 +1,24 @@
 package de.flozo.db;
 
-import de.flozo.common.dto.appearance.*;
+import de.flozo.common.dto.content.EmbeddedFile;
+import de.flozo.common.dto.content.File;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TextStyleDAOImpl implements TextStyleDAO {
+public class EmbeddedFileDAOImpl implements EmbeddedFileDAO {
 
     // table
-    public static final String TABLE_NAME = "text_styles";
+    public static final String TABLE_NAME = "embedded_files";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_FONT_SIZE_ID = "font_size_id";
-    public static final String COLUMN_TEXT_FORMAT_ID = "text_format_id";
-    public static final String COLUMN_TEXT_WIDTH_ID = "text_width_id";
-    public static final String COLUMN_ALIGNMENT_ID = "alignment_id";
-    public static final String COLUMN_COLOR_ID = "color_id";
-    public static final String COLUMN_OPACITY_ID = "opacity_id";
+    public static final String COLUMN_FILE_ID = "file_id";
+    public static final String COLUMN_INCLUDE = "include";
 
     // view
-    public static final String VIEW_NAME = "text_style_view";
+    public static final String VIEW_NAME = "embedded_files_view";
     public static final String VIEW_COLUMN_ID = "_id";
-    public static final String VIEW_COLUMN_NAME = "name";
+    public static final String VIEW_COLUMN_DESCRIPTION = "description";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -40,52 +36,33 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
 
-
     // query
 
-    // text_style_view created via:
+    // embedded_files_view created via:
 
-    // CREATE VIEW text_style_view AS
-    // SELECT ts._id, ts.name,
-    //   fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
-    //   tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
-    //   lv._id AS text_width_id, lv.name AS text_width_name, lv.value AS text_width_value, lv.length_unit_id AS text_width_unit_id, lv.length_unit_name AS text_width_unit_name, lv.length_unit_value AS text_width_unit_value,
-    //   a._id AS alignment_id, a.name AS alignment_name, a.value AS alignment_value,
-    //   c._id AS color_id, c.color_string AS color_name,
-    //   o._id AS opacity_id, o.value AS opacity_value
-    // FROM text_styles AS ts
-    // INNER JOIN font_sizes AS fs ON ts.font_size_id = fs._id
-    // INNER JOIN text_formats AS tf ON ts.text_format_id = tf._id
-    // INNER JOIN length_view AS lv ON ts.text_width_id = lv._id
-    // INNER JOIN alignments AS a ON ts.alignment_id = a._id
-    // INNER JOIN colors AS c ON ts.color_id = c._id
-    // INNER JOIN predefined_opacities AS o ON ts.opacity_id = o._id
+    // CREATE VIEW embedded_files_view AS
+    // SELECT ef._id,
+    //	 f._id AS file_id, f.description AS file_description, f.path AS file_path,
+    //	 ef.include
+    // FROM embedded_files AS ef
+    // INNER JOIN files AS f ON ef.file_id = f._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_DESCRIPTION + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
-    public static final int NON_ID_COLUMNS = 7;
+    public static final int NON_ID_COLUMNS = 2;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
-            COLUMN_NAME + COMMA +
-            COLUMN_FONT_SIZE_ID + COMMA +
-            COLUMN_TEXT_FORMAT_ID + COMMA +
-            COLUMN_TEXT_WIDTH_ID + COMMA +
-            COLUMN_ALIGNMENT_ID + COMMA +
-            COLUMN_COLOR_ID + COMMA +
-            COLUMN_OPACITY_ID +
+            COLUMN_FILE_ID + COMMA +
+            COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
-            COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_FONT_SIZE_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_TEXT_FORMAT_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_TEXT_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_ALIGNMENT_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
+            COLUMN_FILE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -95,14 +72,18 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     private final Datasource2 datasource2;
     private final Connection connection;
 
-
-    public TextStyleDAOImpl(Datasource2 datasource2, Connection connection) {
+    public EmbeddedFileDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;
         this.connection = connection;
     }
 
+    private void showSQLMessage(String queryString) {
+        System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
+    }
+
     @Override
-    public TextStyle get(int id) {
+    public EmbeddedFile get(int id) {
+        showSQLMessage(QUERY_BY_ID);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -119,7 +100,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     }
 
     @Override
-    public TextStyle get(String specifier) {
+    public EmbeddedFile get(String specifier) {
+        showSQLMessage(QUERY_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -136,102 +118,124 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     }
 
     @Override
-    public List<TextStyle> getAll() {
+    public List<EmbeddedFile> getAll() {
+        showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<TextStyle> textStyles = new ArrayList<>();
+            List<EmbeddedFile> embeddedFiles = new ArrayList<>();
             while (resultSet.next()) {
-                textStyles.add(extractFromResultSet(resultSet));
+                embeddedFiles.add(extractFromResultSet(resultSet));
             }
-            return textStyles;
+            System.out.println(" done!");
+            return embeddedFiles;
         } catch (SQLException e) {
+            System.out.println();
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
     }
 
     @Override
-    public void add(TextStyle textStyle) {
-        // start transaction:
-        datasource2.setAutoCommitBehavior(false);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
-            setAllValues(preparedStatement, textStyle);
-            // do it
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 1) {
-                connection.commit();
-                // end of transaction
+    public List<EmbeddedFile> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
+            List<EmbeddedFile> embeddedFiles = new ArrayList<>();
+            while (resultSet.next()) {
+                embeddedFiles.add(extractFromResultSet(resultSet));
             }
-        } catch (Exception e) {
-            datasource2.rollback(e, "Insert-textStyle");
-        } finally {
-            datasource2.setAutoCommitBehavior(true);
-        }
-    }
-
-    @Override
-    public void update(TextStyle textStyle) {
-        // start transaction:
-        datasource2.setAutoCommitBehavior(false);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(UPDATE_WHERE_POSITION, textStyle.getId());
-            setAllValues(preparedStatement, textStyle);
-            // do it
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 1) {
-                connection.commit();
-                // end of transaction
-            }
-        } catch (Exception e) {
-            datasource2.rollback(e, "Update-textStyle");
-        } finally {
-            datasource2.setAutoCommitBehavior(true);
-        }
-    }
-
-    @Override
-    public void delete(TextStyle textStyle) {
-        // start transaction:
-        datasource2.setAutoCommitBehavior(false);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, textStyle.getId());
-            // do it
-            int affectedRows = preparedStatement.executeUpdate();
-            if (affectedRows == 1) {
-                connection.commit();
-                // end of transaction
-            }
+            System.out.println(" done!");
+            return embeddedFiles;
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-textStyle");
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void add(EmbeddedFile embeddedFile) {
+        // start transaction:
+        datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(INSERT);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
+            setAllValues(preparedStatement, embeddedFile);
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+            System.out.println(" done!");
+        } catch (Exception e) {
+            System.out.println();
+            datasource2.rollback(e, "Insert-embeddedFile");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
-    private TextStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new TextStyle(resultSet.getInt(1), resultSet.getString(2),
-                new FontSize(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)),
-                new TextFormat(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8)),
-                new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
-                        new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
-                new Alignment(resultSet.getInt(15), resultSet.getString(16), resultSet.getString(17)),
-                new Color(resultSet.getInt(18), resultSet.getString(19)),
-                new PredefinedOpacity(resultSet.getInt(20), resultSet.getString(21))
+    @Override
+    public void update(EmbeddedFile embeddedFile) {
+        // start transaction:
+        datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(UPDATE_ROW);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, embeddedFile.getId());
+            setAllValues(preparedStatement, embeddedFile);
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+            System.out.println(" done!");
+        } catch (Exception e) {
+            System.out.println();
+            datasource2.rollback(e, "Update-embeddedFile");
+        } finally {
+            datasource2.setAutoCommitBehavior(true);
+        }
+
+    }
+
+    @Override
+    public void delete(EmbeddedFile embeddedFile) {
+        // start transaction:
+        datasource2.setAutoCommitBehavior(false);
+        showSQLMessage(DELETE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
+            preparedStatement.setInt(1, embeddedFile.getId());
+            // do it
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 1) {
+                connection.commit();
+                // end of transaction
+            }
+            System.out.println(" done!");
+        } catch (SQLException e) {
+            System.out.println();
+            datasource2.rollback(e, "Delete-embeddedFile");
+        } finally {
+            datasource2.setAutoCommitBehavior(true);
+        }
+    }
+
+    private EmbeddedFile extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new EmbeddedFile(resultSet.getInt(1),
+                new File(resultSet.getInt(2), resultSet.getString(3), resultSet.getString(4)),
+                resultSet.getBoolean(5)
         );
     }
 
-    private void setAllValues(PreparedStatement preparedStatement, TextStyle textStyle) throws SQLException {
-        preparedStatement.setString(1, textStyle.getName());
-        preparedStatement.setInt(2, textStyle.getFontSize().getId());
-        preparedStatement.setInt(3, textStyle.getTextFormat().getId());
-        preparedStatement.setInt(4,textStyle.getTextWidth().getId());
-        preparedStatement.setInt(5, textStyle.getAlignment().getId());
-        preparedStatement.setInt(6, textStyle.getOpacity().getId());
+    private void setAllValues(PreparedStatement preparedStatement, EmbeddedFile embeddedFile) throws SQLException {
+        preparedStatement.setInt(1, embeddedFile.getFile().getId());
+        preparedStatement.setBoolean(2, embeddedFile.isInclude());
     }
 
     @Override
     public String toString() {
-        return "TextStyleDAOImpl{" +
+        return "EmbeddedFileDAOImpl{" +
                 "datasource2=" + datasource2 +
                 ", connection=" + connection +
                 '}';
