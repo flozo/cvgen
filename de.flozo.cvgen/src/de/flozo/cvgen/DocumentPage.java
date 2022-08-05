@@ -8,12 +8,12 @@ import de.flozo.latex.tikz.LinePath;
 import de.flozo.latex.tikz.Point;
 import de.flozo.latex.tikz.RectanglePath;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DocumentPage {
+
+    public static final boolean DEFAULT_INSERT_LATEX_COMMENTS = false;
 
     // required
     private final String name;
@@ -23,6 +23,7 @@ public class DocumentPage {
     private final List<DocumentElement> documentElements;
     private final List<Line> lines;
     private final ExpressionList pageOptions;
+    private final boolean insertLatexComments;
 
     private DocumentPage(Builder builder) {
         this.name = builder.name;
@@ -35,6 +36,7 @@ public class DocumentPage {
                 "trim left=0pt",
                 "trim right=" + LengthExpression.fromLength(pageProperties.getWidth()).getFormatted())
                 .build();
+        this.insertLatexComments = builder.insertLatexComments;
     }
 
     private RectanglePath getBackgroundRectangle() {
@@ -50,15 +52,15 @@ public class DocumentPage {
         Length yLength = null;
         if (Objects.equals(line.getOrientation(), "horizontal")) {
 //            if (Objects.equals(line.getPosition().getLengthX().getUnit(), line.getLength().getUnit())) {
-                double xTarget = line.getPosition().getLengthX().getValue() + line.getLength().getValue();
-                xLength = new Length(0, "", xTarget, line.getPosition().getLengthX().getUnit());
-                yLength = new Length(0, "", line.getPosition().getLengthY().getValue(), line.getPosition().getLengthY().getUnit());
+            double xTarget = line.getPosition().getLengthX().getValue() + line.getLength().getValue();
+            xLength = new Length(0, "", xTarget, line.getPosition().getLengthX().getUnit());
+            yLength = new Length(0, "", line.getPosition().getLengthY().getValue(), line.getPosition().getLengthY().getUnit());
 //            }
         } else {
 //            if (Objects.equals(line.getPosition().getLengthX().getUnit(), line.getLength().getUnit())) {
-                xLength = new Length(0, "", line.getPosition().getLengthX().getValue(), line.getPosition().getLengthX().getUnit());
-                double yTarget = line.getPosition().getLengthY().getValue();
-                yLength = new Length(0, "", yTarget, line.getPosition().getLengthY().getUnit());
+            xLength = new Length(0, "", line.getPosition().getLengthX().getValue(), line.getPosition().getLengthX().getUnit());
+            double yTarget = line.getPosition().getLengthY().getValue();
+            yLength = new Length(0, "", yTarget, line.getPosition().getLengthY().getUnit());
 //            }
         }
         Point origin = Point.fromLengths(
@@ -75,25 +77,34 @@ public class DocumentPage {
                 .lineCap(line.getLineStyle().getLineCap())
                 .lineJoin(line.getLineStyle().getLineJoin())
                 .dashPattern(line.getLineStyle().getDashPattern())
+                .skipLastDelimiter(true)
                 .build();
     }
 
-    private List<LinePath> getLineList() {
-        return lines.stream().map(this::getLine).collect(Collectors.toList());
-//        List<LinePath> linePaths = new ArrayList<>();
-//        for (Line line : lines) {
-//            linePaths.add(getLine(line));
-//        }
-//        return linePaths;
+    private Map<String, LinePath> getLineMap() {
+        return new LinkedHashMap<>(lines.stream().collect(Collectors.toMap(Line::getName, this::getLine)));
+    }
+
+    private String getCommentLine(String comment) {
+        return "% " + comment;
     }
 
     private List<String> assembleDocumentElements() {
         List<String> codeLines = new ArrayList<>();
+        if (insertLatexComments) {
+            codeLines.add(getCommentLine(pageProperties.getAreaStyle().getName()));
+        }
         codeLines.add(getBackgroundRectangle().getInline());
-        for (LinePath linePath : getLineList()) {
-            codeLines.add(linePath.getInline());
+        for (Map.Entry<String, LinePath> linePath : getLineMap().entrySet()) {
+            if (insertLatexComments) {
+                codeLines.add(getCommentLine(linePath.getKey()));
+            }
+            codeLines.add(linePath.getValue().getInline());
         }
         for (DocumentElement documentElement : documentElements) {
+            if (insertLatexComments) {
+                codeLines.add(getCommentLine(documentElement.getElementName()));
+            }
             codeLines.addAll(documentElement.getElementFieldInline());
         }
         return codeLines;
@@ -137,6 +148,7 @@ public class DocumentPage {
         // optional
         private List<DocumentElement> documentElements;
         private List<Line> lines;
+        private boolean insertLatexComments = DEFAULT_INSERT_LATEX_COMMENTS;
 
         public Builder(String name, Page pageProperties) {
             this.name = name;
@@ -162,6 +174,10 @@ public class DocumentPage {
             return addLine(new ArrayList<>(List.of(lines)));
         }
 
+        public Builder insertLatexComments(boolean insertLatexComments) {
+            this.insertLatexComments = insertLatexComments;
+            return this;
+        }
 
         public DocumentPage build() {
             return new DocumentPage(this);

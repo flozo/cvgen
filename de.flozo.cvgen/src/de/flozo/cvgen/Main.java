@@ -149,9 +149,11 @@ public class Main {
             List<Line> lineList = lineDAO.getAll();
             lineList.remove(0);
 
+
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
                     .addLine(lineList)
+                    .insertLatexComments(true)
                     .build();
 
 //            DocumentPage motivationalLetter = new DocumentPage(letterPage, addressField, backaddressField,

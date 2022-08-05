@@ -70,6 +70,10 @@ public class DocumentElement {
     }
 
 
+    public String getElementName() {
+        return elementName;
+    }
+
     @Override
     public String toString() {
         return "DocumentElement{" +
