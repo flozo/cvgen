@@ -2,12 +2,14 @@ package de.flozo.cvgen;
 
 import de.flozo.common.dto.appearance.Element;
 import de.flozo.latex.core.Delimiter;
+import de.flozo.latex.core.GenericCommand;
 import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.tikz.Node;
 import de.flozo.latex.tikz.Point;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class DocumentElement {
@@ -22,8 +24,17 @@ public class DocumentElement {
         this.element = element;
     }
 
+    private String applyTextFormat(String text) {
+        if (!Objects.equals(element.getElementStyle().getTextStyle().getTextFormat().getName(), "default")) {
+            return new GenericCommand.Builder(element.getElementStyle().getTextStyle().getTextFormat().getValue())
+                    .body(text)
+                    .build().getInline();
+        }
+        return text;
+    }
+
     private Node getNode(String elementContent) {
-        return new Node.Builder(elementContent)
+        return new Node.Builder(applyTextFormat(elementContent))
                 .name(elementName)
                 .position(Point.fromNumbers(element.getPosition().getLengthX().getValue(), element.getPosition().getLengthY().getValue()))
 //                .position(Point.fromLengths(LengthExpression.fromLength(element.getPosition().getLengthX()), LengthExpression.fromLength(element.getPosition().getLengthY())))
@@ -50,9 +61,6 @@ public class DocumentElement {
                 .build();
     }
 
-    //    public String getElementFieldInline() {
-//        return getNode(content.getContentElement()).getInline();
-//    }
     public List<String> getElementFieldInline() {
         return new ArrayList<>(List.of(getNode(content.getContentElement()).getInline()));
     }
