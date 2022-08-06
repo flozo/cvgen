@@ -1,6 +1,9 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.*;
+import de.flozo.common.dto.appearance.Element;
+import de.flozo.common.dto.appearance.Layer;
+import de.flozo.common.dto.appearance.Line;
+import de.flozo.common.dto.appearance.Page;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.EmbeddedFile;
 import de.flozo.common.dto.content.Enclosure;
@@ -104,6 +107,11 @@ public class Main {
                     .addComponent(sender.getCity())
                     .inlineDelimiter(Delimiter.SPACE)
                     .build();
+            ContentElement senderAddress = new ContentElement.Builder()
+                    .addComponent(senderStreetLine.getContentElement())
+                    .addComponent(senderCityLine.getContentElement())
+                    .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
+                    .build();
 
             ContentElement backaddressFieldContent = new ContentElement.Builder()
                     .addComponent(senderNameLine.getContentElement())
@@ -148,6 +156,7 @@ public class Main {
             DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
             DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
             DocumentElement enclosureTagLine = new DocumentElement("enclosures", enclosureLine, elementDAO.get("enclosures"));
+            DocumentElement headline = new DocumentElement("headline", senderNameLineWithTitle, elementDAO.get("headline_field"));
 
             System.out.println(elementDAO.get("body"));
 
@@ -221,8 +230,7 @@ public class Main {
 
 
             MatrixOfNodes senderField = new MatrixOfNodes.Builder("sender_field", senderStyle)
-                    .addRow(senderNameLineWithTitle.getContentElement(), mapMarkerIcon.getInline())
-                    .addRow(senderCityLine.getContentElement())
+                    .addRow(senderAddress.getContentElement(), mapMarkerIcon.getInline())
                     .addRow(sender.getMobileNumber(), phoneIcon.getInline())
                     .addRow(sender.getEMailAddress(), mailIcon.getInline())
                     .addColumnStyle(column1)
@@ -232,15 +240,13 @@ public class Main {
 
             DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
-                    .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
+                    .addElement(headline, addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
                     .addMatrix(senderField)
                     .addElement(signature)
                     .addLine(lineList)
                     .insertLatexComments(true)
                     .build();
 
-//            DocumentPage motivationalLetter = new DocumentPage(letterPage, addressField, backaddressField,
-//                    dateField, subjectField, bodyField, enclosureTagLine);
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);

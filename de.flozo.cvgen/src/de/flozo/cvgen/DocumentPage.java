@@ -89,26 +89,18 @@ public class DocumentPage {
 
     private List<String> assembleDocumentElements() {
         List<String> codeLines = new ArrayList<>();
-        if (insertLatexComments) {
-            codeLines.add(getCommentLine(pageProperties.getAreaStyle().getName()));
-        }
+        if (insertLatexComments) codeLines.add(getCommentLine(pageProperties.getAreaStyle().getName()));
         codeLines.add(getBackgroundRectangle().getInline());
         for (Map.Entry<String, LinePath> linePath : getLineMap().entrySet()) {
-            if (insertLatexComments) {
-                codeLines.add(getCommentLine(linePath.getKey()));
-            }
+            if (insertLatexComments) codeLines.add(getCommentLine(linePath.getKey()));
             codeLines.add(linePath.getValue().getInline());
         }
         for (DocumentElement documentElement : documentElements) {
-            if (insertLatexComments) {
-                codeLines.add(getCommentLine(documentElement.getElementName()));
-            }
+            if (insertLatexComments) codeLines.add(getCommentLine(documentElement.getElementName()));
             codeLines.addAll(documentElement.getElementFieldInline());
         }
         for (MatrixOfNodes matrix : matrices) {
-            if (insertLatexComments) {
-                codeLines.add(getCommentLine(matrix.getName()));
-            }
+            if (insertLatexComments) codeLines.add(getCommentLine(matrix.getName()));
             codeLines.addAll(matrix.getBlock());
         }
         return codeLines;
