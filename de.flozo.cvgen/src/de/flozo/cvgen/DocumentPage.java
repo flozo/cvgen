@@ -1,11 +1,13 @@
 package de.flozo.cvgen;
 
 import de.flozo.common.dto.appearance.Length;
+import de.flozo.common.dto.appearance.LengthUnit;
 import de.flozo.common.dto.appearance.Line;
 import de.flozo.common.dto.appearance.Page;
+import de.flozo.common.dto.appearance.Position;
 import de.flozo.latex.core.*;
 import de.flozo.latex.tikz.LinePath;
-import de.flozo.latex.tikz.Point;
+import de.flozo.latex.tikz.MatrixOfNodes;
 import de.flozo.latex.tikz.RectanglePath;
 
 import java.util.*;
@@ -21,6 +23,7 @@ public class DocumentPage {
 
     // optional
     private final List<DocumentElement> documentElements;
+    private final List<MatrixOfNodes> matrices;
     private final List<Line> lines;
     private final ExpressionList pageOptions;
     private final boolean insertLatexComments;
@@ -28,6 +31,7 @@ public class DocumentPage {
     private DocumentPage(Builder builder) {
         this.name = builder.name;
         this.documentElements = builder.documentElements;
+        this.matrices = builder.matrices;
         this.pageProperties = builder.pageProperties;
         this.lines = builder.lines;
         this.pageOptions = new FormattedExpressionList.Builder(
@@ -40,7 +44,11 @@ public class DocumentPage {
     }
 
     private RectanglePath getBackgroundRectangle() {
-        return new RectanglePath.Builder(0, 0, pageProperties.getWidth().getValue(), pageProperties.getHeight().getValue())
+        Position origin = new Position(0, "",
+                new Length(0, "", 0.0, new LengthUnit(0, "", "")),
+                new Length(0, "", 0.0, new LengthUnit(0, "", "")));
+        Position target = new Position(0, "", pageProperties.getWidth(), pageProperties.getHeight());
+        return new RectanglePath.Builder(origin, target)
                 .fillColor(pageProperties.getAreaStyle().getColor())
                 .skipLastTerminator(true)
                 .build();
@@ -51,27 +59,16 @@ public class DocumentPage {
         Length xLength = null;
         Length yLength = null;
         if (Objects.equals(line.getOrientation(), "horizontal")) {
-//            if (Objects.equals(line.getPosition().getLengthX().getUnit(), line.getLength().getUnit())) {
             double xTarget = line.getPosition().getLengthX().getValue() + line.getLength().getValue();
             xLength = new Length(0, "", xTarget, line.getPosition().getLengthX().getUnit());
             yLength = new Length(0, "", line.getPosition().getLengthY().getValue(), line.getPosition().getLengthY().getUnit());
-//            }
         } else {
-//            if (Objects.equals(line.getPosition().getLengthX().getUnit(), line.getLength().getUnit())) {
             xLength = new Length(0, "", line.getPosition().getLengthX().getValue(), line.getPosition().getLengthX().getUnit());
             double yTarget = line.getPosition().getLengthY().getValue();
             yLength = new Length(0, "", yTarget, line.getPosition().getLengthY().getUnit());
-//            }
         }
-        Point origin = Point.fromLengths(
-                LengthExpression.fromLength(line.getPosition().getLengthX()),
-                LengthExpression.fromLength(line.getPosition().getLengthY()));
-        Point target = Point.fromLengths(
-                LengthExpression.fromLength(xLength),
-                LengthExpression.fromLength(yLength));
-        System.out.println(origin.getStatement());
-        System.out.println(target.getStatement());
-        return new LinePath.Builder(origin, target)
+        Position target = new Position(0, "", xLength, yLength);
+        return new LinePath.Builder(line.getPosition(), target)
                 .lineWidth(line.getLineStyle().getLineWidth())
                 .drawColor(line.getLineStyle().getColor())
                 .lineCap(line.getLineStyle().getLineCap())
@@ -107,6 +104,12 @@ public class DocumentPage {
             }
             codeLines.addAll(documentElement.getElementFieldInline());
         }
+        for (MatrixOfNodes matrix : matrices) {
+            if (insertLatexComments) {
+                codeLines.add(getCommentLine(matrix.getName()));
+            }
+            codeLines.addAll(matrix.getBlock());
+        }
         return codeLines;
     }
 
@@ -134,8 +137,10 @@ public class DocumentPage {
                 "name='" + name + '\'' +
                 ", pageProperties=" + pageProperties +
                 ", documentElements=" + documentElements +
+                ", matrices=" + matrices +
                 ", lines=" + lines +
                 ", pageOptions=" + pageOptions +
+                ", insertLatexComments=" + insertLatexComments +
                 '}';
     }
 
@@ -146,8 +151,9 @@ public class DocumentPage {
         private final Page pageProperties;
 
         // optional
-        private List<DocumentElement> documentElements = new ArrayList<>();
-        private List<Line> lines;
+        private final List<DocumentElement> documentElements = new ArrayList<>();
+        private final List<MatrixOfNodes> matrices = new ArrayList<>();
+        private final List<Line> lines = new ArrayList<>();
         private boolean insertLatexComments = DEFAULT_INSERT_LATEX_COMMENTS;
 
         public Builder(String name, Page pageProperties) {
@@ -164,9 +170,17 @@ public class DocumentPage {
             return addElement(new ArrayList<>(List.of(documentElements)));
         }
 
+        public Builder addMatrix(List<MatrixOfNodes> matrices) {
+            this.matrices.addAll(matrices);
+            return this;
+        }
+
+        public Builder addMatrix(MatrixOfNodes... matrices) {
+            return addMatrix(new ArrayList<>(List.of(matrices)));
+        }
 
         public Builder addLine(List<Line> lines) {
-            this.lines = lines;
+            this.lines.addAll(lines);
             return this;
         }
 

@@ -5,7 +5,6 @@ import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.GenericCommand;
 import de.flozo.latex.core.LengthExpression;
 import de.flozo.latex.tikz.Node;
-import de.flozo.latex.tikz.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DocumentElement {
     private Node getNode(String elementContent) {
         return new Node.Builder(applyTextFormat(elementContent))
                 .name(elementName)
-                .position(Point.fromLengths(LengthExpression.fromLength(element.getPosition().getLengthX()), LengthExpression.fromLength(element.getPosition().getLengthY())))
+                .position(element.getPosition())
                 .anchor(element.getAnchor())
                 .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))

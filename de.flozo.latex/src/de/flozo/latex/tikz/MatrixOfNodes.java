@@ -1,10 +1,9 @@
 package de.flozo.latex.tikz;
 
 
-import de.flozo.common.dto.appearance.Anchor;
-import de.flozo.common.dto.appearance.Color;
-import de.flozo.common.dto.appearance.FontSize;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.latex.core.Delimiter;
+import de.flozo.latex.core.LengthExpression;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,25 +16,26 @@ public class MatrixOfNodes {
     private final List<String> columnStyles;
 
 
-    private final Point position;
-
-    private final Anchor anchor;
-    private final FontSize fontSize;
-    private final Color backgroundColor;
-    private final Color borderColor;
-    private final Color textColor;
+    private final Element element;
+//    private final Position position;
+//    private final Anchor anchor;
+//    private final FontSize fontSize;
+//    private final Color backgroundColor;
+//    private final Color borderColor;
+//    private final Color textColor;
 
 
     public MatrixOfNodes(Builder builder) {
         this.name = builder.name;
         this.matrix = builder.matrix;
         this.columnStyles = builder.columnStyles;
-        this.position = builder.position;
-        this.anchor = builder.anchor;
-        this.fontSize = builder.fontSize;
-        this.backgroundColor = builder.backgroundColor;
-        this.borderColor = builder.borderColor;
-        this.textColor = builder.textColor;
+        this.element = builder.element;
+//        this.position = builder.position;
+//        this.anchor = builder.anchor;
+//        this.fontSize = builder.fontSize;
+//        this.backgroundColor = builder.backgroundColor;
+//        this.borderColor = builder.borderColor;
+//        this.textColor = builder.textColor;
     }
 
 
@@ -45,14 +45,26 @@ public class MatrixOfNodes {
 
     private Node buildNode() {
         Node.Builder node = new Node.Builder(assembleTable())
-                .name(name)
-                .position(position)
                 .isMatrix(true)
-                .anchor(anchor)
-                .fontSize(fontSize)
-                .fillColor(backgroundColor)
-                .drawColor(borderColor)
-                .textColor(textColor)
+                .name(name)
+                .position(element.getPosition())
+                .anchor(element.getAnchor())
+                .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
+                .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
+                .innerXSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()))
+                .innerYSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerYSep()))
+                .outerXSep(LengthExpression.fromLength(element.getSeparationSpace().getOuterXSep()))
+                .outerYSep(LengthExpression.fromLength(element.getSeparationSpace().getOuterYSep()))
+                .fontSize(element.getElementStyle().getTextStyle().getFontSize())
+                .textColor(element.getElementStyle().getTextStyle().getColor())
+                .textOpacity(element.getElementStyle().getTextStyle().getOpacity())
+                .drawColor(element.getElementStyle().getLineStyle().getColor())
+                .lineOpacity(element.getElementStyle().getLineStyle().getOpacity())
+                .lineCap(element.getElementStyle().getLineStyle().getLineCap())
+                .lineJoin(element.getElementStyle().getLineStyle().getLineJoin())
+                .dashPatternStyle(element.getElementStyle().getLineStyle().getDashPattern())
+                .fillColor(element.getElementStyle().getAreaStyle().getColor())
+                .areaOpacity(element.getElementStyle().getAreaStyle().getOpacity())
                 .bodyDelimiter(Delimiter.DOUBLE_BACKSLASH)
                 .skipLastDelimiter(false);
         for (String columnStyle : columnStyles) {
@@ -80,18 +92,17 @@ public class MatrixOfNodes {
         return matrix.size();
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "MatrixOfNodes{" +
                 "name='" + name + '\'' +
                 ", matrix=" + matrix +
                 ", columnStyles=" + columnStyles +
-                ", position=" + position +
-                ", anchor=" + anchor +
-                ", fontSize=" + fontSize +
-                ", backgroundColor=" + backgroundColor +
-                ", borderColor=" + borderColor +
-                ", textColor=" + textColor +
+                ", element=" + element +
                 '}';
     }
 
@@ -101,20 +112,20 @@ public class MatrixOfNodes {
         private final String name;
         private final List<List<Node>> matrix = new ArrayList<>();
         private final List<String> columnStyles = new ArrayList<>();
-        private final Point position;
-        private final Anchor anchor;
+        private final Element element;
 
         // optional
-        private FontSize fontSize;
-        private Color backgroundColor;
-        private Color borderColor;
-        private Color textColor;
+//        private FontSize fontSize;
+//        private Color backgroundColor;
+//        private Color borderColor;
+//        private Color textColor;
 
 
-        public Builder(String name, Point position, Anchor anchor) {
+        public Builder(String name, Element element) {
             this.name = name;
-            this.position = position;
-            this.anchor = anchor;
+            this.element = element;
+//            this.position = position;
+//            this.anchor = anchor;
         }
 
         public Builder addRow(String... row) {
@@ -142,25 +153,25 @@ public class MatrixOfNodes {
             return this;
         }
 
-        public Builder fontSize(FontSize fontSize) {
-            this.fontSize = fontSize;
-            return this;
-        }
-
-        public Builder backgroundColor(Color backgroundColor) {
-            this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        public Builder borderColor(Color borderColor) {
-            this.borderColor = borderColor;
-            return this;
-        }
-
-        public Builder textColor(Color textColor) {
-            this.textColor = textColor;
-            return this;
-        }
+//        public Builder fontSize(FontSize fontSize) {
+//            this.fontSize = fontSize;
+//            return this;
+//        }
+//
+//        public Builder backgroundColor(Color backgroundColor) {
+//            this.backgroundColor = backgroundColor;
+//            return this;
+//        }
+//
+//        public Builder borderColor(Color borderColor) {
+//            this.borderColor = borderColor;
+//            return this;
+//        }
+//
+//        public Builder textColor(Color textColor) {
+//            this.textColor = textColor;
+//            return this;
+//        }
 
 
         public MatrixOfNodes build() {

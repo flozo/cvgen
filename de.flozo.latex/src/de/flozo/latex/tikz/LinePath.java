@@ -18,7 +18,7 @@ public class LinePath extends Path {
 
 
     // required
-    private final Point next;
+    private final Position next;
 
     // optional
     private final List<Point> coordinateList;
@@ -53,9 +53,9 @@ public class LinePath extends Path {
             sb.append(" ").append(inlineOptions());
         }
         // Append required parts
-        sb.append(" ").append(position.getStatement());
+        sb.append(" ").append(Point.fromPosition(position).getStatement());
         sb.append(" ").append(OPERATION);
-        sb.append(" ").append(next.getStatement());
+        sb.append(" ").append(Point.fromPosition(next).getStatement());
         // Append line segments if at least one more is present
         if (!coordinateList.isEmpty()) {
             for (Point point : coordinateList) {
@@ -85,8 +85,8 @@ public class LinePath extends Path {
     public static class Builder {
 
         // required
-        private final Point origin;
-        private final Point next;
+        private final Position origin;
+        private final Position next;
 
         // optional
         private String name;
@@ -103,18 +103,18 @@ public class LinePath extends Path {
         private boolean skipLastDelimiter;
 
 
-        public Builder(Point origin, Point next) {
+        public Builder(Position origin, Position next) {
             this.origin = origin;
             this.next = next;
         }
 
-        public Builder(double xOrigin, double yOrigin, double xNext, double yNext, CoordinateMode coordinateMode) {
-            this(Point.fromNumbersInMode(xOrigin, yOrigin, CoordinateMode.ABSOLUTE), Point.fromNumbersInMode(xNext, yNext, coordinateMode));
-        }
-
-        public Builder(double xOrigin, double yOrigin, double xNext, double yNext) {
-            this(Point.fromNumbers(xOrigin, yOrigin), Point.fromNumbers(xNext, yNext));
-        }
+//        public Builder(double xOrigin, double yOrigin, double xNext, double yNext, CoordinateMode coordinateMode) {
+//            this(Point.fromNumbersInMode(xOrigin, yOrigin, CoordinateMode.ABSOLUTE), Point.fromNumbersInMode(xNext, yNext, coordinateMode));
+//        }
+//
+//        public Builder(double xOrigin, double yOrigin, double xNext, double yNext) {
+//            this(Point.fromNumbers(xOrigin, yOrigin), Point.fromNumbers(xNext, yNext));
+//        }
 
 
         public Builder name(String name) {

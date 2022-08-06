@@ -1,8 +1,6 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.Layer;
-import de.flozo.common.dto.appearance.Line;
-import de.flozo.common.dto.appearance.Page;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.EmbeddedFile;
 import de.flozo.common.dto.content.Enclosure;
@@ -15,6 +13,9 @@ import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
 import de.flozo.latex.core.*;
+import de.flozo.latex.tikz.MatrixOfNodes;
+import de.flozo.latex.tikz.NodeOption;
+import de.flozo.latex.tikz.NodeStyle;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -85,6 +86,13 @@ public class Main {
                     .addComponent(sender.getLastName())
                     .inlineDelimiter(Delimiter.SPACE)
                     .build();
+            ContentElement senderNameLineWithTitle = new ContentElement.Builder()
+                    .addComponent(sender.getAcademicTitle() + ".")
+                    .addComponent(sender.getFirstName())
+                    .addComponent(sender.getLastName())
+                    .inlineDelimiter(Delimiter.SPACE)
+                    .build();
+
 
             ContentElement senderStreetLine = new ContentElement.Builder()
                     .addComponent(sender.getStreet())
@@ -154,7 +162,7 @@ public class Main {
             EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
             EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
             EmbeddedFile photo = embeddedFileDAO.get("photo");
-            String absoluteFilePathSignature = signatureFile.getFile().getPath().replaceFirst("^~",System.getProperty("user.home"));
+            String absoluteFilePathSignature = signatureFile.getFile().getPath().replaceFirst("^~", System.getProperty("user.home"));
             ContentElement includegraphicsOption = new ContentElement.Builder()
                     .addComponent("scale")
                     .addComponent(String.valueOf(signatureFile.getScaleFactor()))
@@ -166,9 +174,64 @@ public class Main {
                     .build();
             ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline()).build();
 
+
+            Element senderStyle = elementDAO.get("sender");
+            Element senderStyleColumn1 = elementDAO.get("sender_column1");
+            Element senderStyleColumn2 = elementDAO.get("sender_column2");
+            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
+
+
+            Command mapMarkerIcon = new GenericCommand.Builder("faIcon")
+                    .body(iconDAO.get("address").getFontawesomeIcon().getSpecifier())
+                    .build();
+            Command phoneIcon = new GenericCommand.Builder("faIcon")
+                    .body(iconDAO.get("phone").getFontawesomeIcon().getSpecifier())
+                    .build();
+            Command mailIcon = new GenericCommand.Builder("faIcon")
+                    .body(iconDAO.get("mail").getFontawesomeIcon().getSpecifier())
+                    .build();
+
+
+            NodeStyle column1 = new NodeStyle.Builder()
+                    .addCustomOption("rectangle")
+                    .addNodeOption(NodeOption.FILL, senderStyleColumn1.getElementStyle().getAreaStyle().getColor().getSpecifier())
+//                    .addNodeOption(NodeOption.DRAW, senderStyleColumn1.getElementStyle().getLineStyle().getColor().getSpecifier())
+//                    .addNodeOption(NodeOption.TEXT,senderStyleColumn1.getElementStyle().getTextStyle().getColor().getSpecifier())
+                    .addNodeOption(NodeOption.ALIGN,senderStyleColumn1.getElementStyle().getTextStyle().getAlignment().getValue())
+                    .addNodeOption(NodeOption.INNER_X_SEP,LengthExpression.fromLength(senderStyleColumn1.getSeparationSpace().getInnerXSep()).getFormatted())
+                    .addNodeOption(NodeOption.INNER_Y_SEP,LengthExpression.fromLength(senderStyleColumn1.getSeparationSpace().getInnerYSep()).getFormatted())
+                    .addNodeOption(NodeOption.MINIMUM_WIDTH, LengthExpression.fromLength(senderStyleColumn1.getMinimumWidth()).getFormatted())
+                    .addNodeOption(NodeOption.MINIMUM_HEIGHT, LengthExpression.fromLength(senderStyleColumn1.getMinimumHeight()).getFormatted())
+                    .addNodeOption(NodeOption.TEXT_WIDTH, LengthExpression.fromLength(senderStyleColumn1.getElementStyle().getTextStyle().getTextWidth()).getFormatted())
+                    .build();
+            NodeStyle column2 = new NodeStyle.Builder()
+                    .addCustomOption("rectangle")
+                    .addNodeOption(NodeOption.FILL, senderStyleColumn2.getElementStyle().getAreaStyle().getColor().getSpecifier())
+//                    .addNodeOption(NodeOption.DRAW, senderStyleColumn2.getElementStyle().getLineStyle().getColor().getSpecifier())
+//                    .addNodeOption(NodeOption.TEXT,senderStyleColumn2.getElementStyle().getTextStyle().getColor().getSpecifier())
+                    .addNodeOption(NodeOption.ALIGN,senderStyleColumn2.getElementStyle().getTextStyle().getAlignment().getValue())
+                    .addNodeOption(NodeOption.INNER_X_SEP,LengthExpression.fromLength(senderStyleColumn2.getSeparationSpace().getInnerXSep()).getFormatted())
+                    .addNodeOption(NodeOption.INNER_Y_SEP,LengthExpression.fromLength(senderStyleColumn2.getSeparationSpace().getInnerYSep()).getFormatted())
+                    .addNodeOption(NodeOption.MINIMUM_WIDTH, LengthExpression.fromLength(senderStyleColumn2.getMinimumWidth()).getFormatted())
+                    .addNodeOption(NodeOption.MINIMUM_HEIGHT, LengthExpression.fromLength(senderStyleColumn2.getMinimumHeight()).getFormatted())
+                    .addNodeOption(NodeOption.TEXT_WIDTH, LengthExpression.fromLength(senderStyleColumn2.getElementStyle().getTextStyle().getTextWidth()).getFormatted())
+                    .build();
+
+
+            MatrixOfNodes senderField = new MatrixOfNodes.Builder("sender_field", senderStyle)
+                    .addRow(senderNameLineWithTitle.getContentElement(), mapMarkerIcon.getInline())
+                    .addRow(senderCityLine.getContentElement())
+                    .addRow(sender.getMobileNumber(), phoneIcon.getInline())
+                    .addRow(sender.getEMailAddress(), mailIcon.getInline())
+                    .addColumnStyle(column1)
+                    .addColumnStyle(column2)
+                    .build();
+
+
             DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
+                    .addMatrix(senderField)
                     .addElement(signature)
                     .addLine(lineList)
                     .insertLatexComments(true)

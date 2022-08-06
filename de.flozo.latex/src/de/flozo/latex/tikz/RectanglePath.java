@@ -13,7 +13,7 @@ public class RectanglePath extends Path {
     public static final String OPERATION = "rectangle";
 
     // required
-    private final Point oppositeCorner;
+    private final Position oppositeCorner;
 
 
     private RectanglePath(Builder builder) {
@@ -43,9 +43,9 @@ public class RectanglePath extends Path {
             sb.append(" ").append(inlineOptions());
         }
         // Append required parts
-        sb.append(" ").append(position.getStatement());
+        sb.append(" ").append(Point.fromPosition(position).getStatement());
         sb.append(" ").append(OPERATION);
-        sb.append(" ").append(oppositeCorner.getStatement());
+        sb.append(" ").append(Point.fromPosition(oppositeCorner).getStatement());
         sb.append(DELIMITER.getString());
         return sb.toString();
     }
@@ -59,8 +59,8 @@ public class RectanglePath extends Path {
 
     public static class Builder {
         // required
-        private final Point origin;
-        private final Point oppositeCorner;
+        private final Position origin;
+        private final Position oppositeCorner;
 
         // optional
         private String name;
@@ -74,14 +74,14 @@ public class RectanglePath extends Path {
         private DashPattern dashPattern;
         private boolean skipLastTerminator;
 
-        public Builder(Point origin, Point oppositeCorner) {
+        public Builder(Position origin, Position oppositeCorner) {
             this.origin = origin;
             this.oppositeCorner = oppositeCorner;
         }
 
-        public Builder(double xOrigin, double yOrigin, double xOppositeCorner, double yOppositeCorner) {
-            this(Point.fromNumbers(xOrigin, yOrigin), Point.fromNumbers(xOppositeCorner, yOppositeCorner));
-        }
+//        public Builder(double xOrigin, double yOrigin, double xOppositeCorner, double yOppositeCorner) {
+//            this(Point.fromNumbers(xOrigin, yOrigin), Point.fromNumbers(xOppositeCorner, yOppositeCorner));
+//        }
 
 
         public Builder name(String name) {

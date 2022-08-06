@@ -17,7 +17,7 @@ public abstract class Path {
     public static final Delimiter DELIMITER = Delimiter.SEMICOLON;
 
     // optional; visible for subclasses
-    protected Point position;
+    protected Position position;
     protected List<String> optionalArguments;
     protected String name;
     protected Color drawColor;
@@ -29,7 +29,7 @@ public abstract class Path {
     protected boolean skipLastDelimiter;
 
 
-    public Path(Point position, List<String> optionalArguments, String name,
+    public Path(Position position, List<String> optionalArguments, String name,
                 Color drawColor, Color fillColor, PredefinedLineWidth predefinedLineWidth,
                 LineCap lineCap, LineJoin lineJoin, DashPattern dashPattern,
                 boolean skipLastDelimiter) {

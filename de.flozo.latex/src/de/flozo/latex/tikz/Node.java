@@ -86,7 +86,7 @@ public class Node extends Path {
         // Append optional positioning statement
         if (position != null) {
             sb.append(" at ");
-            sb.append(position.getStatement());
+            sb.append(Point.fromPosition(position).getStatement());
         }
         return sb.toString();
     }
@@ -107,7 +107,7 @@ public class Node extends Path {
 
         // optional
         private String name;
-        private Point position;
+        private Position position;
         private final List<String> optionalArguments = new ArrayList<>();
         private Delimiter bodyDelimiter = Delimiter.NONE;
         private boolean skipLastDelimiter = DEFAULT_SKIP_LAST_DELIMITER;
@@ -150,7 +150,7 @@ public class Node extends Path {
             return this;
         }
 
-        public Builder position(Point position) {
+        public Builder position(Position position) {
             this.position = position;
             return this;
         }

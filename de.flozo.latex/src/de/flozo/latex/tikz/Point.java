@@ -1,6 +1,7 @@
 package de.flozo.latex.tikz;
 
 
+import de.flozo.common.dto.appearance.Position;
 import de.flozo.latex.core.Bracket;
 import de.flozo.latex.core.Delimiter;
 import de.flozo.latex.core.LengthExpression;
@@ -45,6 +46,9 @@ public class Point {
         return fromNumbersInMode(x, y, DEFAULT_COORDINATE_MODE);
     }
 
+    public static Point fromPosition(Position position) {
+        return fromLengths(LengthExpression.fromLength(position.getLengthX()),LengthExpression.fromLength(position.getLengthY()));
+    }
 
 
 
