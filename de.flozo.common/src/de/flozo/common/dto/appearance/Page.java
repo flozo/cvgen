@@ -6,13 +6,15 @@ public class Page {
     private String name;
     private Length width;
     private Length height;
+    private LineStyle lineStyle;
     private AreaStyle areaStyle;
 
-    public Page(int id, String name, Length width, Length height, AreaStyle areaStyle) {
+    public Page(int id, String name, Length width, Length height, LineStyle lineStyle, AreaStyle areaStyle) {
         this.id = id;
         this.name = name;
         this.width = width;
         this.height = height;
+        this.lineStyle = lineStyle;
         this.areaStyle = areaStyle;
     }
 
@@ -48,6 +50,14 @@ public class Page {
         this.height = height;
     }
 
+    public LineStyle getLineStyle() {
+        return lineStyle;
+    }
+
+    public void setLineStyle(LineStyle lineStyle) {
+        this.lineStyle = lineStyle;
+    }
+
     public AreaStyle getAreaStyle() {
         return areaStyle;
     }
@@ -63,6 +73,7 @@ public class Page {
                 ", name='" + name + '\'' +
                 ", width=" + width +
                 ", height=" + height +
+                ", lineStyle=" + lineStyle +
                 ", areaStyle=" + areaStyle +
                 '}';
     }

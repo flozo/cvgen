@@ -14,6 +14,7 @@ public class PageDAOImpl implements PageDAO {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_WIDTH_ID = "text_style_id";
     public static final String COLUMN_HEIGHT_ID = "line_style_id";
+    public static final String COLUMN_LINE_STYLE_ID = "line_style_id";
     public static final String COLUMN_AREA_STYLE_ID = "area_style_id";
 
     // view
@@ -45,22 +46,26 @@ public class PageDAOImpl implements PageDAO {
     // SELECT p._id, p.name,
     //   lvw._id AS width_id, lvw.name AS width_name, lvw.value AS width_value, lvw.length_unit_id AS width_unit_id, lvw.length_unit_name AS width_unit_name, lvw.length_unit_value AS width_unit_value,
     //   lvh._id AS height_id, lvh.name AS height_name, lvh.value AS height_value, lvh.length_unit_id AS height_unit_id, lvh.length_unit_name AS height_unit_name, lvh.length_unit_value AS height_unit_value,
+    //   lsv._id AS line_style_id, lsv.name AS line_style_name, lsv.line_width_id, lsv.line_width_name, lsv.line_width_value, lsv.line_width_unit_id, lsv.line_width_unit_name, lsv.line_width_unit_value, lsv.line_cap_id, lsv.line_cap_name, lsv.line_cap_value, lsv.line_join_id, lsv.line_join_name, lsv.line_join_value, lsv.dash_pattern_id, lsv.dash_pattern_name, lsv.color_id AS line_color_id, lsv.color_name AS line_color_name, lsv.opacity_id AS line_opacity_id, lsv.opacity_name AS line_opacity_value,
     //   asv._id AS area_style_id, asv.name AS area_style_name, asv.color_id AS background_color_id, asv.color_name AS background_color_name, asv.opacity_id AS background_opacity_id, asv.opacity_value AS background_opacity_value
     // FROM pages AS p
     // INNER JOIN length_view AS lvw ON p.width_id = lvw._id
     // INNER JOIN length_view AS lvh ON p.height_id = lvh._id
+    // INNER JOIN line_style_view AS lsv ON p.line_style_id = lsv._id
     // INNER JOIN area_style_view AS asv ON p.area_style_id = asv._id
+
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 4;
+    public static final int NON_ID_COLUMNS = 5;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_WIDTH_ID + COMMA +
             COLUMN_HEIGHT_ID + COMMA +
+            COLUMN_LINE_STYLE_ID + COMMA +
             COLUMN_AREA_STYLE_ID +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
@@ -69,6 +74,7 @@ public class PageDAOImpl implements PageDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_HEIGHT_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_LINE_STYLE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_AREA_STYLE_ID + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
@@ -217,9 +223,17 @@ public class PageDAOImpl implements PageDAO {
                         new LengthUnit(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8))),
                 new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
                         new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
-                new AreaStyle(resultSet.getInt(15), resultSet.getString(16),
-                        new Color(resultSet.getInt(17), resultSet.getString(18)),
-                        new PredefinedOpacity(resultSet.getInt(19), resultSet.getString(20)))
+                new LineStyle(resultSet.getInt(15), resultSet.getString(16),
+                        new LineWidth(resultSet.getInt(17), resultSet.getString(18), resultSet.getDouble(19),
+                                new LengthUnit(resultSet.getInt(20), resultSet.getString(21), resultSet.getString(22))),
+                        new LineCap(resultSet.getInt(23), resultSet.getString(24), resultSet.getString(25)),
+                        new LineJoin(resultSet.getInt(26), resultSet.getString(27), resultSet.getString(28)),
+                        new DashPattern(resultSet.getInt(29), resultSet.getString(30)),
+                        new Color(resultSet.getInt(31), resultSet.getString(32)),
+                        new PredefinedOpacity(resultSet.getInt(33), resultSet.getString(34))),
+                new AreaStyle(resultSet.getInt(35), resultSet.getString(36),
+                        new Color(resultSet.getInt(37), resultSet.getString(38)),
+                        new PredefinedOpacity(resultSet.getInt(39), resultSet.getString(40)))
         );
     }
 
@@ -227,7 +241,8 @@ public class PageDAOImpl implements PageDAO {
         preparedStatement.setString(1, page.getName());
         preparedStatement.setInt(2, page.getWidth().getId());
         preparedStatement.setInt(3, page.getHeight().getId());
-        preparedStatement.setInt(4,page.getAreaStyle().getId());
+        preparedStatement.setInt(4, page.getLineStyle().getId());
+        preparedStatement.setInt(5, page.getAreaStyle().getId());
     }
 
     @Override
