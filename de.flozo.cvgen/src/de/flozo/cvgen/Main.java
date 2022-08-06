@@ -152,11 +152,9 @@ public class Main {
 
 
             EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
-            List<EmbeddedFile> embeddedFiles = embeddedFileDAO.getAllIncluded();
             EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
             EmbeddedFile photo = embeddedFileDAO.get("photo");
-            String absoluteFilePath = signatureFile.getFile().getPath().replaceFirst("^~",System.getProperty("user.home"));
-//            String absoluteFilePath = Paths.get().toAbsolutePath().toString());
+            String absoluteFilePathSignature = signatureFile.getFile().getPath().replaceFirst("^~",System.getProperty("user.home"));
             ContentElement includegraphicsOption = new ContentElement.Builder()
                     .addComponent("scale")
                     .addComponent(String.valueOf(signatureFile.getScaleFactor()))
@@ -164,9 +162,9 @@ public class Main {
                     .build();
             Command includeSignature = new GenericCommand.Builder("includegraphics")
                     .optionList(includegraphicsOption.getContentElement())
-                    .body(absoluteFilePath)
+                    .body(absoluteFilePathSignature)
                     .build();
-            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInlineOptions()).build();
+            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline()).build();
 
             DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
