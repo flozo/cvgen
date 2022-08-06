@@ -15,6 +15,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     public static final String COLUMN_FONT_SIZE_ID = "font_size_id";
     public static final String COLUMN_TEXT_FORMAT_ID = "text_format_id";
     public static final String COLUMN_TEXT_WIDTH_ID = "text_width_id";
+    public static final String COLUMN_TEXT_HEIGHT_ID = "text_height_id";
+    public static final String COLUMN_TEXT_DEPTH_ID = "text_depth_id";
     public static final String COLUMN_ALIGNMENT_ID = "alignment_id";
     public static final String COLUMN_COLOR_ID = "color_id";
     public static final String COLUMN_OPACITY_ID = "opacity_id";
@@ -49,22 +51,27 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     // SELECT ts._id, ts.name,
     //   fs._id AS font_size_id, fs.name AS font_size_name, fs.value AS font_size_value,
     //   tf._id AS text_format_id, tf.name AS text_format_name, tf.value AS text_format_value,
-    //   lv._id AS text_width_id, lv.name AS text_width_name, lv.value AS text_width_value, lv.length_unit_id AS text_width_unit_id, lv.length_unit_name AS text_width_unit_name, lv.length_unit_value AS text_width_unit_value,
+    //   lvtw._id AS text_width_id, lvtw.name AS text_width_name, lvtw.value AS text_width_value, lvtw.length_unit_id AS text_width_unit_id, lvtw.length_unit_name AS text_width_unit_name, lvtw.length_unit_value AS text_width_unit_value,
+    //   lvth._id AS text_height_id, lvth.name AS text_height_name, lvth.value AS text_height_value, lvth.length_unit_id AS text_height_unit_id, lvth.length_unit_name AS text_height_unit_name, lvth.length_unit_value AS text_height_unit_value,
+    //   lvtd._id AS text_depth_id, lvtd.name AS text_depth_name, lvtd.value AS text_depth_value, lvtd.length_unit_id AS text_depth_unit_id, lvtd.length_unit_name AS text_depth_unit_name, lvtd.length_unit_value AS text_depth_unit_value,
     //   a._id AS alignment_id, a.name AS alignment_name, a.value AS alignment_value,
     //   c._id AS color_id, c.color_string AS color_name,
     //   o._id AS opacity_id, o.value AS opacity_value
     // FROM text_styles AS ts
     // INNER JOIN font_sizes AS fs ON ts.font_size_id = fs._id
     // INNER JOIN text_formats AS tf ON ts.text_format_id = tf._id
-    // INNER JOIN length_view AS lv ON ts.text_width_id = lv._id
+    // INNER JOIN length_view AS lvtw ON ts.text_width_id = lvtw._id
+    // INNER JOIN length_view AS lvth ON ts.text_height_id = lvth._id
+    // INNER JOIN length_view AS lvtd ON ts.text_depth_id = lvtd._id
     // INNER JOIN alignments AS a ON ts.alignment_id = a._id
     // INNER JOIN colors AS c ON ts.color_id = c._id
     // INNER JOIN predefined_opacities AS o ON ts.opacity_id = o._id
+
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 7;
+    public static final int NON_ID_COLUMNS = 9;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
@@ -72,6 +79,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
             COLUMN_FONT_SIZE_ID + COMMA +
             COLUMN_TEXT_FORMAT_ID + COMMA +
             COLUMN_TEXT_WIDTH_ID + COMMA +
+            COLUMN_TEXT_HEIGHT_ID + COMMA +
+            COLUMN_TEXT_DEPTH_ID + COMMA +
             COLUMN_ALIGNMENT_ID + COMMA +
             COLUMN_COLOR_ID + COMMA +
             COLUMN_OPACITY_ID +
@@ -83,6 +92,8 @@ public class TextStyleDAOImpl implements TextStyleDAO {
             COLUMN_FONT_SIZE_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_TEXT_FORMAT_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_TEXT_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_TEXT_HEIGHT_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_TEXT_DEPTH_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ALIGNMENT_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
@@ -214,9 +225,13 @@ public class TextStyleDAOImpl implements TextStyleDAO {
                 new TextFormat(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8)),
                 new Length(resultSet.getInt(9), resultSet.getString(10), resultSet.getDouble(11),
                         new LengthUnit(resultSet.getInt(12), resultSet.getString(13), resultSet.getString(14))),
-                new Alignment(resultSet.getInt(15), resultSet.getString(16), resultSet.getString(17)),
-                new Color(resultSet.getInt(18), resultSet.getString(19)),
-                new PredefinedOpacity(resultSet.getInt(20), resultSet.getString(21))
+                new Length(resultSet.getInt(15), resultSet.getString(16), resultSet.getDouble(17),
+                        new LengthUnit(resultSet.getInt(18), resultSet.getString(19), resultSet.getString(20))),
+                new Length(resultSet.getInt(21), resultSet.getString(22), resultSet.getDouble(23),
+                        new LengthUnit(resultSet.getInt(24), resultSet.getString(25), resultSet.getString(26))),
+                new Alignment(resultSet.getInt(27), resultSet.getString(28), resultSet.getString(29)),
+                new Color(resultSet.getInt(30), resultSet.getString(31)),
+                new PredefinedOpacity(resultSet.getInt(32), resultSet.getString(33))
         );
     }
 
@@ -224,9 +239,12 @@ public class TextStyleDAOImpl implements TextStyleDAO {
         preparedStatement.setString(1, textStyle.getName());
         preparedStatement.setInt(2, textStyle.getFontSize().getId());
         preparedStatement.setInt(3, textStyle.getTextFormat().getId());
-        preparedStatement.setInt(4,textStyle.getTextWidth().getId());
-        preparedStatement.setInt(5, textStyle.getAlignment().getId());
-        preparedStatement.setInt(6, textStyle.getOpacity().getId());
+        preparedStatement.setInt(4, textStyle.getTextWidth().getId());
+        preparedStatement.setInt(5, textStyle.getTextHeight().getId());
+        preparedStatement.setInt(6, textStyle.getTextDepth().getId());
+        preparedStatement.setInt(7, textStyle.getAlignment().getId());
+        preparedStatement.setInt(8, textStyle.getColor().getId());
+        preparedStatement.setInt(9, textStyle.getOpacity().getId());
     }
 
     @Override

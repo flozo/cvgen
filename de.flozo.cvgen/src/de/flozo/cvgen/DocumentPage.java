@@ -50,6 +50,7 @@ public class DocumentPage {
         Position target = new Position(0, "", pageProperties.getWidth(), pageProperties.getHeight());
         return new RectanglePath.Builder(origin, target)
                 .fillColor(pageProperties.getAreaStyle().getColor())
+                .drawColor(pageProperties.getAreaStyle().getColor())
                 .skipLastTerminator(true)
                 .build();
     }

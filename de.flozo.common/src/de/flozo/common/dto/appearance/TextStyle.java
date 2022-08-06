@@ -7,16 +7,20 @@ public class TextStyle {
     private FontSize fontSize;
     private TextFormat textFormat;
     private Length textWidth;
+    private Length textHeight;
+    private Length textDepth;
     private Alignment alignment;
     private Color color;
     private PredefinedOpacity opacity;
 
-    public TextStyle(int id, String name, FontSize fontSize, TextFormat textFormat, Length textWidth, Alignment alignment, Color color, PredefinedOpacity opacity) {
+    public TextStyle(int id, String name, FontSize fontSize, TextFormat textFormat, Length textWidth, Length textHeight, Length textDepth, Alignment alignment, Color color, PredefinedOpacity opacity) {
         this.id = id;
         this.name = name;
         this.fontSize = fontSize;
         this.textFormat = textFormat;
         this.textWidth = textWidth;
+        this.textHeight = textHeight;
+        this.textDepth = textDepth;
         this.alignment = alignment;
         this.color = color;
         this.opacity = opacity;
@@ -62,6 +66,22 @@ public class TextStyle {
         this.textWidth = textWidth;
     }
 
+    public Length getTextHeight() {
+        return textHeight;
+    }
+
+    public void setTextHeight(Length textHeight) {
+        this.textHeight = textHeight;
+    }
+
+    public Length getTextDepth() {
+        return textDepth;
+    }
+
+    public void setTextDepth(Length textDepth) {
+        this.textDepth = textDepth;
+    }
+
     public Alignment getAlignment() {
         return alignment;
     }
@@ -94,6 +114,8 @@ public class TextStyle {
                 ", fontSize=" + fontSize +
                 ", textFormat=" + textFormat +
                 ", textWidth=" + textWidth +
+                ", textHeight=" + textHeight +
+                ", textDepth=" + textDepth +
                 ", alignment=" + alignment +
                 ", color=" + color +
                 ", opacity=" + opacity +
