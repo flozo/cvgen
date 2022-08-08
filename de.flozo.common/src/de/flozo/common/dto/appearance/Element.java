@@ -6,6 +6,8 @@ public class Element {
     private String name;
     private Position position;
     private Anchor anchor;
+    private Length xShift;
+    private Length yShift;
     private Length minimumWidth;
     private Length minimumHeight;
     private SeparationSpace separationSpace;
@@ -14,11 +16,13 @@ public class Element {
     private int onLayerId;
     private boolean include;
 
-    public Element(int id, String name, Position position, Anchor anchor, Length minimumWidth, Length minimumHeight, SeparationSpace separationSpace, ElementStyle elementStyle, int onPageId, int onLayerId, boolean include) {
+    public Element(int id, String name, Position position, Anchor anchor, Length xShift, Length yShift, Length minimumWidth, Length minimumHeight, SeparationSpace separationSpace, ElementStyle elementStyle, int onPageId, int onLayerId, boolean include) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.anchor = anchor;
+        this.xShift = xShift;
+        this.yShift = yShift;
         this.minimumWidth = minimumWidth;
         this.minimumHeight = minimumHeight;
         this.separationSpace = separationSpace;
@@ -58,6 +62,22 @@ public class Element {
 
     public void setAnchor(Anchor anchor) {
         this.anchor = anchor;
+    }
+
+    public Length getXShift() {
+        return xShift;
+    }
+
+    public void setXShift(Length xShift) {
+        this.xShift = xShift;
+    }
+
+    public Length getYShift() {
+        return yShift;
+    }
+
+    public void setYShift(Length yShift) {
+        this.yShift = yShift;
     }
 
     public Length getMinimumWidth() {
@@ -123,6 +143,8 @@ public class Element {
                 ", name='" + name + '\'' +
                 ", position=" + position +
                 ", anchor=" + anchor +
+                ", xShift=" + xShift +
+                ", yShift=" + yShift +
                 ", minimumWidth=" + minimumWidth +
                 ", minimumHeight=" + minimumHeight +
                 ", separationSpace=" + separationSpace +

@@ -14,6 +14,8 @@ public class ElementDAOImpl implements ElementDAO {
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_POSITION_ID = "position_id";
     public static final String COLUMN_ANCHOR_ID = "anchor_id";
+    public static final String COLUMN_X_SHIFT_ID = "xshift_id";
+    public static final String COLUMN_Y_SHIFT_ID = "yshift_id";
     public static final String COLUMN_MINIMUM_WIDTH_ID = "minimum_width_id";
     public static final String COLUMN_MINIMUM_HEIGHT_ID = "minimum_height_id";
     public static final String COLUMN_SEPARATION_SPACES_ID = "separation_spaces_id";
@@ -51,6 +53,8 @@ public class ElementDAOImpl implements ElementDAO {
     // SELECT e._id, e.name,
     //   pv._id AS position_id, pv.name AS position_name, pv.x_length_id AS position_x_length_id, pv.x_length_name AS position_x_length_name, pv.x_length_value AS position_x_length_value, pv.x_length_unit_id AS position_x_length_unit_id, pv.x_length_unit_name AS position_x_length_unit_name, pv.x_length_unit_value AS position_x_length_unit_value, pv.y_length_id AS position_y_length_id, pv.y_length_name AS position_y_length_name, pv.y_length_value AS position_y_length_value, pv.y_length_unit_id AS position_y_length_unit_id, pv.y_length_unit_name AS position_y_length_unit_name, pv.y_length_unit_value AS position_y_length_unit_value,
     //   a._id AS anchor_id, a.name AS anchor_name, a.value AS anchor_value,
+    //   lvxs._id AS xshift_id, lvxs.name AS xshift_name, lvxs.value AS xshift_value, lvxs.length_unit_id AS xshift_unit_id, lvxs.length_unit_name AS xshift_unit_name, lvxs.length_unit_value AS xshift_unit_value,
+    //   lvys._id AS yshift_id, lvys.name AS yshift_name, lvys.value AS yshift_value, lvys.length_unit_id AS yshift_unit_id, lvys.length_unit_name AS yshift_unit_name, lvys.length_unit_value AS yshift_unit_value,
     //   lvmw._id AS minimum_width_id, lvmw.name AS minimum_width_name, lvmw.value AS minimum_width_value, lvmw.length_unit_id AS minimum_width_unit_id, lvmw.length_unit_name AS minimum_width_unit_name, lvmw.length_unit_value AS minimum_width_unit_value,
     //   lvmh._id AS minimum_height_id, lvmh.name AS minimum_height_name, lvmh.value AS minimum_height_value, lvmh.length_unit_id AS minimum_height_unit_id, lvmh.length_unit_name AS minimum_height_unit_name, lvmh.length_unit_value AS minimum_height_unit_value,
     //   ssv._id AS separation_spaces_id, ssv.name AS separation_spaces_name,
@@ -63,23 +67,26 @@ public class ElementDAOImpl implements ElementDAO {
     // FROM elements AS e
     // INNER JOIN position_view AS pv ON e.position_id = pv._id
     // INNER JOIN anchors AS a ON e.anchor_id = a._id
+    // INNER JOIN length_view AS lvxs ON e.xshift_id = lvxs._id
+    // INNER JOIN length_view AS lvys ON e.yshift_id = lvys._id
     // INNER JOIN length_view AS lvmw ON e.minimum_width_id = lvmw._id
     // INNER JOIN length_view AS lvmh ON e.minimum_height_id = lvmh._id
     // INNER JOIN separation_spaces_view AS ssv ON e.separation_spaces_id = ssv._id
     // INNER JOIN element_styles_view AS esv ON e.element_style_id = esv._id
-
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
     public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
-    public static final int NON_ID_COLUMNS = 10;
+    public static final int NON_ID_COLUMNS = 12;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
             COLUMN_POSITION_ID + COMMA +
             COLUMN_ANCHOR_ID + COMMA +
+            COLUMN_X_SHIFT_ID + COMMA +
+            COLUMN_Y_SHIFT_ID + COMMA +
             COLUMN_MINIMUM_WIDTH_ID + COMMA +
             COLUMN_MINIMUM_HEIGHT_ID + COMMA +
             COLUMN_SEPARATION_SPACES_ID + COMMA +
@@ -94,6 +101,8 @@ public class ElementDAOImpl implements ElementDAO {
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_POSITION_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_ANCHOR_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_X_SHIFT_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_Y_SHIFT_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_MINIMUM_WIDTH_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_MINIMUM_HEIGHT_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_SEPARATION_SPACES_ID + EQUALS + QUESTION_MARK + COMMA +
@@ -276,40 +285,46 @@ public class ElementDAOImpl implements ElementDAO {
                 // minimum height
                 new Length(resultSet.getInt(26), resultSet.getString(27), resultSet.getDouble(28),
                         new LengthUnit(resultSet.getInt(29), resultSet.getString(30), resultSet.getString(31))),
-                new SeparationSpace(resultSet.getInt(32), resultSet.getString(33),
-                        new Length(resultSet.getInt(34), resultSet.getString(35), resultSet.getDouble(36),
-                                new LengthUnit(resultSet.getInt(37), resultSet.getString(38), resultSet.getString(39))),
-                        new Length(resultSet.getInt(40), resultSet.getString(41), resultSet.getDouble(42),
-                                new LengthUnit(resultSet.getInt(43), resultSet.getString(44), resultSet.getString(45))),
+                // xshift
+                new Length(resultSet.getInt(32), resultSet.getString(33), resultSet.getDouble(34),
+                        new LengthUnit(resultSet.getInt(35), resultSet.getString(36), resultSet.getString(37))),
+                // yshift
+                new Length(resultSet.getInt(38), resultSet.getString(39), resultSet.getDouble(40),
+                        new LengthUnit(resultSet.getInt(41), resultSet.getString(42), resultSet.getString(43))),
+                new SeparationSpace(resultSet.getInt(44), resultSet.getString(45),
                         new Length(resultSet.getInt(46), resultSet.getString(47), resultSet.getDouble(48),
                                 new LengthUnit(resultSet.getInt(49), resultSet.getString(50), resultSet.getString(51))),
                         new Length(resultSet.getInt(52), resultSet.getString(53), resultSet.getDouble(54),
-                                new LengthUnit(resultSet.getInt(55), resultSet.getString(56), resultSet.getString(57)))),
-                new ElementStyle(resultSet.getInt(58), resultSet.getString(59),
-                        new TextStyle(resultSet.getInt(60), resultSet.getString(61),
-                                new FontSize(resultSet.getInt(62), resultSet.getString(63), resultSet.getString(64)),
-                                new TextFormat(resultSet.getInt(65), resultSet.getString(66), resultSet.getString(67)),
-                                new Length(resultSet.getInt(68), resultSet.getString(69), resultSet.getDouble(70),
-                                        new LengthUnit(resultSet.getInt(71), resultSet.getString(72), resultSet.getString(73))),
-                                new Length(resultSet.getInt(74), resultSet.getString(75), resultSet.getDouble(76),
-                                        new LengthUnit(resultSet.getInt(77), resultSet.getString(78), resultSet.getString(79))),
+                                new LengthUnit(resultSet.getInt(55), resultSet.getString(56), resultSet.getString(57))),
+                        new Length(resultSet.getInt(58), resultSet.getString(59), resultSet.getDouble(60),
+                                new LengthUnit(resultSet.getInt(61), resultSet.getString(62), resultSet.getString(63))),
+                        new Length(resultSet.getInt(64), resultSet.getString(65), resultSet.getDouble(66),
+                                new LengthUnit(resultSet.getInt(67), resultSet.getString(68), resultSet.getString(69)))),
+                new ElementStyle(resultSet.getInt(70), resultSet.getString(71),
+                        new TextStyle(resultSet.getInt(72), resultSet.getString(73),
+                                new FontSize(resultSet.getInt(74), resultSet.getString(75), resultSet.getString(76)),
+                                new TextFormat(resultSet.getInt(77), resultSet.getString(78), resultSet.getString(79)),
                                 new Length(resultSet.getInt(80), resultSet.getString(81), resultSet.getDouble(82),
                                         new LengthUnit(resultSet.getInt(83), resultSet.getString(84), resultSet.getString(85))),
-                                new Alignment(resultSet.getInt(86), resultSet.getString(87), resultSet.getString(88)),
-                                new Color(resultSet.getInt(89), resultSet.getString(90)),
-                                new PredefinedOpacity(resultSet.getInt(91), resultSet.getString(92))),
-                        new LineStyle(resultSet.getInt(93), resultSet.getString(94),
-                                new LineWidth(resultSet.getInt(95), resultSet.getString(96), resultSet.getDouble(97),
-                                        new LengthUnit(resultSet.getInt(98), resultSet.getString(99), resultSet.getString(100))),
-                                new LineCap(resultSet.getInt(101), resultSet.getString(102), resultSet.getString(103)),
-                                new LineJoin(resultSet.getInt(104), resultSet.getString(105), resultSet.getString(106)),
-                                new DashPattern(resultSet.getInt(107), resultSet.getString(108)),
-                                new Color(resultSet.getInt(109), resultSet.getString(110)),
-                                new PredefinedOpacity(resultSet.getInt(111), resultSet.getString(112))),
-                        new AreaStyle(resultSet.getInt(113), resultSet.getString(114),
-                                new Color(resultSet.getInt(115), resultSet.getString(116)),
-                                new PredefinedOpacity(resultSet.getInt(117), resultSet.getString(118)))),
-                resultSet.getInt(119), resultSet.getInt(120), resultSet.getBoolean(121)
+                                new Length(resultSet.getInt(86), resultSet.getString(87), resultSet.getDouble(88),
+                                        new LengthUnit(resultSet.getInt(89), resultSet.getString(90), resultSet.getString(91))),
+                                new Length(resultSet.getInt(92), resultSet.getString(93), resultSet.getDouble(94),
+                                        new LengthUnit(resultSet.getInt(95), resultSet.getString(96), resultSet.getString(97))),
+                                new Alignment(resultSet.getInt(98), resultSet.getString(99), resultSet.getString(100)),
+                                new Color(resultSet.getInt(101), resultSet.getString(102)),
+                                new PredefinedOpacity(resultSet.getInt(103), resultSet.getString(104))),
+                        new LineStyle(resultSet.getInt(105), resultSet.getString(106),
+                                new LineWidth(resultSet.getInt(107), resultSet.getString(108), resultSet.getDouble(109),
+                                        new LengthUnit(resultSet.getInt(110), resultSet.getString(111), resultSet.getString(112))),
+                                new LineCap(resultSet.getInt(113), resultSet.getString(114), resultSet.getString(115)),
+                                new LineJoin(resultSet.getInt(116), resultSet.getString(117), resultSet.getString(118)),
+                                new DashPattern(resultSet.getInt(119), resultSet.getString(120)),
+                                new Color(resultSet.getInt(121), resultSet.getString(122)),
+                                new PredefinedOpacity(resultSet.getInt(123), resultSet.getString(124))),
+                        new AreaStyle(resultSet.getInt(125), resultSet.getString(126),
+                                new Color(resultSet.getInt(127), resultSet.getString(128)),
+                                new PredefinedOpacity(resultSet.getInt(129), resultSet.getString(130)))),
+                resultSet.getInt(131), resultSet.getInt(132), resultSet.getBoolean(133)
         );
     }
 
@@ -317,13 +332,15 @@ public class ElementDAOImpl implements ElementDAO {
         preparedStatement.setString(1, element.getName());
         preparedStatement.setInt(2, element.getPosition().getId());
         preparedStatement.setInt(3, element.getAnchor().getId());
-        preparedStatement.setInt(4, element.getMinimumWidth().getId());
-        preparedStatement.setInt(5, element.getMinimumHeight().getId());
-        preparedStatement.setInt(6, element.getSeparationSpace().getId());
-        preparedStatement.setInt(7, element.getElementStyle().getId());
-        preparedStatement.setInt(8, element.getOnPageId());
-        preparedStatement.setInt(9, element.getOnLayerId());
-        preparedStatement.setBoolean(10, element.isInclude());
+        preparedStatement.setInt(4, element.getXShift().getId());
+        preparedStatement.setInt(5, element.getYShift().getId());
+        preparedStatement.setInt(6, element.getMinimumWidth().getId());
+        preparedStatement.setInt(7, element.getMinimumHeight().getId());
+        preparedStatement.setInt(8, element.getSeparationSpace().getId());
+        preparedStatement.setInt(9, element.getElementStyle().getId());
+        preparedStatement.setInt(10, element.getOnPageId());
+        preparedStatement.setInt(11, element.getOnLayerId());
+        preparedStatement.setBoolean(12, element.isInclude());
     }
 
     @Override

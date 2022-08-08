@@ -37,6 +37,8 @@ public class DocumentElement {
                 .name(elementName)
                 .position(element.getPosition())
                 .anchor(element.getAnchor())
+                .xShift(LengthExpression.fromLength(element.getXShift()))
+                .yShift(LengthExpression.fromLength(element.getYShift()))
                 .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
                 .innerXSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()))

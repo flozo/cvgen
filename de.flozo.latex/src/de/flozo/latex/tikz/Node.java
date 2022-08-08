@@ -253,13 +253,17 @@ public class Node extends Path {
 
         public Builder xShift(LengthExpression xShift) {
             this.xShift = xShift;
-            addOption(NodeOption.X_SHIFT, xShift.getFormatted());
+            if (xShift.getNumericalValue() != 0) {
+                addOption(NodeOption.X_SHIFT, xShift.getFormatted());
+            }
             return this;
         }
 
         public Builder yShift(LengthExpression yShift) {
             this.yShift = yShift;
-            addOption(NodeOption.Y_SHIFT, yShift.getFormatted());
+            if (yShift.getNumericalValue() != 0) {
+                addOption(NodeOption.Y_SHIFT, yShift.getFormatted());
+            }
             return this;
         }
 
