@@ -148,7 +148,12 @@ public class Main {
                     .addComponent(enclosures.getContentElement())
                     .build();
 
+            ContentElement valedictionLine = new ContentElement.Builder()
+                    .addComponent(letterContent.getValediction().getValue())
+                    .build();
+
             ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
+
 
             DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, elementDAO.get("address"));
             DocumentElement backaddressField = new DocumentElement("backaddress", backaddressFieldContent, elementDAO.get("backaddress"));
@@ -157,6 +162,7 @@ public class Main {
             DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
             DocumentElement enclosureTagLine = new DocumentElement("enclosures", enclosureLine, elementDAO.get("enclosures"));
             DocumentElement headline = new DocumentElement("headline", senderNameLineWithTitle, elementDAO.get("headline_field"));
+            DocumentElement valediction = new DocumentElement("valediction", valedictionLine, elementDAO.get("valediction"));
 
             System.out.println(elementDAO.get("body"));
 
@@ -181,7 +187,10 @@ public class Main {
                     .optionList(includegraphicsOption.getContentElement())
                     .body(absoluteFilePathSignature)
                     .build();
-            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline()).build();
+            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline())
+                    .addComponent(senderNameLine.getContentElement())
+                    .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
+                    .build();
 
 
             Element senderStyle = elementDAO.get("sender");
@@ -246,10 +255,13 @@ public class Main {
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(headline, addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
                     .addMatrix(senderField)
+                    .addElement(valediction)
                     .addElement(signature)
                     .addLine(lineList)
                     .insertLatexComments(true)
                     .build();
+
+
 
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);

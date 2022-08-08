@@ -9,8 +9,9 @@ public class LetterContent {
     private String subject;
     private String date;
     private String bodyText;
+    private Valediction valediction;
 
-    public LetterContent(int id, String name, Address sender, Address receiver, String subject, String date, String bodyText) {
+    public LetterContent(int id, String name, Address sender, Address receiver, String subject, String date, String bodyText, Valediction valediction) {
         this.id = id;
         this.name = name;
         this.sender = sender;
@@ -18,6 +19,7 @@ public class LetterContent {
         this.subject = subject;
         this.date = date;
         this.bodyText = bodyText;
+        this.valediction = valediction;
     }
 
     public int getId() {
@@ -76,6 +78,14 @@ public class LetterContent {
         this.bodyText = bodyText;
     }
 
+    public Valediction getValediction() {
+        return valediction;
+    }
+
+    public void setValediction(Valediction valediction) {
+        this.valediction = valediction;
+    }
+
     @Override
     public String toString() {
         return "LetterContent{" +
@@ -86,6 +96,7 @@ public class LetterContent {
                 ", subject='" + subject + '\'' +
                 ", date='" + date + '\'' +
                 ", bodyText='" + bodyText + '\'' +
+                ", valediction=" + valediction +
                 '}';
     }
 }

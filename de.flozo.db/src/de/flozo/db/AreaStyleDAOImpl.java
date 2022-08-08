@@ -83,9 +83,14 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
         this.connection = connection;
     }
 
+
+    private void showSQLMessage(String queryString) {
+        System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
+    }
+
     @Override
     public AreaStyle get(int id) {
-        System.out.println("[database] Executing SQL statement \"" + QUERY_BY_ID + "\" ...");
+        showSQLMessage(QUERY_BY_ID);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -103,7 +108,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
 
     @Override
     public AreaStyle get(String specifier) {
-        System.out.println("[database] Executing SQL statement \"" + QUERY_BY_SPECIFIER + "\" ...");
+        showSQLMessage(QUERY_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -121,7 +126,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
 
     @Override
     public List<AreaStyle> getAll() {
-        System.out.print("[database] Executing SQL statement \"" + QUERY_ALL + "\" ...");
+        showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
             List<AreaStyle> areaStyles = new ArrayList<>();
@@ -141,7 +146,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     public void add(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
+        showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, areaStyle);
             // do it
@@ -163,7 +168,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     public void update(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
+        showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, areaStyle.getId());
             setAllValues(preparedStatement, areaStyle);
@@ -186,7 +191,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     public void delete(AreaStyle areaStyle) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
-        System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
+        showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, areaStyle.getId());
             // do it
