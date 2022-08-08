@@ -17,12 +17,6 @@ public class MatrixOfNodes {
 
 
     private final Element element;
-//    private final Position position;
-//    private final Anchor anchor;
-//    private final FontSize fontSize;
-//    private final Color backgroundColor;
-//    private final Color borderColor;
-//    private final Color textColor;
 
 
     public MatrixOfNodes(Builder builder) {
@@ -30,12 +24,6 @@ public class MatrixOfNodes {
         this.matrix = builder.matrix;
         this.columnStyles = builder.columnStyles;
         this.element = builder.element;
-//        this.position = builder.position;
-//        this.anchor = builder.anchor;
-//        this.fontSize = builder.fontSize;
-//        this.backgroundColor = builder.backgroundColor;
-//        this.borderColor = builder.borderColor;
-//        this.textColor = builder.textColor;
     }
 
 
@@ -49,6 +37,8 @@ public class MatrixOfNodes {
                 .name(name)
                 .position(element.getPosition())
                 .anchor(element.getAnchor())
+                .xShift(LengthExpression.fromLength(element.getXShift()))
+                .yShift(LengthExpression.fromLength(element.getYShift()))
                 .minimumWidth(LengthExpression.fromLength(element.getMinimumWidth()))
                 .minimumHeight(LengthExpression.fromLength(element.getMinimumHeight()))
                 .innerXSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()))
@@ -114,18 +104,10 @@ public class MatrixOfNodes {
         private final List<String> columnStyles = new ArrayList<>();
         private final Element element;
 
-        // optional
-//        private FontSize fontSize;
-//        private Color backgroundColor;
-//        private Color borderColor;
-//        private Color textColor;
-
 
         public Builder(String name, Element element) {
             this.name = name;
             this.element = element;
-//            this.position = position;
-//            this.anchor = anchor;
         }
 
         public Builder addRow(String... row) {
@@ -153,31 +135,9 @@ public class MatrixOfNodes {
             return this;
         }
 
-//        public Builder fontSize(FontSize fontSize) {
-//            this.fontSize = fontSize;
-//            return this;
-//        }
-//
-//        public Builder backgroundColor(Color backgroundColor) {
-//            this.backgroundColor = backgroundColor;
-//            return this;
-//        }
-//
-//        public Builder borderColor(Color borderColor) {
-//            this.borderColor = borderColor;
-//            return this;
-//        }
-//
-//        public Builder textColor(Color textColor) {
-//            this.textColor = textColor;
-//            return this;
-//        }
-
-
         public MatrixOfNodes build() {
             return new MatrixOfNodes(this);
         }
 
     }
-
 }
