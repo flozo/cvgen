@@ -4,6 +4,7 @@ public enum Delimiter {
 
     NONE(""),
     SPACE(" "),
+    NON_BREAKING_SPACE("~"),
     SEMICOLON(";"),
     COMMA(","),
     DOUBLE_BACKSLASH("\\\\"),

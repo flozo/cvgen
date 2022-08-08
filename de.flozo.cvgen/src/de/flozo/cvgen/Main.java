@@ -93,7 +93,7 @@ public class Main {
                     .addComponent(sender.getAcademicTitle() + ".")
                     .addComponent(sender.getFirstName())
                     .addComponent(sender.getLastName())
-                    .inlineDelimiter(Delimiter.SPACE)
+                    .inlineDelimiter(Delimiter.NON_BREAKING_SPACE)
                     .build();
 
 
@@ -228,11 +228,15 @@ public class Main {
                     .addNodeOption(NodeOption.TEXT_HEIGHT, LengthExpression.fromLength(senderStyleColumn2.getElementStyle().getTextStyle().getTextHeight()).getFormatted())
                     .build();
 
+            ContentElement hyperlinkedEmailAddress = new ContentElement.Builder()
+                    .addComponent(sender.getEMailAddress())
+                    .makeHyperlink(sender.getEMailAddress(), subjectFieldContent.getContentElement())
+                    .build();
 
             MatrixOfNodes senderField = new MatrixOfNodes.Builder("sender_field", senderStyle)
                     .addRow(senderAddress.getContentElement(), mapMarkerIcon.getInline())
                     .addRow(sender.getMobileNumber(), phoneIcon.getInline())
-                    .addRow(sender.getEMailAddress(), mailIcon.getInline())
+                    .addRow(hyperlinkedEmailAddress.getContentElement(), mailIcon.getInline())
                     .addColumnStyle(column1)
                     .addColumnStyle(column2)
                     .build();
@@ -291,7 +295,7 @@ public class Main {
                     .build();
 
 
-            LaTeXCode laTeXCode = new LaTeXCode(VERSION_INFO_LATEX_HEADER, preamble, document);
+            LatexCode laTeXCode = new LatexCode(VERSION_INFO_LATEX_HEADER, preamble, document);
 
 //            for (String line : laTeXCode.getCode()) {
 //                System.out.println(line);

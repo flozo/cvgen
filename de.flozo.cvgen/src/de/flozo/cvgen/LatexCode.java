@@ -6,13 +6,13 @@ import de.flozo.latex.core.Environment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LaTeXCode {
+public class LatexCode {
 
     private final String versionInfoComment;
     private final Preamble preamble;
     private final Environment documentEnvironment;
 
-    public LaTeXCode(String versionInfoComment, Preamble preamble, Environment documentEnvironment) {
+    public LatexCode(String versionInfoComment, Preamble preamble, Environment documentEnvironment) {
         this.versionInfoComment = versionInfoComment;
         this.preamble = preamble;
         this.documentEnvironment = documentEnvironment;
