@@ -2,6 +2,7 @@ package de.flozo.latex.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Environment {
 
@@ -42,9 +43,13 @@ public class Environment {
 
 
     public List<String> getBlock() {
+        List<String> itemized = new ArrayList<>(body);
+        if (name == EnvironmentName.ITEMIZE) {
+            itemized = body.stream().map(e -> "\\item " + e).collect(Collectors.toList());
+        }
         GenericCommand command = new GenericCommand.Builder(buildOpeningTag())
                 .optionList(optionalArguments)
-                .body(body)
+                .body(itemized)
                 .bodyBrackets(bodyBrackets)
                 .optionBrackets(optionBrackets)
                 .indentBody(indentBody)

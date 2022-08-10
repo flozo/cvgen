@@ -62,12 +62,12 @@ public class DocumentElement {
     }
 
     public List<String> getElementFieldInline() {
-        return new ArrayList<>(List.of(getNode(content.getContentElement()).getInline()));
+        return new ArrayList<>(List.of(getNode(content.getInline()).getInline()));
     }
 
 
     public List<String> getElementFieldBlock() {
-        return getNode(content.getContentElement()).getBlock();
+        return getNode(content.getInline()).getBlock();
     }
 
 

@@ -12,7 +12,6 @@ public class ContentElement {
     public static final String DEFAULT_DELIMITER = "";
     public static final boolean DEFAULT_MULTILINE_CONTENT = false;
     public static final boolean DEFAULT_DELIMITER_SPACE = false;
-    public static final boolean DEFAULT_MAKE_HYPERLINK = false;
 
     private final List<String> components;
     private final String delimiter;
@@ -41,6 +40,7 @@ public class ContentElement {
         return joinComponentsWithDelimiter("\\\\");      // join components with LaTeX line breaks
     }
 
+
     private String makeHyperlink(String element) {
         return new GenericCommand.Builder("href")
                 .optionList(hyperlink)
@@ -49,7 +49,7 @@ public class ContentElement {
                 .build().getInline();
     }
 
-    public String getContentElement() {
+    public String getInline() {
         String content = multilineContent ? multiline() : inline();
         if (hyperlink != null && !hyperlink.isBlank()) return makeHyperlink(content);
         return content;

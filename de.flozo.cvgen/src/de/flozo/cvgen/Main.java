@@ -1,9 +1,6 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.Element;
-import de.flozo.common.dto.appearance.Layer;
-import de.flozo.common.dto.appearance.Line;
-import de.flozo.common.dto.appearance.Page;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.common.dto.content.Address;
 import de.flozo.common.dto.content.EmbeddedFile;
 import de.flozo.common.dto.content.Enclosure;
@@ -77,9 +74,9 @@ public class Main {
                     .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement addressFieldContent = new ContentElement.Builder()
-                    .addComponent(receiverNameLine.getContentElement())
-                    .addComponent(receiverStreetLine.getContentElement())
-                    .addComponent(receiverCityLine.getContentElement())
+                    .addComponent(receiverNameLine.getInline())
+                    .addComponent(receiverStreetLine.getInline())
+                    .addComponent(receiverCityLine.getInline())
                     .multilineContent(true)
                     .build();
 
@@ -108,15 +105,15 @@ public class Main {
                     .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement senderAddress = new ContentElement.Builder()
-                    .addComponent(senderStreetLine.getContentElement())
-                    .addComponent(senderCityLine.getContentElement())
+                    .addComponent(senderStreetLine.getInline())
+                    .addComponent(senderCityLine.getInline())
                     .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
                     .build();
 
             ContentElement backaddressFieldContent = new ContentElement.Builder()
-                    .addComponent(senderNameLine.getContentElement())
-                    .addComponent(senderStreetLine.getContentElement())
-                    .addComponent(senderCityLine.getContentElement())
+                    .addComponent(senderNameLine.getInline())
+                    .addComponent(senderStreetLine.getInline())
+                    .addComponent(senderCityLine.getInline())
                     .inlineDelimiter("\\hspace{8pt}$\\bullet$\\hspace{8pt}")
                     .build();
 
@@ -145,7 +142,7 @@ public class Main {
                     .build();
             ContentElement enclosureLine = new ContentElement.Builder()
                     .addComponent("Enclosures: ")
-                    .addComponent(enclosures.getContentElement())
+                    .addComponent(enclosures.getInline())
                     .build();
 
             ContentElement valedictionLine = new ContentElement.Builder()
@@ -184,11 +181,11 @@ public class Main {
                     .inlineDelimiter(Delimiter.EQUALS)
                     .build();
             Command includeSignature = new GenericCommand.Builder("includegraphics")
-                    .optionList(includegraphicsOption.getContentElement())
+                    .optionList(includegraphicsOption.getInline())
                     .body(absoluteFilePathSignature)
                     .build();
             ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline())
-                    .addComponent(senderNameLine.getContentElement())
+                    .addComponent(senderNameLine.getInline())
                     .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
                     .build();
 
@@ -239,13 +236,13 @@ public class Main {
 
             ContentElement hyperlinkedEmailAddress = new ContentElement.Builder()
                     .addComponent(sender.getEMailAddress())
-                    .makeHyperlink(sender.getEMailAddress(), subjectFieldContent.getContentElement())
+                    .makeHyperlink(sender.getEMailAddress(), subjectFieldContent.getInline())
                     .build();
 
             MatrixOfNodes senderField = new MatrixOfNodes.Builder("sender_field", senderStyle)
-                    .addRow(senderAddress.getContentElement(), mapMarkerIcon.getInline())
+                    .addRow(senderAddress.getInline(), mapMarkerIcon.getInline())
                     .addRow(sender.getMobileNumber(), phoneIcon.getInline())
-                    .addRow(hyperlinkedEmailAddress.getContentElement(), mailIcon.getInline())
+                    .addRow(hyperlinkedEmailAddress.getInline(), mailIcon.getInline())
                     .addColumnStyle(column1)
                     .addColumnStyle(column2)
                     .build();
@@ -262,6 +259,32 @@ public class Main {
                     .build();
 
 
+            ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
+            ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
+            List<String> itemizeOptions = new ArrayList<>();
+            itemizeOptions.add(String.format("topsep={%s}", LengthExpression.fromLength(itemizeStyle.getTopSep())));
+            itemizeOptions.add(String.format("leftmargin={%s}", LengthExpression.fromLength(itemizeStyle.getLeftMargin())));
+            itemizeOptions.add(String.format("labelsep={%s}", LengthExpression.fromLength(itemizeStyle.getLabelSep())));
+            itemizeOptions.add(String.format("itemindent={%s}", LengthExpression.fromLength(itemizeStyle.getItemIndent())));
+            itemizeOptions.add(String.format("itemsep={%s}", LengthExpression.fromLength(itemizeStyle.getItemSep())));
+            itemizeOptions.add(String.format("label={%s}", itemizeStyle.getLabel()));
+
+
+//            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
+//                    .optionalArguments(itemizeOptions)
+//                    .body(components)
+//                    .build();
+
+            Page cvPage1 = pageDAO.get("cv_page_1");
+
+//            ContentElement cvTitle = new ContentElement.Builder()
+//                    .addComponent()
+
+
+            DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
+                    .addLine(lineDAO.get("headline_separation"))
+                    .addElement(headline)
+                    .build();
 
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
@@ -281,7 +304,7 @@ public class Main {
             hyperOptions.add("urlcolor=Blues-K");
             hyperOptions.add(String.format("pdftitle={%s}", pdfTitle));
             hyperOptions.add(String.format("pdfsubject={%s}", pdfSubject));
-            hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.getContentElement()));
+            hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.getInline()));
             hyperOptions.add(String.format("pdfdate={%s}", LocalDate.now()));
             hyperOptions.add(String.format("pdfproducer={%s}", VERSION_INFO_PDF_META_DATA));
             hyperOptions.add(String.format("pdfcontactcity={%s}", sender.getCity()));
@@ -300,6 +323,7 @@ public class Main {
             ExpressionList documentBody = new FormattedExpressionList.Builder()
                     .append(layerDeclarationBlock)
                     .append(motivationalLetter.getCode())
+                    .append(cv1.getCode())
                     .build();
 
             Environment document = new Environment.Builder(EnvironmentName.DOCUMENT)

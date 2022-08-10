@@ -10,10 +10,11 @@ public class TimelineItem {
     private int periodEndYear;
     private String task;
     private String description;
+    private String company;
     private String location;
     private TimelineType timelineType;
 
-    public TimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String location, TimelineType timelineType) {
+    public TimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String company, String location, TimelineType timelineType) {
         this.id = id;
         this.name = name;
         this.periodStartMonth = periodStartMonth;
@@ -22,6 +23,7 @@ public class TimelineItem {
         this.periodEndYear = periodEndYear;
         this.task = task;
         this.description = description;
+        this.company = company;
         this.location = location;
         this.timelineType = timelineType;
     }
@@ -90,6 +92,14 @@ public class TimelineItem {
         this.description = description;
     }
 
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -117,6 +127,7 @@ public class TimelineItem {
                 ", periodEndYear=" + periodEndYear +
                 ", task='" + task + '\'' +
                 ", description='" + description + '\'' +
+                ", company='" + company + '\'' +
                 ", location='" + location + '\'' +
                 ", timelineType=" + timelineType +
                 '}';
