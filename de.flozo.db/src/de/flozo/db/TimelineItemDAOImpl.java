@@ -33,7 +33,7 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String VIEW_COLUMN_TIMELINE_TYPE_NAME = "timeline_type_name";
 
     // link table
-    public static final String LINK_TABLE_NAME = "timeline_text_item_link";
+    public static final String LINK_TABLE_NAME = "timeline_text_item_link_view";
     public static final String LINK_TABLE_COLUMN_ID = "_id";
     public static final String LINK_TABLE_COLUMN_NAME = "name";
     public static final String LINK_TABLE_COLUMN_TEXT_ITEM_ID = "text_item_id";

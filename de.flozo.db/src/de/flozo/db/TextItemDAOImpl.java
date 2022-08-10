@@ -1,26 +1,19 @@
 package de.flozo.db;
 
-import de.flozo.common.dto.appearance.AreaStyle;
-import de.flozo.common.dto.appearance.Color;
-import de.flozo.common.dto.appearance.PredefinedOpacity;
+import de.flozo.common.dto.content.TextItem;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AreaStyleDAOImpl implements AreaStyleDAO {
+public class TextItemDAOImpl implements TextItemDAO {
 
     // table
-    public static final String TABLE_NAME = "area_styles";
+    public static final String TABLE_NAME = "text_items";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_COLOR_ID = "color_id";
-    public static final String COLUMN_OPACITY_ID = "opacity_id";
+    public static final String COLUMN_VALUE = "value";
 
-    // view
-    public static final String VIEW_NAME = "area_style_view";
-    public static final String VIEW_COLUMN_ID = "_id";
-    public static final String VIEW_COLUMN_NAME = "name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -40,33 +33,22 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
 
     // query
 
-    // area_style_view created via:
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
-    // CREATE VIEW area_style_view AS
-    // SELECT ast._id, ast.name,
-    //   c._id AS color_id, c.color_string AS color_name,
-    //   o._id AS opacity_id, o.value AS opacity_value
-    // FROM area_styles AS ast
-    // INNER JOIN colors AS c ON ast.color_id = c._id
-    // INNER JOIN predefined_opacities AS o ON ast.opacity_id = o._id
-    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
-
-    public static final int NON_ID_COLUMNS = 3;
+    public static final int NON_ID_COLUMNS = 2;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_NAME + COMMA +
-            COLUMN_COLOR_ID + COMMA +
-            COLUMN_OPACITY_ID +
+            COLUMN_VALUE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_NAME + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_COLOR_ID + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_OPACITY_ID + EQUALS + QUESTION_MARK +
+            COLUMN_VALUE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -78,18 +60,17 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     private final Connection connection;
 
 
-    public AreaStyleDAOImpl(Datasource2 datasource2, Connection connection) {
+    public TextItemDAOImpl(Datasource2 datasource2, Connection connection) {
         this.datasource2 = datasource2;
         this.connection = connection;
     }
-
 
     private void showSQLMessage(String queryString) {
         System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
     }
 
     @Override
-    public AreaStyle get(int id) {
+    public TextItem get(int id) {
         showSQLMessage(QUERY_BY_ID);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
             preparedStatement.setInt(1, id);
@@ -107,7 +88,7 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     }
 
     @Override
-    public AreaStyle get(String specifier) {
+    public TextItem get(String specifier) {
         showSQLMessage(QUERY_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
@@ -125,16 +106,16 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     }
 
     @Override
-    public List<AreaStyle> getAll() {
+    public List<TextItem> getAll() {
         showSQLMessage(QUERY_ALL);
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(QUERY_ALL)) {
-            List<AreaStyle> areaStyles = new ArrayList<>();
+            List<TextItem> textItems = new ArrayList<>();
             while (resultSet.next()) {
-                areaStyles.add(extractFromResultSet(resultSet));
+                textItems.add(extractFromResultSet(resultSet));
             }
             System.out.println(" done!");
-            return areaStyles;
+            return textItems;
         } catch (SQLException e) {
             System.out.println();
             System.out.println("Query failed: " + e.getMessage());
@@ -143,12 +124,12 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
     }
 
     @Override
-    public void add(AreaStyle areaStyle) {
+    public void add(TextItem textItem) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
-            setAllValues(preparedStatement, areaStyle);
+            setAllValues(preparedStatement, textItem);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -158,20 +139,20 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-areaStyle");
+            datasource2.rollback(e, "Insert-textItem");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void update(AreaStyle areaStyle) {
+    public void update(TextItem textItem) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
-            preparedStatement.setInt(UPDATE_WHERE_POSITION, areaStyle.getId());
-            setAllValues(preparedStatement, areaStyle);
+            preparedStatement.setInt(UPDATE_WHERE_POSITION, textItem.getId());
+            setAllValues(preparedStatement, textItem);
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -181,19 +162,19 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-areaStyle");
+            datasource2.rollback(e, "Update-textItem");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
     @Override
-    public void delete(AreaStyle areaStyle) {
+    public void delete(TextItem textItem) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
-            preparedStatement.setInt(1, areaStyle.getId());
+            preparedStatement.setInt(1, textItem.getId());
             // do it
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 1) {
@@ -203,28 +184,24 @@ public class AreaStyleDAOImpl implements AreaStyleDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-areaStyle");
+            datasource2.rollback(e, "Delete-textItem");
         } finally {
             datasource2.setAutoCommitBehavior(true);
         }
     }
 
-    private AreaStyle extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new AreaStyle(resultSet.getInt(1), resultSet.getString(2),
-                new Color(resultSet.getInt(3), resultSet.getString(4)),
-                new PredefinedOpacity(resultSet.getInt(5), resultSet.getString(6))
-        );
+    private TextItem extractFromResultSet(ResultSet resultSet) throws SQLException {
+        return new TextItem(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3));
     }
 
-    private void setAllValues(PreparedStatement preparedStatement, AreaStyle areaStyle) throws SQLException {
-        preparedStatement.setString(1, areaStyle.getName());
-        preparedStatement.setInt(2, areaStyle.getColor().getId());
-        preparedStatement.setInt(3, areaStyle.getOpacity().getId());
+    private void setAllValues(PreparedStatement preparedStatement, TextItem textItem) throws SQLException {
+        preparedStatement.setString(1, textItem.getName());
+        preparedStatement.setString(2, textItem.getValue());
     }
 
     @Override
     public String toString() {
-        return "AreaStyleDAOImpl{" +
+        return "TextItemDAOImpl{" +
                 "datasource2=" + datasource2 +
                 ", connection=" + connection +
                 '}';

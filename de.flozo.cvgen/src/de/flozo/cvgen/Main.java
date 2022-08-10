@@ -1,10 +1,7 @@
 package de.flozo.cvgen;
 
 import de.flozo.common.dto.appearance.*;
-import de.flozo.common.dto.content.Address;
-import de.flozo.common.dto.content.EmbeddedFile;
-import de.flozo.common.dto.content.Enclosure;
-import de.flozo.common.dto.content.LetterContent;
+import de.flozo.common.dto.content.*;
 import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
 import de.flozo.common.dto.latex.TikzLibrary;
@@ -20,7 +17,9 @@ import de.flozo.latex.tikz.NodeStyle;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -270,9 +269,29 @@ public class Main {
             itemizeOptions.add(String.format("label={%s}", itemizeStyle.getLabel()));
 
 
+            TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
+            List<TimelineItem> educationTimeline = timelineItemDAO.getAllOfType("education");
+            List<TimelineItem> careerTimeline = timelineItemDAO.getAllOfType("career");
+
+
+            Map<String, List<TimelineTextItemLink>> timelineItemListMap = new HashMap<>();
+            for (TimelineItem timelineItem : educationTimeline) {
+                timelineItemListMap.put(timelineItem.getName(), timelineItemDAO.getTextItems(timelineItem.getId()));
+            }
+            System.out.println(timelineItemListMap.get("edu_1"));
+
+
+            MatrixOfNodes cvContact = new MatrixOfNodes.Builder("cv_contact", senderStyle)
+                    .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
+                    .addRow(phoneIcon.getInline(), sender.getMobileNumber())
+                    .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
+                    .addColumnStyle(column2)
+                    .addColumnStyle(column1)
+                    .build();
+
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
 //                    .optionalArguments(itemizeOptions)
-//                    .body(components)
+//                    .body(timelineItemListMap.get("edu_1"))
 //                    .build();
 
             Page cvPage1 = pageDAO.get("cv_page_1");
@@ -284,6 +303,7 @@ public class Main {
             DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
                     .addLine(lineDAO.get("headline_separation"))
                     .addElement(headline)
+                    .addMatrix(cvContact)
                     .build();
 
 
