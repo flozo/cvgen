@@ -1,6 +1,8 @@
 package de.flozo.db;
 
+import de.flozo.common.dto.content.TextItem;
 import de.flozo.common.dto.content.TimelineItem;
+import de.flozo.common.dto.content.TimelineTextItemLink;
 import de.flozo.common.dto.content.TimelineType;
 
 import java.sql.*;
@@ -30,6 +32,15 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String VIEW_COLUMN_TIMELINE_TYPE_ID = "timeline_type_id";
     public static final String VIEW_COLUMN_TIMELINE_TYPE_NAME = "timeline_type_name";
 
+    // link table
+    public static final String LINK_TABLE_NAME = "timeline_text_item_link";
+    public static final String LINK_TABLE_COLUMN_ID = "_id";
+    public static final String LINK_TABLE_COLUMN_NAME = "name";
+    public static final String LINK_TABLE_COLUMN_TEXT_ITEM_ID = "text_item_id";
+    public static final String LINK_TABLE_COLUMN_TEXT_ITEM_NAME = "text_item_name";
+    public static final String LINK_TABLE_COLUMN_TEXT_ITEM_VALUE = "text_item_value";
+
+
     // sql
     public static final char OPENING_PARENTHESIS = '(';
     public static final char CLOSING_PARENTHESIS = ')';
@@ -55,11 +66,22 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     //	 tt._id AS timeline_type_id, tt.name AS timeline_type_name, tt.description AS timeline_type_description
     // FROM timeline_items AS ti
     // INNER JOIN timeline_types AS tt ON ti.timeline_type_id = tt._id
+
+    // timeline_text_item_link_view created via:
+
+    // CREATE VIEW timeline_text_item_link_view AS
+    // SELECT tiv._id, tiv.name,
+    //	 ti._id AS text_item_id, ti.name AS text_item_name, ti.value AS text_item_value
+    // FROM timeline_item_view AS tiv
+    // INNER JOIN timeline_text_item_link AS ttil ON ttil.timeline_item_id = tiv._id
+    // INNER JOIN text_items AS ti ON ttil.text_item_id = ti._id
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
     public static final String QUERY_ALL_OF_TYPE_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL_OF_TYPE_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_TEXT_ITEMS_BY_ID = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_TEXT_ITEMS_BY_SPECIFIER = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_NAME + EQUALS + QUESTION_MARK;
 
     public static final int NON_ID_COLUMNS = 10;
 
@@ -201,6 +223,46 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     }
 
     @Override
+    public List<TimelineTextItemLink> getTextItems(int id) {
+        showSQLMessage(QUERY_TEXT_ITEMS_BY_ID);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_TEXT_ITEMS_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            List<TimelineTextItemLink> timelineTextItemLinks = new ArrayList<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    timelineTextItemLinks.add(extractFromLinkResultSet(resultSet));
+                }
+            }
+            System.out.println(" done!");
+            return timelineTextItemLinks;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<TimelineTextItemLink> getTextItems(String specifier) {
+        showSQLMessage(QUERY_TEXT_ITEMS_BY_SPECIFIER);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_TEXT_ITEMS_BY_SPECIFIER)) {
+            preparedStatement.setString(1, specifier);
+            List<TimelineTextItemLink> timelineTextItemLinks = new ArrayList<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    timelineTextItemLinks.add(extractFromLinkResultSet(resultSet));
+                }
+            }
+            System.out.println(" done!");
+            return timelineTextItemLinks;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public void add(TimelineItem timelineItem) {
         // start transaction:
         datasource2.setAutoCommitBehavior(false);
@@ -268,6 +330,12 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
             datasource2.setAutoCommitBehavior(true);
         }
     }
+
+    private TimelineTextItemLink extractFromLinkResultSet(ResultSet resultSet) throws SQLException {
+        return new TimelineTextItemLink(resultSet.getInt(1), resultSet.getString(2),
+                new TextItem(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)));
+    }
+
 
     private TimelineItem extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new TimelineItem(resultSet.getInt(1), resultSet.getString(2),

@@ -1,6 +1,7 @@
 package de.flozo.db;
 
 import de.flozo.common.dto.content.TimelineItem;
+import de.flozo.common.dto.content.TimelineTextItemLink;
 
 import java.util.List;
 
@@ -18,6 +19,10 @@ public interface TimelineItemDAO extends DAO<TimelineItem> {
     List<TimelineItem> getAllOfType(int id);
 
     List<TimelineItem> getAllOfType(String specifier);
+
+    List<TimelineTextItemLink> getTextItems(int id);
+
+    List<TimelineTextItemLink> getTextItems(String specifier);
 
     @Override
     void add(TimelineItem timelineItem);
