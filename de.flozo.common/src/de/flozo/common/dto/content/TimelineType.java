@@ -1,15 +1,15 @@
 package de.flozo.common.dto.content;
 
-public class Timeline {
+public class TimelineType {
 
     private int id;
     private String name;
-    private String timelineTableName;
+    private String description;
 
-    public Timeline(int id, String name, String timelineTableName) {
+    public TimelineType(int id, String name, String description) {
         this.id = id;
         this.name = name;
-        this.timelineTableName = timelineTableName;
+        this.description = description;
     }
 
     public int getId() {
@@ -28,20 +28,20 @@ public class Timeline {
         this.name = name;
     }
 
-    public String getTimelineTableName() {
-        return timelineTableName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setTimelineTableName(String timelineTableName) {
-        this.timelineTableName = timelineTableName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public String toString() {
-        return "Timeline{" +
+        return "TimelineType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", timelineTableName='" + timelineTableName + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

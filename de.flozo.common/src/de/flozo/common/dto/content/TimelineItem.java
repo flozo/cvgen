@@ -1,6 +1,6 @@
 package de.flozo.common.dto.content;
 
-public class CareerTimelineItem {
+public class TimelineItem {
 
     private int id;
     private String name;
@@ -11,8 +11,9 @@ public class CareerTimelineItem {
     private String task;
     private String description;
     private String location;
+    private TimelineType timelineType;
 
-    public CareerTimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String location) {
+    public TimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String location, TimelineType timelineType) {
         this.id = id;
         this.name = name;
         this.periodStartMonth = periodStartMonth;
@@ -22,6 +23,7 @@ public class CareerTimelineItem {
         this.task = task;
         this.description = description;
         this.location = location;
+        this.timelineType = timelineType;
     }
 
     public int getId() {
@@ -96,9 +98,17 @@ public class CareerTimelineItem {
         this.location = location;
     }
 
+    public TimelineType getTimelineType() {
+        return timelineType;
+    }
+
+    public void setTimelineType(TimelineType timelineType) {
+        this.timelineType = timelineType;
+    }
+
     @Override
     public String toString() {
-        return "CareerTimelineItem{" +
+        return "TimelineItem{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", periodStartMonth=" + periodStartMonth +
@@ -108,6 +118,7 @@ public class CareerTimelineItem {
                 ", task='" + task + '\'' +
                 ", description='" + description + '\'' +
                 ", location='" + location + '\'' +
+                ", timelineType=" + timelineType +
                 '}';
     }
 }
