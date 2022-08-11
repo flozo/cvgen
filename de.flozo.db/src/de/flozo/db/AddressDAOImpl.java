@@ -26,6 +26,9 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String COLUMN_MOBILE_NUMBER = "mobile_number";
     public static final String COLUMN_E_MAIL_ADDRESS = "email_address";
     public static final String COLUMN_WEB_PAGE = "web_page";
+    public static final String COLUMN_MARITAL_STATUS = "marital_status";
+    public static final String COLUMN_CHILDREN = "children";
+    public static final String COLUMN_NATIONALITY = "nationality";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -48,7 +51,7 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_LABEL + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
 
-    public static final int NON_ID_COLUMNS = 15;
+    public static final int NON_ID_COLUMNS = 18;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
@@ -66,7 +69,10 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_PHONE_NUMBER + COMMA +
             COLUMN_MOBILE_NUMBER + COMMA +
             COLUMN_E_MAIL_ADDRESS + COMMA +
-            COLUMN_WEB_PAGE +
+            COLUMN_WEB_PAGE + COMMA +
+            COLUMN_MARITAL_STATUS + COMMA +
+            COLUMN_CHILDREN + COMMA +
+            COLUMN_NATIONALITY +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -85,7 +91,10 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_PHONE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_MOBILE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_WEB_PAGE + EQUALS + QUESTION_MARK +
+            COLUMN_WEB_PAGE + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_MARITAL_STATUS + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_CHILDREN + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_NATIONALITY + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -262,7 +271,8 @@ public class AddressDAOImpl implements AddressDAO {
         return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
                 resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8),
                 resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15), resultSet.getString(16)
+                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15), resultSet.getString(16),
+                resultSet.getString(17), resultSet.getString(18), resultSet.getString(19)
         );
     }
 
@@ -282,6 +292,9 @@ public class AddressDAOImpl implements AddressDAO {
         preparedStatement.setString(13, address.getMobileNumber());
         preparedStatement.setString(14, address.getEMailAddress());
         preparedStatement.setString(15, address.getWebPage());
+        preparedStatement.setString(16, address.getMaritalStatus());
+        preparedStatement.setString(17, address.getChildren());
+        preparedStatement.setString(18, address.getNationality());
     }
 
     @Override

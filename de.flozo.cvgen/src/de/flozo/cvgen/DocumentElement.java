@@ -62,6 +62,10 @@ public class DocumentElement {
                 .build();
     }
 
+    public Node getNodeCommand() {
+        return getNode(content.getInline());
+    }
+
     public List<String> getElementFieldInline() {
         return new ArrayList<>(List.of(getNode(content.getInline()).getInline()));
     }
@@ -75,6 +79,7 @@ public class DocumentElement {
     public String getElementName() {
         return elementName;
     }
+
 
     @Override
     public String toString() {

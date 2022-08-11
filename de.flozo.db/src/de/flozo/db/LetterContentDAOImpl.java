@@ -48,8 +48,8 @@ public class LetterContentDAOImpl implements LetterContentDAO {
 
     // CREATE VIEW letter_content_view AS
     // SELECT lc._id, lc.name,
-    //   asd._id AS sender_id, asd.label AS sender_label, asd.academic_title AS sender_academic_title, asd.first_name AS sender_first_name, asd.second_name AS sender_second_name, asd.last_name AS sender_last_name, asd.company AS sender_company, asd.street AS sender_street, asd.house_number AS sender_house_number, asd.postal_code AS sender_postal_code, asd.city AS sender_city, asd.country AS sender_country, asd.phone_number AS sender_phone_number, asd.mobile_number AS sender_mobile_number, asd.email_address AS sender_email_address, asd.web_page AS sender_web_page,
-    //   arc._id AS receiver_id, arc.label AS receiver_label, arc.academic_title AS receiver_academic_title, arc.first_name AS receiver_first_name, arc.second_name AS receiver_second_name, arc.last_name AS receiver_last_name, arc.company AS receiver_company, arc.street AS receiver_street, arc.house_number AS receiver_house_number, arc.postal_code AS receiver_postal_code, arc.city AS receiver_city, arc.country AS receiver_country, arc.phone_number AS receiver_phone_number, arc.mobile_number AS receiver_mobile_number, arc.email_address AS receiver_email_address, arc.web_page AS receiver_web_page,
+    //   asd._id AS sender_id, asd.label AS sender_label, asd.academic_title AS sender_academic_title, asd.first_name AS sender_first_name, asd.second_name AS sender_second_name, asd.last_name AS sender_last_name, asd.company AS sender_company, asd.street AS sender_street, asd.house_number AS sender_house_number, asd.postal_code AS sender_postal_code, asd.city AS sender_city, asd.country AS sender_country, asd.phone_number AS sender_phone_number, asd.mobile_number AS sender_mobile_number, asd.email_address AS sender_email_address, asd.web_page AS sender_web_page, asd.marital_status AS sender_marital_status, asd.children AS sender_children, asd.nationality AS sender_nationality,
+    //   arc._id AS receiver_id, arc.label AS receiver_label, arc.academic_title AS receiver_academic_title, arc.first_name AS receiver_first_name, arc.second_name AS receiver_second_name, arc.last_name AS receiver_last_name, arc.company AS receiver_company, arc.street AS receiver_street, arc.house_number AS receiver_house_number, arc.postal_code AS receiver_postal_code, arc.city AS receiver_city, arc.country AS receiver_country, arc.phone_number AS receiver_phone_number, arc.mobile_number AS receiver_mobile_number, arc.email_address AS receiver_email_address, arc.web_page AS receiver_web_page, arc.marital_status AS receiver_marital_status, arc.children AS receiver_children, arc.nationality AS receiver_nationality,
     //   lc.subject, lc.letter_date, lc.body_text,
     //   v._id AS valediction_id, v.name AS valediction_name, v.value AS valediction_value
     // FROM letter_content AS lc
@@ -230,13 +230,15 @@ public class LetterContentDAOImpl implements LetterContentDAO {
                 new Address(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
                         resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10),
                         resultSet.getString(11), resultSet.getString(12), resultSet.getString(13), resultSet.getString(14),
-                        resultSet.getString(15), resultSet.getString(16), resultSet.getString(17), resultSet.getString(18)),
-                new Address(resultSet.getInt(19), resultSet.getString(20), resultSet.getString(21), resultSet.getString(22),
-                        resultSet.getString(23), resultSet.getString(24), resultSet.getString(25), resultSet.getString(26),
-                        resultSet.getString(27), resultSet.getString(28), resultSet.getString(29), resultSet.getString(30),
-                        resultSet.getString(31), resultSet.getString(32), resultSet.getString(33), resultSet.getString(34)),
-                resultSet.getString(35), resultSet.getString(36), resultSet.getString(37),
-                new Valediction(resultSet.getInt(38), resultSet.getString(39), resultSet.getString(40))
+                        resultSet.getString(15), resultSet.getString(16), resultSet.getString(17), resultSet.getString(18),
+                        resultSet.getString(19), resultSet.getString(20), resultSet.getString(21)),
+                new Address(resultSet.getInt(22), resultSet.getString(23), resultSet.getString(24), resultSet.getString(25),
+                        resultSet.getString(26), resultSet.getString(27), resultSet.getString(28), resultSet.getString(29),
+                        resultSet.getString(30), resultSet.getString(31), resultSet.getString(32), resultSet.getString(33),
+                        resultSet.getString(34), resultSet.getString(35), resultSet.getString(36), resultSet.getString(37),
+                        resultSet.getString(38), resultSet.getString(39), resultSet.getString(40)),
+                resultSet.getString(41), resultSet.getString(42), resultSet.getString(43),
+                new Valediction(resultSet.getInt(44), resultSet.getString(45), resultSet.getString(46))
         );
     }
 

@@ -48,10 +48,14 @@ public class Main {
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
 
-            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
+            System.out.println(letterContent);
 
             Address receiver = letterContent.getReceiver();
             Address sender = letterContent.getSender();
+            System.out.println(sender);
+            System.out.println(receiver);
+
+            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
 
             ContentElement.Builder receiverNameLineBuilder = new ContentElement.Builder();
             if (receiver.getCompany() != null && !receiver.getCompany().isBlank()) {
@@ -264,10 +268,13 @@ public class Main {
             for (TimelineItem timelineItem : educationTimeline) {
                 timelineItemListMap.put(timelineItem.getName(), timelineItemDAO.getTextItems(timelineItem.getId()));
             }
-            System.out.println(timelineItemListMap.get("edu_1"));
+
+
+
+
+
             Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
             Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
-
 
             ContentElement githubUrl = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("github_url").getValue())
@@ -277,16 +284,27 @@ public class Main {
                     .build();
 
             Element cvContactStyle = elementDAO.get("cv_contact");
+            ContentElement cvContactTitle = new ContentElement.Builder()
+                    .addComponent(textItemDAO.get("cv_contact_title").getValue())
+                    .build();
+            DocumentElement cvContactTitleField = new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
+
             ColumnStyle cvContactColumn1 = new ColumnStyle(cvContactStyleColumn1);
             ColumnStyle cvContactColumn2 = new ColumnStyle(cvContactStyleColumn2);
             MatrixOfNodes cvContact = new MatrixOfNodes.Builder("cv_contact", cvContactStyle)
                     .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
                     .addRow(phoneIcon.getInline(), sender.getMobileNumber())
                     .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
+                    .addRow("", "")
                     .addRow(githubIcon.getInline(), githubUrl.getInline())
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
+
+//            Element cvUrlsStyle = elementDAO.get("cv_urls");
+//            MatrixOfNodes cvUrls = new MatrixOfNodes.Builder("cv_urls", cvUrlsStyle)
+//                    .addRow(githubIcon.getInline(), githubUrl.getInline())
+//                    .build();
 
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
 //                    .optionalArguments(itemizeOptions)
@@ -294,20 +312,24 @@ public class Main {
 //                    .build();
 
             Page cvPage1 = pageDAO.get("cv_page_1");
-
-
             ContentElement cvTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_title").getValue())
                     .build();
 
             DocumentElement cvTitleField = new DocumentElement("cv_title", cvTitle, elementDAO.get("cv_title"));
 
+//
+//
+//            DocumentElement cvContactTitleField = new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
+
 
             DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
                     .addLine(lineDAO.get("headline_separation"))
                     .addElement(headline)
                     .addElement(cvTitleField)
+                    .addElement(cvContactTitleField)
                     .addMatrix(cvContact)
+//                    .addMatrix(cvUrls)
                     .addElement(photo)
                     .build();
 
@@ -358,9 +380,6 @@ public class Main {
 
             LatexCode laTeXCode = new LatexCode(VERSION_INFO_LATEX_HEADER, preamble, document);
 
-//            for (String line : laTeXCode.getCode()) {
-//                System.out.println(line);
-//            }
 
             String fileName = "test_output.tex";
             String directory = "/tmp";
