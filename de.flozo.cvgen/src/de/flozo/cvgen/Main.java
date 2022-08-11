@@ -6,6 +6,7 @@ import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
 import de.flozo.common.dto.latex.TikzLibrary;
 import de.flozo.db.*;
+import de.flozo.latex.assembly.IconCommand;
 import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
@@ -192,46 +193,14 @@ public class Main {
             Element senderStyleColumn2 = elementDAO.get("sender_column2");
             IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
 
-
-            Command mapMarkerIcon = new GenericCommand.Builder("faIcon")
-                    .body(iconDAO.get("address").getFontawesomeIcon().getSpecifier())
-                    .build();
-            Command phoneIcon = new GenericCommand.Builder("faIcon")
-                    .body(iconDAO.get("phone").getFontawesomeIcon().getSpecifier())
-                    .build();
-            Command mailIcon = new GenericCommand.Builder("faIcon")
-                    .body(iconDAO.get("mail").getFontawesomeIcon().getSpecifier())
-                    .build();
-
+            IconCommand mapMarkerIcon = IconCommand.fromIcon(iconDAO.get("address"));
+            IconCommand phoneIcon = IconCommand.fromIcon(iconDAO.get("phone"));
+            IconCommand mailIcon = IconCommand.fromIcon(iconDAO.get("mail"));
+            IconCommand githubIcon = IconCommand.fromIcon(iconDAO.get("github"));
+            IconCommand hyperlink = IconCommand.fromIcon(iconDAO.get("hyperlink"));
 
             ColumnStyle column1 = new ColumnStyle(senderStyleColumn1);
             ColumnStyle column2 = new ColumnStyle(senderStyleColumn2);
-//            NodeStyle column1 = new NodeStyle.Builder()
-//                    .addCustomOption("rectangle")
-//                    .addNodeOption(NodeOption.FILL, senderStyleColumn1.getElementStyle().getAreaStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.DRAW, senderStyleColumn1.getElementStyle().getLineStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.TEXT,senderStyleColumn1.getElementStyle().getTextStyle().getColor().getSpecifier())
-//                    .addNodeOption(NodeOption.ALIGN, senderStyleColumn1.getElementStyle().getTextStyle().getAlignment().getValue())
-//                    .addNodeOption(NodeOption.INNER_X_SEP, LengthExpression.fromLength(senderStyleColumn1.getSeparationSpace().getInnerXSep()).getFormatted())
-//                    .addNodeOption(NodeOption.INNER_Y_SEP, LengthExpression.fromLength(senderStyleColumn1.getSeparationSpace().getInnerYSep()).getFormatted())
-//                    .addNodeOption(NodeOption.MINIMUM_WIDTH, LengthExpression.fromLength(senderStyleColumn1.getMinimumWidth()).getFormatted())
-//                    .addNodeOption(NodeOption.MINIMUM_HEIGHT, LengthExpression.fromLength(senderStyleColumn1.getMinimumHeight()).getFormatted())
-//                    .addNodeOption(NodeOption.TEXT_WIDTH, LengthExpression.fromLength(senderStyleColumn1.getElementStyle().getTextStyle().getTextWidth()).getFormatted())
-//                    .addNodeOption(NodeOption.TEXT_HEIGHT, LengthExpression.fromLength(senderStyleColumn1.getElementStyle().getTextStyle().getTextHeight()).getFormatted())
-//                    .build();
-//            NodeStyle column2 = new NodeStyle.Builder()
-//                    .addCustomOption("rectangle")
-//                    .addNodeOption(NodeOption.FILL, senderStyleColumn2.getElementStyle().getAreaStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.DRAW, senderStyleColumn2.getElementStyle().getLineStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.TEXT,senderStyleColumn2.getElementStyle().getTextStyle().getColor().getSpecifier())
-//                    .addNodeOption(NodeOption.ALIGN, senderStyleColumn2.getElementStyle().getTextStyle().getAlignment().getValue())
-//                    .addNodeOption(NodeOption.INNER_X_SEP, LengthExpression.fromLength(senderStyleColumn2.getSeparationSpace().getInnerXSep()).getFormatted())
-//                    .addNodeOption(NodeOption.INNER_Y_SEP, LengthExpression.fromLength(senderStyleColumn2.getSeparationSpace().getInnerYSep()).getFormatted())
-//                    .addNodeOption(NodeOption.MINIMUM_WIDTH, LengthExpression.fromLength(senderStyleColumn2.getMinimumWidth()).getFormatted())
-//                    .addNodeOption(NodeOption.MINIMUM_HEIGHT, LengthExpression.fromLength(senderStyleColumn2.getMinimumHeight()).getFormatted())
-//                    .addNodeOption(NodeOption.TEXT_WIDTH, LengthExpression.fromLength(senderStyleColumn2.getElementStyle().getTextStyle().getTextWidth()).getFormatted())
-//                    .addNodeOption(NodeOption.TEXT_HEIGHT, LengthExpression.fromLength(senderStyleColumn2.getElementStyle().getTextStyle().getTextHeight()).getFormatted())
-//                    .build();
 
             ContentElement hyperlinkedEmailAddress = new ContentElement.Builder()
                     .addComponent(sender.getEMailAddress())
@@ -282,6 +251,15 @@ public class Main {
             Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
             Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
 
+
+            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
+            ContentElement githubUrl = new ContentElement.Builder()
+                    .addComponent(textItemDAO.get("github_url").getValue())
+                    .addComponent("\\scriptsize" + hyperlink.getInline())
+                    .makeHyperlink(textItemDAO.get("github_url").getValue())
+                    .inlineDelimiter(Delimiter.SPACE.getString())
+                    .build();
+
             Element cvContactStyle = elementDAO.get("cv_contact");
             ColumnStyle cvContactColumn1 = new ColumnStyle(cvContactStyleColumn1);
             ColumnStyle cvContactColumn2 = new ColumnStyle(cvContactStyleColumn2);
@@ -289,6 +267,7 @@ public class Main {
                     .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
                     .addRow(phoneIcon.getInline(), sender.getMobileNumber())
                     .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
+                    .addRow(githubIcon.getInline(), githubUrl.getInline())
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
@@ -300,7 +279,6 @@ public class Main {
 
             Page cvPage1 = pageDAO.get("cv_page_1");
 
-            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
 
             ContentElement cvTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_title").getValue())
