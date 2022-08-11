@@ -48,6 +48,7 @@ public class Main {
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
 
+            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
 
             Address receiver = letterContent.getReceiver();
             Address sender = letterContent.getSender();
@@ -108,11 +109,12 @@ public class Main {
                     .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
                     .build();
 
+            String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
             ContentElement backaddressFieldContent = new ContentElement.Builder()
                     .addComponent(senderNameLine.getInline())
                     .addComponent(senderStreetLine.getInline())
                     .addComponent(senderCityLine.getInline())
-                    .inlineDelimiter("\\hspace{8pt}$\\bullet$\\hspace{8pt}")
+                    .inlineDelimiter(backaddressSeparator)
                     .build();
 
             ContentElement dateFieldContent = new ContentElement.Builder()
@@ -159,7 +161,6 @@ public class Main {
             DocumentElement headline = new DocumentElement("headline", senderNameLineWithTitle, elementDAO.get("headline_field"));
             DocumentElement valediction = new DocumentElement("valediction", valedictionLine, elementDAO.get("valediction"));
 
-            System.out.println(elementDAO.get("body"));
 
             PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
             Page letterPage = pageDAO.get("cv_motivational_letter");
@@ -170,22 +171,39 @@ public class Main {
 
 
             EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
+
+            // Signature
             EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
-            EmbeddedFile photo = embeddedFileDAO.get("photo");
             String absoluteFilePathSignature = signatureFile.getFile().getPath().replaceFirst("^~", System.getProperty("user.home"));
-            ContentElement includegraphicsOption = new ContentElement.Builder()
+            ContentElement signatureOption = new ContentElement.Builder()
                     .addComponent("scale")
                     .addComponent(String.valueOf(signatureFile.getScaleFactor()))
                     .inlineDelimiter(Delimiter.EQUALS)
                     .build();
             Command includeSignature = new GenericCommand.Builder("includegraphics")
-                    .optionList(includegraphicsOption.getInline())
+                    .optionList(signatureOption.getInline())
                     .body(absoluteFilePathSignature)
                     .build();
             ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline())
                     .addComponent(senderNameLine.getInline())
                     .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
                     .build();
+            DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
+
+            // Photo
+            EmbeddedFile photoFile = embeddedFileDAO.get("photo");
+            String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", System.getProperty("user.home"));
+            ContentElement photoOption = new ContentElement.Builder()
+                    .addComponent("scale")
+                    .addComponent(String.valueOf(photoFile.getScaleFactor()))
+                    .inlineDelimiter(Delimiter.EQUALS)
+                    .build();
+            Command includePhoto = new GenericCommand.Builder("includegraphics")
+                    .optionList(photoOption.getInline())
+                    .body(absoluteFilePathPhoto)
+                    .build();
+            ContentElement includegraphicsPhoto = new ContentElement.Builder(includePhoto.getInline()).build();
+            DocumentElement photo = new DocumentElement("photo", includegraphicsPhoto, elementDAO.get("cv_photo"));
 
 
             Element senderStyle = elementDAO.get("sender");
@@ -216,7 +234,6 @@ public class Main {
                     .build();
 
 
-            DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
                     .addElement(headline, addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
                     .addMatrix(senderField)
@@ -252,7 +269,6 @@ public class Main {
             Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
 
 
-            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
             ContentElement githubUrl = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("github_url").getValue())
                     .addComponent("\\scriptsize" + hyperlink.getInline())
@@ -292,6 +308,7 @@ public class Main {
                     .addElement(headline)
                     .addElement(cvTitleField)
                     .addMatrix(cvContact)
+                    .addElement(photo)
                     .build();
 
 

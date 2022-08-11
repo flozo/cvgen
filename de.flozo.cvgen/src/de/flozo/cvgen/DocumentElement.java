@@ -50,6 +50,7 @@ public class DocumentElement {
                 .alignment(element.getElementStyle().getTextStyle().getAlignment())
                 .textColor(element.getElementStyle().getTextStyle().getColor())
                 .textOpacity(element.getElementStyle().getTextStyle().getOpacity())
+                .lineWidth(element.getElementStyle().getLineStyle().getLineWidth())
                 .lineCap(element.getElementStyle().getLineStyle().getLineCap())
                 .lineJoin(element.getElementStyle().getLineStyle().getLineJoin())
                 .dashPatternStyle(element.getElementStyle().getLineStyle().getDashPattern())

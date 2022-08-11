@@ -117,6 +117,7 @@ public class Node extends Path {
         private Color drawColor;
         private Color fillColor;
         private PredefinedLineWidth predefinedLineWidth;
+        private LineWidth lineWidth;
         private LineCap lineCap;
         private LineJoin lineJoin;
         private DashPattern dashPattern;
@@ -230,6 +231,13 @@ public class Node extends Path {
             this.optionalArguments.add(predefinedLineWidth.getString());
             return this;
         }
+
+        public Builder lineWidth(LineWidth lineWidth) {
+            this.lineWidth = lineWidth;
+            addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
+            return this;
+        }
+
 
         public Builder lineCap(LineCap lineCap) {
             this.lineCap = lineCap;
