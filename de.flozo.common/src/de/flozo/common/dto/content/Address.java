@@ -4,10 +4,7 @@ public class Address {
 
     private int id;
     private String label;
-    private String academicTitle;
-    private String firstName;
-    private String secondName;
-    private String lastName;
+    private Person person;
     private String company;
     private String street;
     private String houseNumber;
@@ -18,17 +15,11 @@ public class Address {
     private String mobileNumber;
     private String eMailAddress;
     private String webPage;
-    private String maritalStatus;
-    private String children;
-    private String nationality;
 
-    public Address(int id, String label, String academicTitle, String firstName, String secondName, String lastName, String company, String street, String houseNumber, String postalCode, String city, String country, String phoneNumber, String mobileNumber, String eMailAddress, String webPage, String maritalStatus, String children, String nationality) {
+    public Address(int id, String label, Person person, String company, String street, String houseNumber, String postalCode, String city, String country, String phoneNumber, String mobileNumber, String eMailAddress, String webPage) {
         this.id = id;
         this.label = label;
-        this.academicTitle = academicTitle;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.lastName = lastName;
+        this.person = person;
         this.company = company;
         this.street = street;
         this.houseNumber = houseNumber;
@@ -39,9 +30,6 @@ public class Address {
         this.mobileNumber = mobileNumber;
         this.eMailAddress = eMailAddress;
         this.webPage = webPage;
-        this.maritalStatus = maritalStatus;
-        this.children = children;
-        this.nationality = nationality;
     }
 
     public int getId() {
@@ -60,36 +48,12 @@ public class Address {
         this.label = label;
     }
 
-    public String getAcademicTitle() {
-        return academicTitle;
+    public Person getPerson() {
+        return person;
     }
 
-    public void setAcademicTitle(String academicTitle) {
-        this.academicTitle = academicTitle;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setPerson(Person person) {
+        this.person = person;
     }
 
     public String getCompany() {
@@ -172,39 +136,12 @@ public class Address {
         this.webPage = webPage;
     }
 
-    public String getMaritalStatus() {
-        return maritalStatus;
-    }
-
-    public void setMaritalStatus(String maritalStatus) {
-        this.maritalStatus = maritalStatus;
-    }
-
-    public String getChildren() {
-        return children;
-    }
-
-    public void setChildren(String children) {
-        this.children = children;
-    }
-
-    public String getNationality() {
-        return nationality;
-    }
-
-    public void setNationality(String nationality) {
-        this.nationality = nationality;
-    }
-
     @Override
     public String toString() {
         return "Address{" +
                 "id=" + id +
                 ", label='" + label + '\'' +
-                ", academicTitle='" + academicTitle + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", secondName='" + secondName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", person=" + person +
                 ", company='" + company + '\'' +
                 ", street='" + street + '\'' +
                 ", houseNumber='" + houseNumber + '\'' +
@@ -215,9 +152,6 @@ public class Address {
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", eMailAddress='" + eMailAddress + '\'' +
                 ", webPage='" + webPage + '\'' +
-                ", maritalStatus='" + maritalStatus + '\'' +
-                ", children='" + children + '\'' +
-                ", nationality='" + nationality + '\'' +
                 '}';
     }
 }
