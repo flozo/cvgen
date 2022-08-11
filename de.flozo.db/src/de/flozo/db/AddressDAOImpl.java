@@ -1,6 +1,7 @@
 package de.flozo.db;
 
 import de.flozo.common.dto.content.Address;
+import de.flozo.common.dto.content.Person;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,10 +13,11 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String TABLE_NAME = "addresses";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_LABEL = "label";
-    public static final String COLUMN_ACADEMIC_TITLE = "academic_title";
-    public static final String COLUMN_FIRST_NAME = "first_name";
-    public static final String COLUMN_SECOND_NAME = "second_name";
-    public static final String COLUMN_LAST_NAME = "last_name";
+    public static final String COLUMN_PERSON_ID = "person_id";
+    //    public static final String COLUMN_ACADEMIC_TITLE = "academic_title";
+//    public static final String COLUMN_FIRST_NAME = "first_name";
+//    public static final String COLUMN_SECOND_NAME = "second_name";
+//    public static final String COLUMN_LAST_NAME = "last_name";
     public static final String COLUMN_COMPANY = "company";
     public static final String COLUMN_STREET = "street";
     public static final String COLUMN_HOUSE_NUMBER = "house_number";
@@ -26,9 +28,14 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String COLUMN_MOBILE_NUMBER = "mobile_number";
     public static final String COLUMN_E_MAIL_ADDRESS = "email_address";
     public static final String COLUMN_WEB_PAGE = "web_page";
-    public static final String COLUMN_MARITAL_STATUS = "marital_status";
-    public static final String COLUMN_CHILDREN = "children";
-    public static final String COLUMN_NATIONALITY = "nationality";
+//    public static final String COLUMN_MARITAL_STATUS = "marital_status";
+//    public static final String COLUMN_CHILDREN = "children";
+//    public static final String COLUMN_NATIONALITY = "nationality";
+
+    // view
+    public static final String VIEW_NAME = "address_view";
+    public static final String VIEW_COLUMN_ID = "_id";
+    public static final String VIEW_COLUMN_LABEL = "label";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -47,19 +54,16 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String DELETE_FROM = "DELETE FROM ";
 
     // query
-    public static final String QUERY_BY_ID = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
-    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + TABLE_NAME + WHERE + COLUMN_LABEL + EQUALS + QUESTION_MARK;
-    public static final String QUERY_ALL = SELECT + STAR + FROM + TABLE_NAME;
+    public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
+    public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_LABEL + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
-    public static final int NON_ID_COLUMNS = 18;
+    public static final int NON_ID_COLUMNS = 12;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
             COLUMN_LABEL + COMMA +
-            COLUMN_ACADEMIC_TITLE + COMMA +
-            COLUMN_FIRST_NAME + COMMA +
-            COLUMN_SECOND_NAME + COMMA +
-            COLUMN_LAST_NAME + COMMA +
+            COLUMN_PERSON_ID + COMMA +
             COLUMN_COMPANY + COMMA +
             COLUMN_STREET + COMMA +
             COLUMN_HOUSE_NUMBER + COMMA +
@@ -70,18 +74,12 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_MOBILE_NUMBER + COMMA +
             COLUMN_E_MAIL_ADDRESS + COMMA +
             COLUMN_WEB_PAGE + COMMA +
-            COLUMN_MARITAL_STATUS + COMMA +
-            COLUMN_CHILDREN + COMMA +
-            COLUMN_NATIONALITY +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
     public static final String UPDATE_ROW = UPDATE + TABLE_NAME + SET +
             COLUMN_LABEL + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_ACADEMIC_TITLE + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_FIRST_NAME + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_SECOND_NAME + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_LAST_NAME + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_PERSON_ID + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_COMPANY + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_STREET + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_HOUSE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
@@ -92,9 +90,6 @@ public class AddressDAOImpl implements AddressDAO {
             COLUMN_MOBILE_NUMBER + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_E_MAIL_ADDRESS + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_WEB_PAGE + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_MARITAL_STATUS + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_CHILDREN + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_NATIONALITY + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -268,33 +263,29 @@ public class AddressDAOImpl implements AddressDAO {
     }
 
     private Address extractFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Address(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4),
-                resultSet.getString(5), resultSet.getString(6), resultSet.getString(7), resultSet.getString(8),
-                resultSet.getString(9), resultSet.getString(10), resultSet.getString(11), resultSet.getString(12),
-                resultSet.getString(13), resultSet.getString(14), resultSet.getString(15), resultSet.getString(16),
-                resultSet.getString(17), resultSet.getString(18), resultSet.getString(19)
+        return new Address(resultSet.getInt(1), resultSet.getString(2),
+                new Person(resultSet.getInt(3),resultSet.getString(4), resultSet.getString(5), resultSet.getString(6),
+                        resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10),
+                        resultSet.getString(11), resultSet.getString(12), resultSet.getString(13)),
+                resultSet.getString(14), resultSet.getString(15), resultSet.getString(16), resultSet.getString(17),
+                resultSet.getString(18), resultSet.getString(19), resultSet.getString(20), resultSet.getString(21),
+                resultSet.getString(22), resultSet.getString(23)
         );
     }
 
     private void setAllValues(PreparedStatement preparedStatement, Address address) throws SQLException {
         preparedStatement.setString(1, address.getLabel());
-        preparedStatement.setString(2, address.getAcademicTitle());
-        preparedStatement.setString(3, address.getFirstName());
-        preparedStatement.setString(4, address.getSecondName());
-        preparedStatement.setString(5, address.getLastName());
-        preparedStatement.setString(6, address.getCompany());
-        preparedStatement.setString(7, address.getStreet());
-        preparedStatement.setString(8, address.getHouseNumber());
-        preparedStatement.setString(9, address.getPostalCode());
-        preparedStatement.setString(10, address.getCity());
-        preparedStatement.setString(11, address.getCountry());
-        preparedStatement.setString(12, address.getPhoneNumber());
-        preparedStatement.setString(13, address.getMobileNumber());
-        preparedStatement.setString(14, address.getEMailAddress());
-        preparedStatement.setString(15, address.getWebPage());
-        preparedStatement.setString(16, address.getMaritalStatus());
-        preparedStatement.setString(17, address.getChildren());
-        preparedStatement.setString(18, address.getNationality());
+        preparedStatement.setInt(2, address.getPerson().getId());
+        preparedStatement.setString(3, address.getCompany());
+        preparedStatement.setString(4, address.getStreet());
+        preparedStatement.setString(5, address.getHouseNumber());
+        preparedStatement.setString(6, address.getPostalCode());
+        preparedStatement.setString(7, address.getCity());
+        preparedStatement.setString(8, address.getCountry());
+        preparedStatement.setString(9, address.getPhoneNumber());
+        preparedStatement.setString(10, address.getMobileNumber());
+        preparedStatement.setString(11, address.getEMailAddress());
+        preparedStatement.setString(12, address.getWebPage());
     }
 
     @Override

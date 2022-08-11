@@ -26,8 +26,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.2";
-    public static final String VERSION_DATE = "2022-07-30";
+    public static final String VERSION_NUMBER = "0.3";
+    public static final String VERSION_DATE = "2022-08-11";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -62,8 +62,8 @@ public class Main {
                 receiverNameLineBuilder.addComponent(receiver.getCompany());
             } else {
                 receiverNameLineBuilder
-                        .addComponent(receiver.getFirstName())
-                        .addComponent(receiver.getLastName());
+                        .addComponent(receiver.getPerson().getFirstName())
+                        .addComponent(receiver.getPerson().getLastName());
             }
             ContentElement receiverNameLine = receiverNameLineBuilder.inlineDelimiter(Delimiter.SPACE).build();
             ContentElement receiverStreetLine = new ContentElement.Builder()
@@ -85,14 +85,14 @@ public class Main {
 
 
             ContentElement senderNameLine = new ContentElement.Builder()
-                    .addComponent(sender.getFirstName())
-                    .addComponent(sender.getLastName())
+                    .addComponent(sender.getPerson().getFirstName())
+                    .addComponent(sender.getPerson().getLastName())
                     .inlineDelimiter(Delimiter.SPACE)
                     .build();
             ContentElement senderNameLineWithTitle = new ContentElement.Builder()
-                    .addComponent(sender.getAcademicTitle() + ".")
-                    .addComponent(sender.getFirstName())
-                    .addComponent(sender.getLastName())
+                    .addComponent(sender.getPerson().getAcademicTitle() + ".")
+                    .addComponent(sender.getPerson().getFirstName())
+                    .addComponent(sender.getPerson().getLastName())
                     .inlineDelimiter(Delimiter.NON_BREAKING_SPACE)
                     .build();
 
@@ -210,16 +210,18 @@ public class Main {
             DocumentElement photo = new DocumentElement("photo", includegraphicsPhoto, elementDAO.get("cv_photo"));
 
 
-            Element senderStyle = elementDAO.get("sender");
-            Element senderStyleColumn1 = elementDAO.get("sender_column1");
-            Element senderStyleColumn2 = elementDAO.get("sender_column2");
-            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
 
+            // Icons
+            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
             IconCommand mapMarkerIcon = IconCommand.fromIcon(iconDAO.get("address"));
             IconCommand phoneIcon = IconCommand.fromIcon(iconDAO.get("phone"));
             IconCommand mailIcon = IconCommand.fromIcon(iconDAO.get("mail"));
             IconCommand githubIcon = IconCommand.fromIcon(iconDAO.get("github"));
             IconCommand hyperlink = IconCommand.fromIcon(iconDAO.get("hyperlink"));
+
+            Element senderStyle = elementDAO.get("sender");
+            Element senderStyleColumn1 = elementDAO.get("sender_column1");
+            Element senderStyleColumn2 = elementDAO.get("sender_column2");
 
             ColumnStyle column1 = new ColumnStyle(senderStyleColumn1);
             ColumnStyle column2 = new ColumnStyle(senderStyleColumn2);
@@ -301,9 +303,13 @@ public class Main {
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
 
-//            Element cvUrlsStyle = elementDAO.get("cv_urls");
-//            MatrixOfNodes cvUrls = new MatrixOfNodes.Builder("cv_urls", cvUrlsStyle)
-//                    .addRow(githubIcon.getInline(), githubUrl.getInline())
+
+//            ContentElement personalText = new ContentElement.Builder()
+//                    .addComponent("Geboren am " + seDa)
+//                    .build();
+//
+//            MatrixOfNodes cvPersonal = new MatrixOfNodes.Builder("cv_personal", cvContactStyle)
+//
 //                    .build();
 
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
