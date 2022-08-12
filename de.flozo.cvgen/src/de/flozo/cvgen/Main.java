@@ -16,9 +16,7 @@ import de.flozo.latex.tikz.MatrixOfNodes;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -253,23 +251,42 @@ public class Main {
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
             ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
             List<String> itemizeOptions = new ArrayList<>();
-            itemizeOptions.add(String.format("topsep={%s}", LengthExpression.fromLength(itemizeStyle.getTopSep())));
-            itemizeOptions.add(String.format("leftmargin={%s}", LengthExpression.fromLength(itemizeStyle.getLeftMargin())));
-            itemizeOptions.add(String.format("labelsep={%s}", LengthExpression.fromLength(itemizeStyle.getLabelSep())));
-            itemizeOptions.add(String.format("itemindent={%s}", LengthExpression.fromLength(itemizeStyle.getItemIndent())));
-            itemizeOptions.add(String.format("itemsep={%s}", LengthExpression.fromLength(itemizeStyle.getItemSep())));
-            itemizeOptions.add(String.format("label={%s}", itemizeStyle.getLabel()));
+            itemizeOptions.add(String.format("topsep=%s", LengthExpression.fromLength(itemizeStyle.getTopSep()).getFormatted()));
+            itemizeOptions.add(String.format("leftmargin=%s", LengthExpression.fromLength(itemizeStyle.getLeftMargin()).getFormatted()));
+            itemizeOptions.add(String.format("labelsep=%s", LengthExpression.fromLength(itemizeStyle.getLabelSep()).getFormatted()));
+            itemizeOptions.add(String.format("itemindent=%s", LengthExpression.fromLength(itemizeStyle.getItemIndent()).getFormatted()));
+            itemizeOptions.add(String.format("itemsep=%s", LengthExpression.fromLength(itemizeStyle.getItemSep()).getFormatted()));
+            itemizeOptions.add(String.format("label=%s", itemizeStyle.getLabel().getValue()));
 
+            List<String> items = new ArrayList<>();
+            items.add("test 1");
+            items.add("test 2");
+            items.add("test 3");
+            ItemizeEnvironment itemizeEnvironment = new ItemizeEnvironment(itemizeOptions, items);
+
+
+            for (String line : itemizeEnvironment.getEnvironment().getBlock()) {
+                System.out.println(line);
+            }
 
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
             List<TimelineItem> educationTimeline = timelineItemDAO.getAllOfType("education");
             List<TimelineItem> careerTimeline = timelineItemDAO.getAllOfType("career");
 
 
-            Map<String, List<TimelineTextItemLink>> timelineItemListMap = new HashMap<>();
-            for (TimelineItem timelineItem : educationTimeline) {
-                timelineItemListMap.put(timelineItem.getName(), timelineItemDAO.getTextItems(timelineItem.getId()));
+            List<TimelineTextItemLink> wissMAItemList = timelineItemDAO.getTextItems("wissMA");
+            List<TimelineTextItemLink> shkItemList = timelineItemDAO.getTextItems("SHK");
+
+            for (TimelineTextItemLink careerLink : wissMAItemList) {
+                System.out.println(careerLink);
             }
+
+
+//            Map<String, List<TimelineTextItemLink>> timelineItemListMap = new HashMap<>();
+//            for (TimelineItem timelineItem : educationTimeline) {
+//                System.out.println(timelineItem.getName() + ": " + timelineItemDAO.getTextItems(timelineItem.getId()));
+//                timelineItemListMap.put(timelineItem.getName(), timelineItemDAO.getTextItems(timelineItem.getId()));
+//            }
 
 
 
@@ -285,12 +302,12 @@ public class Main {
                     .inlineDelimiter(Delimiter.SPACE.getString())
                     .build();
 
+            // contact
             Element cvContactStyle = elementDAO.get("cv_contact");
             ContentElement cvContactTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_contact_title").getValue())
                     .build();
             DocumentElement cvContactTitleField = new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
-
             ColumnStyle cvContactColumn1 = new ColumnStyle(cvContactStyleColumn1);
             ColumnStyle cvContactColumn2 = new ColumnStyle(cvContactStyleColumn2);
             MatrixOfNodes cvContact = new MatrixOfNodes.Builder("cv_contact", cvContactStyle)
@@ -325,13 +342,31 @@ public class Main {
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
+
+            // personal title
             ContentElement cvPersonalTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_personal_title").getValue())
                     .build();
             DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
-//            MatrixOfNodes cvvPersonalTitle = new MatrixOfNodes.Builder("cv_personal_title", cvContactStyle)
-//                    .addRow(cvPersonalTitleField.getElementFieldInline())
-//                    .build();
+
+            // career title
+            ContentElement cvCareerTitle = new ContentElement.Builder()
+                    .addComponent(textItemDAO.get("cv_career_title").getValue())
+                    .build();
+            DocumentElement cvCareerTitleField = new DocumentElement("cv_career_title", cvCareerTitle, elementDAO.get("cv_career_title"));
+
+            // career
+            Element cvCareerStyle = elementDAO.get("cv_contact");
+//            ColumnStyle cvCareerColumn1 = new ColumnStyle(cvContactStyleColumn1);
+//            ColumnStyle cvCareerColumn2 = new ColumnStyle(cvContactStyleColumn2);
+            MatrixOfNodes cvCareer = new MatrixOfNodes.Builder("cv_career", cvCareerStyle)
+//                    .addRow(careerTimeline.get(""))
+                    .addRow(phoneIcon.getInline(), sender.getMobileNumber())
+                    .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
+                    .addRow(LengthExpression.inCentimeters(0.5), githubIcon.getInline(), githubUrl.getInline())
+                    .addColumnStyle(cvContactColumn1.getStyle())
+                    .addColumnStyle(cvContactColumn2.getStyle())
+                    .build();
 
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
 //                    .optionalArguments(itemizeOptions)
@@ -359,6 +394,8 @@ public class Main {
                     .addMatrix(cvContact)
                     .addElement(cvPersonalTitleField)
                     .addMatrix(cvPersonal)
+                    .addElement(cvCareerTitleField)
+                    .addMatrix(cvCareer)
                     .insertLatexComments(true)
                     .build();
 
