@@ -11,16 +11,17 @@ import java.util.Locale;
 public class LengthExpression {
 
     public static final LengthUnit DEFAULT_LENGTH_UNIT = new LengthUnit(1, "default", "");
+    public static final LengthUnit CENTIMETER_LENGTH_UNIT = new LengthUnit(4, "centimeter", "cm");
 
     private final double numericalValue;
     private final LengthUnit unit;
 
 
-    public LengthExpression(double numericalValue) {
+    private LengthExpression(double numericalValue) {
         this(numericalValue, DEFAULT_LENGTH_UNIT);
     }
 
-    public LengthExpression(double numericalValue, LengthUnit unit) {
+    private LengthExpression(double numericalValue, LengthUnit unit) {
         this.numericalValue = numericalValue;
         this.unit = unit;
     }
@@ -28,6 +29,11 @@ public class LengthExpression {
     public static LengthExpression inDefaultUnit(double numericalValue) {
         return new LengthExpression(numericalValue);
     }
+
+    public static LengthExpression inCentimeters(double numericalValue) {
+        return new LengthExpression(numericalValue, CENTIMETER_LENGTH_UNIT);
+    }
+
 
     public static LengthExpression fromLength(Length length) {
         return new LengthExpression(length.getValue(), length.getUnit());
