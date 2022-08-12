@@ -9,19 +9,22 @@ import java.util.List;
 
 public class ContentElement {
 
-    public static final String DEFAULT_DELIMITER = "";
+    public static final String DEFAULT_INLINE_DELIMITER = "";
+    public static final String DEFAULT_FINAL_DELIMITER = "";
     public static final boolean DEFAULT_MULTILINE_CONTENT = false;
     public static final boolean DEFAULT_DELIMITER_SPACE = false;
 
     private final List<String> components;
-    private final String delimiter;
+    private final String inlineDelimiter;
+    private final String finalDelimiter;
     private final boolean multilineContent;
     private final boolean insertSpaceAfterDelimiter;
     private final String hyperlink;
 
     private ContentElement(Builder builder) {
         this.components = builder.components;
-        this.delimiter = builder.delimiter;
+        this.inlineDelimiter = builder.inlineDelimiter;
+        this.finalDelimiter = builder.finalDelimiter;
         this.multilineContent = builder.multilineContent;
         this.insertSpaceAfterDelimiter = builder.insertSpaceAfterDelimiter;
         this.hyperlink = builder.hyperlink;
@@ -32,8 +35,11 @@ public class ContentElement {
     }
 
     private String inline() {
-        String additionalSpace = insertSpaceAfterDelimiter ? Delimiter.SPACE.getString() : Delimiter.NONE.getString();
-        return joinComponentsWithDelimiter(delimiter + additionalSpace);
+        if (insertSpaceAfterDelimiter) {
+            return joinComponentsWithDelimiter(inlineDelimiter + Delimiter.SPACE.getString());
+        } else {
+            return joinComponentsWithDelimiter(inlineDelimiter);
+        }
     }
 
     private String multiline() {
@@ -50,16 +56,18 @@ public class ContentElement {
     }
 
     public String getInline() {
-        String content = multilineContent ? multiline() : inline();
-        if (hyperlink != null && !hyperlink.isBlank()) return makeHyperlink(content);
-        return content;
+        StringBuilder content = new StringBuilder(multilineContent ? multiline() : inline());
+        content.append(finalDelimiter);
+        if (hyperlink != null && !hyperlink.isBlank()) return makeHyperlink(content.toString());
+        return content.toString();
     }
 
     @Override
     public String toString() {
         return "ContentElement{" +
                 "components=" + components +
-                ", delimiter='" + delimiter + '\'' +
+                ", inlineDelimiter='" + inlineDelimiter + '\'' +
+                ", finalDelimiter='" + finalDelimiter + '\'' +
                 ", multilineContent=" + multilineContent +
                 ", insertSpaceAfterDelimiter=" + insertSpaceAfterDelimiter +
                 ", hyperlink='" + hyperlink + '\'' +
@@ -72,7 +80,8 @@ public class ContentElement {
         private final List<String> components;
 
         // optional
-        private String delimiter = DEFAULT_DELIMITER;
+        private String inlineDelimiter = DEFAULT_INLINE_DELIMITER;
+        private String finalDelimiter = DEFAULT_FINAL_DELIMITER;
         private boolean multilineContent = DEFAULT_MULTILINE_CONTENT;
         private boolean insertSpaceAfterDelimiter = DEFAULT_DELIMITER_SPACE;
         private String hyperlink;
@@ -104,13 +113,22 @@ public class ContentElement {
             return addComponents(new ArrayList<>(List.of(components)));
         }
 
-        public Builder inlineDelimiter(String delimiter) {
-            this.delimiter = delimiter;
+        public Builder inlineDelimiter(String inlineDelimiter) {
+            this.inlineDelimiter = inlineDelimiter;
             return this;
         }
 
-        public Builder inlineDelimiter(Delimiter delimiter) {
-            return inlineDelimiter(delimiter.getString());
+        public Builder inlineDelimiter(Delimiter inlineDelimiter) {
+            return inlineDelimiter(inlineDelimiter.getString());
+        }
+
+        public Builder finalDelimiter(String finalDelimiter) {
+            this.finalDelimiter = finalDelimiter;
+            return this;
+        }
+
+        public Builder finalDelimiter(Delimiter finalDelimiter) {
+            return finalDelimiter(finalDelimiter.getString());
         }
 
         public Builder multilineContent(boolean multilineContent) {
