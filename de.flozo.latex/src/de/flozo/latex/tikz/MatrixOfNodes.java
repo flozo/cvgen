@@ -68,7 +68,10 @@ public class MatrixOfNodes {
         List<String> matrixLines = new ArrayList<>();
         for (int row = 0; row < getNumRows(); row++) {
             List<Node> rowNodes = matrix.get(row);
-            List<String> rowStrings = rowNodes.stream().map(Node::getInline).collect(Collectors.toList());
+            List<String> rowStrings = rowNodes
+                    .stream()
+                    .map(Node::getInline)
+                    .collect(Collectors.toList());
             matrixLines.add(String.join(" & ", rowStrings));
         }
         return matrixLines;
@@ -110,13 +113,19 @@ public class MatrixOfNodes {
             this.element = element;
         }
 
-        public Builder addRow(String... row) {
-            return addRow(new ArrayList<>(List.of(row)));
+        public Builder addRow(LengthExpression textHeight, String... row) {
+            return addRow(textHeight, new ArrayList<>(List.of(row)));
         }
 
-        public Builder addRow(List<String> row) {
+        public Builder addRow(String... row) {
+            return addRow(LengthExpression.inDefaultUnit(0.0), new ArrayList<>(List.of(row)));
+        }
+
+        public Builder addRow(LengthExpression textHeight, List<String> row) {
             return addRowOfNodes(row.stream()
-                    .map(e -> new Node.Builder(e).build())
+                    .map(e -> new Node.Builder(e)
+                            .textHeight(textHeight)
+                            .build())
                     .collect(Collectors.toList()));
         }
 

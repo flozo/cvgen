@@ -297,19 +297,40 @@ public class Main {
                     .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
                     .addRow(phoneIcon.getInline(), sender.getMobileNumber())
                     .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
-                    .addRow("", "")
-                    .addRow(githubIcon.getInline(), githubUrl.getInline())
+                    .addRow(LengthExpression.inCentimeters(0.5), githubIcon.getInline(), githubUrl.getInline())
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
 
 
-//            ContentElement personalText = new ContentElement.Builder()
-//                    .addComponent("Geboren am " + seDa)
-//                    .build();
-//
-//            MatrixOfNodes cvPersonal = new MatrixOfNodes.Builder("cv_personal", cvContactStyle)
-//
+            ContentElement personalText = new ContentElement.Builder()
+                    .addComponent("Geboren am")
+                    .addComponent(sender.getPerson().getDateOfBirth())
+                    .addComponent("in")
+                    .addComponent(sender.getPerson().getPlaceOfBirth())
+                    .inlineDelimiter(Delimiter.SPACE)
+                    .finalDelimiter(Delimiter.COMMA)
+                    .build();
+            ContentElement maritalStatus = new ContentElement.Builder()
+                    .addComponent(sender.getPerson().getNationality())
+                    .addComponent(sender.getPerson().getMaritalStatus())
+                    .addComponent(sender.getPerson().getChildren())
+                    .inlineDelimiter(Delimiter.COMMA)
+                    .insertSpaceAfterDelimiter(true)
+                    .build();
+            Element cvPersonalStyle = elementDAO.get("cv_personal");
+            MatrixOfNodes cvPersonal = new MatrixOfNodes.Builder("cv_personal", cvPersonalStyle)
+                    .addRow("", personalText.getInline())
+                    .addRow("", maritalStatus.getInline())
+                    .addColumnStyle(cvContactColumn1.getStyle())
+                    .addColumnStyle(cvContactColumn2.getStyle())
+                    .build();
+            ContentElement cvPersonalTitle = new ContentElement.Builder()
+                    .addComponent(textItemDAO.get("cv_personal_title").getValue())
+                    .build();
+            DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
+//            MatrixOfNodes cvvPersonalTitle = new MatrixOfNodes.Builder("cv_personal_title", cvContactStyle)
+//                    .addRow(cvPersonalTitleField.getElementFieldInline())
 //                    .build();
 
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
@@ -333,10 +354,12 @@ public class Main {
                     .addLine(lineDAO.get("headline_separation"))
                     .addElement(headline)
                     .addElement(cvTitleField)
+                    .addElement(photo)
                     .addElement(cvContactTitleField)
                     .addMatrix(cvContact)
-//                    .addMatrix(cvUrls)
-                    .addElement(photo)
+                    .addElement(cvPersonalTitleField)
+                    .addMatrix(cvPersonal)
+                    .insertLatexComments(true)
                     .build();
 
 
