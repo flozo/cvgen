@@ -83,6 +83,10 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String QUERY_TEXT_ITEMS_BY_ID = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_TEXT_ITEMS_BY_SPECIFIER = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_NAME + EQUALS + QUESTION_MARK;
 
+    // count
+    public static final String COUNT_ITEMS = SELECT + "COUNT(DISTINCT " + LINK_TABLE_COLUMN_ID + ") AS count" + FROM + LINK_TABLE_NAME + WHERE ;
+
+
     public static final int NON_ID_COLUMNS = 10;
 
     // insert
@@ -127,6 +131,19 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
 
     private void showSQLMessage(String queryString) {
         System.out.println("[database] Executing SQL statement \"" + queryString + "\" ...");
+    }
+
+    @Override
+    public int getCount() {
+        showSQLMessage(COUNT_ITEMS);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(COUNT_ITEMS)) {
+            return resultSet.getInt("count");
+        } catch (SQLException e) {
+            System.out.println("[database] [error] Counting items failed: " + e.getMessage());
+            return -1;
+        }
+
     }
 
     @Override

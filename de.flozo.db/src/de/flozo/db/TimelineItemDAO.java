@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface TimelineItemDAO extends DAO<TimelineItem> {
 
+    int getCount();
     @Override
     TimelineItem get(int id);
 
