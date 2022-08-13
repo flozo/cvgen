@@ -24,6 +24,7 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String COLUMN_COMPANY = "company";
     public static final String COLUMN_LOCATION = "location";
     public static final String COLUMN_TIMELINE_TYPE_ID = "timeline_type_id";
+    public static final String COLUMN_INCLUDE = "include";
 
     // view
     public static final String VIEW_NAME = "timeline_item_view";
@@ -56,6 +57,7 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
+    public static final String AND = " AND ";
 
     // query
 
@@ -63,7 +65,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
 
     // CREATE VIEW timeline_item_view AS
     // SELECT ti._id, ti.name, ti.period_start_month, ti.period_start_year, ti.period_end_month, ti.period_end_year, ti.task, ti.description, ti.company, ti.location,
-    //	 tt._id AS timeline_type_id, tt.name AS timeline_type_name, tt.description AS timeline_type_description
+    //   tt._id AS timeline_type_id, tt.name AS timeline_type_name, tt.description AS timeline_type_description,
+    //   ti.include
     // FROM timeline_items AS ti
     // INNER JOIN timeline_types AS tt ON ti.timeline_type_id = tt._id
 
@@ -78,16 +81,19 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
     public static final String QUERY_ALL_OF_TYPE_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL_OF_TYPE_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL_INCLUDED_OF_TYPE_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_ID + EQUALS + QUESTION_MARK + AND + COLUMN_INCLUDE + EQUALS + "1";
+    public static final String QUERY_ALL_INCLUDED_OF_TYPE_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_NAME + EQUALS + QUESTION_MARK + AND + COLUMN_INCLUDE + EQUALS + "1";
     public static final String QUERY_TEXT_ITEMS_BY_ID = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_TEXT_ITEMS_BY_SPECIFIER = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_NAME + EQUALS + QUESTION_MARK;
 
     // count
-    public static final String COUNT_ITEMS = SELECT + "COUNT(DISTINCT " + LINK_TABLE_COLUMN_ID + ") AS count" + FROM + LINK_TABLE_NAME + WHERE ;
+    public static final String COUNT_ITEMS = SELECT + "COUNT(DISTINCT " + LINK_TABLE_COLUMN_ID + ") AS count" + FROM + LINK_TABLE_NAME + WHERE;
 
 
-    public static final int NON_ID_COLUMNS = 10;
+    public static final int NON_ID_COLUMNS = 11;
 
     // insert
     public static final String INSERT = INSERT_INTO + TABLE_NAME + OPENING_PARENTHESIS +
@@ -100,7 +106,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
             COLUMN_DESCRIPTION + COMMA +
             COLUMN_COMPANY + COMMA +
             COLUMN_LOCATION + COMMA +
-            COLUMN_TIMELINE_TYPE_ID +
+            COLUMN_TIMELINE_TYPE_ID + COMMA +
+            COLUMN_INCLUDE +
             CLOSING_PARENTHESIS + VALUES + OPENING_PARENTHESIS + QUESTION_MARK + (COMMA + QUESTION_MARK).repeat(NON_ID_COLUMNS - 1) + CLOSING_PARENTHESIS;
 
     // update
@@ -114,7 +121,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
             COLUMN_DESCRIPTION + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_COMPANY + EQUALS + QUESTION_MARK + COMMA +
             COLUMN_LOCATION + EQUALS + QUESTION_MARK + COMMA +
-            COLUMN_TIMELINE_TYPE_ID + EQUALS + QUESTION_MARK +
+            COLUMN_TIMELINE_TYPE_ID + EQUALS + QUESTION_MARK + COMMA +
+            COLUMN_INCLUDE + EQUALS + QUESTION_MARK +
             WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final int UPDATE_WHERE_POSITION = NON_ID_COLUMNS + 1;
 
@@ -201,9 +209,27 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     }
 
     @Override
+    public List<TimelineItem> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
+            List<TimelineItem> timelineItems = new ArrayList<>();
+            while (resultSet.next()) {
+                timelineItems.add(extractFromResultSet(resultSet));
+            }
+            System.out.println(" done!");
+            return timelineItems;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public List<TimelineItem> getAllOfType(int id) {
         showSQLMessage(QUERY_ALL_OF_TYPE_BY_ID);
-        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_BY_ID)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ALL_OF_TYPE_BY_ID)) {
             preparedStatement.setInt(1, id);
             List<TimelineItem> timelineItems = new ArrayList<>();
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -224,6 +250,45 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public List<TimelineItem> getAllOfType(String specifier) {
         showSQLMessage(QUERY_ALL_OF_TYPE_BY_SPECIFIER);
         try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ALL_OF_TYPE_BY_SPECIFIER)) {
+            preparedStatement.setString(1, specifier);
+            List<TimelineItem> timelineItems = new ArrayList<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    timelineItems.add(extractFromResultSet(resultSet));
+                }
+            }
+            System.out.println(" done!");
+            return timelineItems;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<TimelineItem> getAllIncludedOfType(int id) {
+        showSQLMessage(QUERY_ALL_INCLUDED_OF_TYPE_BY_ID);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ALL_INCLUDED_OF_TYPE_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            List<TimelineItem> timelineItems = new ArrayList<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    timelineItems.add(extractFromResultSet(resultSet));
+                }
+            }
+            System.out.println(" done!");
+            return timelineItems;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<TimelineItem> getAllIncludedOfType(String specifier) {
+        showSQLMessage(QUERY_ALL_INCLUDED_OF_TYPE_BY_SPECIFIER);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ALL_INCLUDED_OF_TYPE_BY_SPECIFIER)) {
             preparedStatement.setString(1, specifier);
             List<TimelineItem> timelineItems = new ArrayList<>();
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -361,7 +426,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
                 // period end
                 resultSet.getInt(5), resultSet.getInt(6),
                 resultSet.getString(7), resultSet.getString(8), resultSet.getString(9), resultSet.getString(10),
-                new TimelineType(resultSet.getInt(11), resultSet.getString(12), resultSet.getString(13))
+                new TimelineType(resultSet.getInt(11), resultSet.getString(12), resultSet.getString(13)),
+                resultSet.getBoolean(14)
         );
     }
 
@@ -376,6 +442,7 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
         preparedStatement.setString(8, timelineItem.getCompany());
         preparedStatement.setString(9, timelineItem.getLocation());
         preparedStatement.setInt(10, timelineItem.getTimelineType().getId());
+        preparedStatement.setBoolean(11, timelineItem.isInclude());
     }
 
     @Override

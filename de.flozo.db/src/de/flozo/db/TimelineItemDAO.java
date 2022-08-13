@@ -17,9 +17,14 @@ public interface TimelineItemDAO extends DAO<TimelineItem> {
     @Override
     List<TimelineItem> getAll();
 
+    List<TimelineItem> getAllIncluded();
+
     List<TimelineItem> getAllOfType(int id);
 
     List<TimelineItem> getAllOfType(String specifier);
+    List<TimelineItem> getAllIncludedOfType(int id);
+
+    List<TimelineItem> getAllIncludedOfType(String specifier);
 
     List<TimelineTextItemLink> getTextItems(int id);
 

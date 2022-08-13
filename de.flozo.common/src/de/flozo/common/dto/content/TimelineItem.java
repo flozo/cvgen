@@ -13,8 +13,9 @@ public class TimelineItem {
     private String company;
     private String location;
     private TimelineType timelineType;
+    private boolean include;
 
-    public TimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String company, String location, TimelineType timelineType) {
+    public TimelineItem(int id, String name, int periodStartMonth, int periodStartYear, int periodEndMonth, int periodEndYear, String task, String description, String company, String location, TimelineType timelineType, boolean include) {
         this.id = id;
         this.name = name;
         this.periodStartMonth = periodStartMonth;
@@ -26,6 +27,7 @@ public class TimelineItem {
         this.company = company;
         this.location = location;
         this.timelineType = timelineType;
+        this.include = include;
     }
 
     public int getId() {
@@ -116,6 +118,14 @@ public class TimelineItem {
         this.timelineType = timelineType;
     }
 
+    public boolean isInclude() {
+        return include;
+    }
+
+    public void setInclude(boolean include) {
+        this.include = include;
+    }
+
     @Override
     public String toString() {
         return "TimelineItem{" +
@@ -130,6 +140,7 @@ public class TimelineItem {
                 ", company='" + company + '\'' +
                 ", location='" + location + '\'' +
                 ", timelineType=" + timelineType +
+                ", include=" + include +
                 '}';
     }
 }

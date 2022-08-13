@@ -8,7 +8,11 @@ public enum Delimiter {
     SEMICOLON(";"),
     COMMA(","),
     DOUBLE_BACKSLASH("\\\\"),
-    EQUALS("=");
+    EQUALS("="),
+    SLASH("/"),
+    HYPHEN("-"),
+    EN_DASH("--"),
+    EM_DASH("---");
 
 
     private final String delimiter;
