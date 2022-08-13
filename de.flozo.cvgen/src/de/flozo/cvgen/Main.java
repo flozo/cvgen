@@ -259,7 +259,6 @@ public class Main {
 
 
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
-            List<TimelineItem> educationTimeline = timelineItemDAO.getAllIncludedOfType("education");
 
 
             List<TimelineTextItemLink> wissMAItemList = timelineItemDAO.getTextItems("wissMA");
@@ -277,23 +276,33 @@ public class Main {
                     .collect(Collectors.toList());
             ItemizeEnvironment itemizeEnvironmentSHK = new ItemizeEnvironment(itemizeOptions, shkItems);
 
+
+            /// timeline column styles
+            List<Element> careerColumnStyles = new ArrayList<>();
+            careerColumnStyles.add(elementDAO.get("cv_date_column"));
+            careerColumnStyles.add(elementDAO.get("cv_timeline_column2"));
+            careerColumnStyles.add(elementDAO.get("cv_timeline_column3"));
+
             // career
-            List<Element> styles = new ArrayList<>();
-            styles.add(elementDAO.get("cv_date_column"));
-            styles.add(elementDAO.get("cv_timeline_column2"));
-            styles.add(elementDAO.get("cv_timeline_column3"));
             Timeline careerTimeline = new Timeline("career",
                     textItemDAO.get("cv_career_title"),
                     elementDAO.get("cv_career_title"),
                     timelineItemDAO.getAllIncludedOfType("career"),
                     elementDAO.get("cv_career"),
-                    styles
+                    careerColumnStyles
+            );
+
+            // education
+            Timeline educationTimeline = new Timeline("education",
+                    textItemDAO.get("cv_education_title"),
+                    elementDAO.get("cv_education_title"),
+                    timelineItemDAO.getAllIncludedOfType("education"),
+                    elementDAO.get("cv_education"),
+                    careerColumnStyles, 0, 2
             );
 
 
-            Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
-            Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
-
+            // contact
             ContentElement githubUrl = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("github_url").getValue())
                     .addComponent("\\scriptsize" + hyperlink.getInline())
@@ -301,7 +310,9 @@ public class Main {
                     .inlineDelimiter(Delimiter.SPACE.getString())
                     .build();
 
-            // contact
+            Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
+            Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
+
             Element cvContactStyle = elementDAO.get("cv_contact");
             ContentElement cvContactTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_contact_title").getValue())
@@ -349,7 +360,6 @@ public class Main {
             DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
 
 
-
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
 //                    .optionalArguments(itemizeOptions)
 //                    .body(timelineItemListMap.get("edu_1"))
@@ -378,6 +388,8 @@ public class Main {
                     .addMatrix(cvPersonal)
                     .addElement(careerTimeline.getTitleField())
                     .addMatrix(careerTimeline.getItemMatrix())
+                    .addElement(educationTimeline.getTitleField())
+                    .addMatrix(educationTimeline.getItemMatrix())
                     .insertLatexComments(true)
                     .build();
 

@@ -15,14 +15,22 @@ public class Timeline {
     private final List<TimelineItem> items;
     private final Element itemMatrixStyle;
     private final List<Element> columnStyles;
+    private final int startIndex;
+    private final int endIndex;
 
-    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles) {
+    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles, int startIndex, int endIndex) {
         this.timelineName = timelineName;
         this.timelineTitle = timelineTitle;
         this.timelineTitleStyle = timelineTitleStyle;
-        this.items = items;
+        this.items = items.subList(startIndex, endIndex + 1);
         this.itemMatrixStyle = itemMatrixStyle;
         this.columnStyles = columnStyles;
+        this.startIndex = startIndex;
+        this.endIndex = endIndex;
+    }
+
+    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles) {
+        this(timelineName, timelineTitle, timelineTitleStyle, items, itemMatrixStyle, columnStyles, 0, items.size() - 1);
     }
 
     private ContentElement getTitle() {
@@ -38,12 +46,10 @@ public class Timeline {
     public MatrixOfNodes getItemMatrix() {
         MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder("career", itemMatrixStyle);
         for (TimelineItem item : items) {
-            TimelinePeriod timelinePeriod = TimelinePeriod.withDefaultFormat(item);
-            matrixBuilder.addRow(timelinePeriod.getPeriodTag(), item.getCompany(), item.getTask());
+            matrixBuilder.addRow(TimelinePeriod.withDefaultFormat(item).getPeriodTag(), item.getCompany(), item.getTask());
         }
         for (Element style : columnStyles) {
-            ColumnStyle columnStyle = new ColumnStyle(style);
-            matrixBuilder.addColumnStyle(columnStyle.getStyle());
+            matrixBuilder.addColumnStyle(new ColumnStyle(style).getStyle());
         }
         return matrixBuilder.build();
     }
@@ -57,6 +63,8 @@ public class Timeline {
                 ", items=" + items +
                 ", itemMatrixStyle=" + itemMatrixStyle +
                 ", columnStyles=" + columnStyles +
+                ", startIndex=" + startIndex +
+                ", endIndex=" + endIndex +
                 '}';
     }
 }
