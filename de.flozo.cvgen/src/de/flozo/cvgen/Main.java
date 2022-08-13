@@ -260,7 +260,6 @@ public class Main {
 
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
             List<TimelineItem> educationTimeline = timelineItemDAO.getAllIncludedOfType("education");
-            List<TimelineItem> careerTimeline = timelineItemDAO.getAllIncludedOfType("career");
 
 
             List<TimelineTextItemLink> wissMAItemList = timelineItemDAO.getTextItems("wissMA");
@@ -278,24 +277,18 @@ public class Main {
                     .collect(Collectors.toList());
             ItemizeEnvironment itemizeEnvironmentSHK = new ItemizeEnvironment(itemizeOptions, shkItems);
 
-
-            MatrixOfNodes.Builder careerBuilder = new MatrixOfNodes.Builder("career", elementDAO.get("cv_career"));
-            for (TimelineItem timelineItem : careerTimeline) {
-                TimelinePeriod timelinePeriod = TimelinePeriod.withDefaultFormat(timelineItem);
-                System.out.println("11111111");
-                System.out.println(timelinePeriod.getPeriodTag());
-                System.out.println(timelineItem.getCompany());
-                System.out.println(timelineItem.getTask());
-                System.out.println("22222222");
-                careerBuilder.addRow(timelinePeriod.getPeriodTag(), timelineItem.getCompany(), timelineItem.getTask());
-            }
-            ColumnStyle dateColumnStyle = new ColumnStyle(elementDAO.get("cv_date_column"));
-            ColumnStyle timelineColumn2Style = new ColumnStyle(elementDAO.get("cv_timeline_column2"));
-            ColumnStyle timelineColumn3Style = new ColumnStyle(elementDAO.get("cv_timeline_column3"));
-            careerBuilder.addColumnStyle(dateColumnStyle.getStyle());
-            careerBuilder.addColumnStyle(timelineColumn2Style.getStyle());
-            careerBuilder.addColumnStyle(timelineColumn3Style.getStyle());
-            MatrixOfNodes career = careerBuilder.build();
+            // career
+            List<Element> styles = new ArrayList<>();
+            styles.add(elementDAO.get("cv_date_column"));
+            styles.add(elementDAO.get("cv_timeline_column2"));
+            styles.add(elementDAO.get("cv_timeline_column3"));
+            Timeline careerTimeline = new Timeline("career",
+                    textItemDAO.get("cv_career_title"),
+                    elementDAO.get("cv_career_title"),
+                    timelineItemDAO.getAllIncludedOfType("career"),
+                    elementDAO.get("cv_career"),
+                    styles
+            );
 
 
             Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
@@ -355,24 +348,7 @@ public class Main {
                     .build();
             DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
 
-            // career title
-            ContentElement cvCareerTitle = new ContentElement.Builder()
-                    .addComponent(textItemDAO.get("cv_career_title").getValue())
-                    .build();
-            DocumentElement cvCareerTitleField = new DocumentElement("cv_career_title", cvCareerTitle, elementDAO.get("cv_career_title"));
 
-            // career
-//            Element cvCareerStyle = elementDAO.get("cv_contact");
-//            ColumnStyle cvCareerColumn1 = new ColumnStyle(cvContactStyleColumn1);
-//            ColumnStyle cvCareerColumn2 = new ColumnStyle(cvContactStyleColumn2);
-//            MatrixOfNodes cvCareer = new MatrixOfNodes.Builder("cv_career", cvCareerStyle)
-////                    .addRow(careerTimeline.get(""))
-//                    .addRow(phoneIcon.getInline(), sender.getMobileNumber())
-//                    .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
-//                    .addRow(LengthExpression.inCentimeters(0.5), githubIcon.getInline(), githubUrl.getInline())
-//                    .addColumnStyle(cvContactColumn1.getStyle())
-//                    .addColumnStyle(cvContactColumn2.getStyle())
-//                    .build();
 
 //            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
 //                    .optionalArguments(itemizeOptions)
@@ -400,8 +376,8 @@ public class Main {
                     .addMatrix(cvContact)
                     .addElement(cvPersonalTitleField)
                     .addMatrix(cvPersonal)
-                    .addElement(cvCareerTitleField)
-                    .addMatrix(career)
+                    .addElement(careerTimeline.getTitleField())
+                    .addMatrix(careerTimeline.getItemMatrix())
                     .insertLatexComments(true)
                     .build();
 
