@@ -298,7 +298,7 @@ public class Main {
                     elementDAO.get("cv_education_title"),
                     timelineItemDAO.getAllIncludedOfType("education"),
                     elementDAO.get("cv_education"),
-                    careerColumnStyles, 0, 2
+                    careerColumnStyles
             );
 
 
@@ -389,7 +389,7 @@ public class Main {
                     .addElement(careerTimeline.getTitleField())
                     .addMatrix(careerTimeline.getItemMatrix())
                     .addElement(educationTimeline.getTitleField())
-                    .addMatrix(educationTimeline.getItemMatrix())
+                    .addMatrix(educationTimeline.getItemMatrix(0, 2))
                     .insertLatexComments(true)
                     .build();
 

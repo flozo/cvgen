@@ -15,22 +15,14 @@ public class Timeline {
     private final List<TimelineItem> items;
     private final Element itemMatrixStyle;
     private final List<Element> columnStyles;
-    private final int startIndex;
-    private final int endIndex;
 
-    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles, int startIndex, int endIndex) {
+    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles) {
         this.timelineName = timelineName;
         this.timelineTitle = timelineTitle;
         this.timelineTitleStyle = timelineTitleStyle;
-        this.items = items.subList(startIndex, endIndex + 1);
+        this.items = items;
         this.itemMatrixStyle = itemMatrixStyle;
         this.columnStyles = columnStyles;
-        this.startIndex = startIndex;
-        this.endIndex = endIndex;
-    }
-
-    public Timeline(String timelineName, TextItem timelineTitle, Element timelineTitleStyle, List<TimelineItem> items, Element itemMatrixStyle, List<Element> columnStyles) {
-        this(timelineName, timelineTitle, timelineTitleStyle, items, itemMatrixStyle, columnStyles, 0, items.size() - 1);
     }
 
     private ContentElement getTitle() {
@@ -43,15 +35,19 @@ public class Timeline {
         return new DocumentElement(timelineTitle.getName(), getTitle(), timelineTitleStyle);
     }
 
-    public MatrixOfNodes getItemMatrix() {
+    public MatrixOfNodes getItemMatrix(int startIndex, int endIndex) {
         MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder("career", itemMatrixStyle);
-        for (TimelineItem item : items) {
+        for (TimelineItem item : items.subList(startIndex, endIndex + 1)) {
             matrixBuilder.addRow(TimelinePeriod.withDefaultFormat(item).getPeriodTag(), item.getCompany(), item.getTask());
         }
         for (Element style : columnStyles) {
             matrixBuilder.addColumnStyle(new ColumnStyle(style).getStyle());
         }
         return matrixBuilder.build();
+    }
+
+    public MatrixOfNodes getItemMatrix() {
+        return getItemMatrix(0, items.size() - 1);
     }
 
     @Override
@@ -63,8 +59,6 @@ public class Timeline {
                 ", items=" + items +
                 ", itemMatrixStyle=" + itemMatrixStyle +
                 ", columnStyles=" + columnStyles +
-                ", startIndex=" + startIndex +
-                ", endIndex=" + endIndex +
                 '}';
     }
 }
