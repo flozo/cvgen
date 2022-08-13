@@ -8,6 +8,7 @@ public class TimelinePeriod {
     public static final Delimiter DEFAULT_MONTH_YEAR_DELIMITER = Delimiter.SLASH;
     public static final Delimiter DEFAULT_DATE_DELIMITER = Delimiter.EN_DASH;
     public static final boolean DEFAULT_LEADING_ZERO = true;
+    public static final String THIN_SPACE = "\\,";
 
     private final TimelineItem timelineItem;
     private final Delimiter monthYearDelimiter;
@@ -37,13 +38,15 @@ public class TimelinePeriod {
         return (leadingZero ? formattedNumber(month) : month) + monthYearDelimiter.getString() + year;
     }
 
-    public String assemblePeriodTag() {
+    public String getPeriodTag() {
         StringBuilder periodTag = new StringBuilder();
         if (timelineItem.getPeriodStartYear() != 0) {
             periodTag.append(assembleDate(timelineItem.getPeriodStartMonth(), timelineItem.getPeriodStartYear()));
         }
         if (timelineItem.getPeriodStartYear() != 0 && timelineItem.getPeriodEndYear() != 0) {
-            periodTag.append(dateDelimiter.getString());
+            periodTag.append(THIN_SPACE)
+                    .append(dateDelimiter.getString())
+                    .append(THIN_SPACE);
         }
         if (timelineItem.getPeriodEndYear() != 0) {
             periodTag.append(assembleDate(timelineItem.getPeriodEndMonth(), timelineItem.getPeriodEndYear()));
