@@ -38,6 +38,13 @@ public class Node extends Path {
         this.bodyDelimiter = builder.bodyDelimiter;
     }
 
+    public FormattedExpressionList getOptions() {
+        return new FormattedExpressionList.Builder(optionalArguments)
+                .delimiter(Delimiter.COMMA)
+                .brackets(Bracket.NONE)
+                .build();
+    }
+
     @Override
     public String getInline() {
         StringBuilder sb = new StringBuilder(assembleOpeningTag());
@@ -198,7 +205,9 @@ public class Node extends Path {
 
         public Builder fillColor(Color fillColor) {
             this.fillColor = fillColor;
-            addOption(NodeOption.FILL, fillColor.getSpecifier());
+            if (!Objects.equals(fillColor.getSpecifier(), "default")) {
+                addOption(NodeOption.FILL, fillColor.getSpecifier());
+            }
             return this;
         }
 
@@ -234,7 +243,9 @@ public class Node extends Path {
 
         public Builder lineWidth(LineWidth lineWidth) {
             this.lineWidth = lineWidth;
-            addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
+            if (lineWidth.getValue() != 0) {
+                addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
+            }
             return this;
         }
 

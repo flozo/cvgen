@@ -3,6 +3,7 @@ package de.flozo.latex.tikz;
 
 import de.flozo.common.dto.appearance.*;
 import de.flozo.latex.core.Delimiter;
+import de.flozo.latex.core.ExpressionList;
 import de.flozo.latex.core.LengthExpression;
 
 import java.util.ArrayList;
@@ -138,9 +139,9 @@ public class MatrixOfNodes {
             return this;
         }
 
-        public Builder addColumnStyle(NodeStyle nodeStyle) {
+        public Builder addColumnStyle(ExpressionList styleOptions) {
             int columnStyleNumber = columnStyles.size() + 1;
-            this.columnStyles.add("column " + columnStyleNumber + "/.style={nodes={" + nodeStyle.getOptionList().getInline() + "}}");
+            this.columnStyles.add("column " + columnStyleNumber + "/.style={nodes={" + styleOptions.getInline() + "}}");
             return this;
         }
 
