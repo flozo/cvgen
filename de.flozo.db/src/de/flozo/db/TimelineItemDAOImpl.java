@@ -88,6 +88,7 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String QUERY_ALL_INCLUDED_OF_TYPE_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_TIMELINE_TYPE_NAME + EQUALS + QUESTION_MARK + AND + COLUMN_INCLUDE + EQUALS + "1";
     public static final String QUERY_TEXT_ITEMS_BY_ID = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_TEXT_ITEMS_BY_SPECIFIER = SELECT + STAR + FROM + LINK_TABLE_NAME + WHERE + LINK_TABLE_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL_TEXT_ITEMS = SELECT + STAR + FROM + LINK_TABLE_NAME;
 
     // count
     public static final String COUNT_ITEMS = SELECT + "COUNT(DISTINCT " + LINK_TABLE_COLUMN_ID + ") AS count" + FROM + LINK_TABLE_NAME + WHERE;
@@ -334,6 +335,24 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
                 while (resultSet.next()) {
                     timelineTextItemLinks.add(extractFromLinkResultSet(resultSet));
                 }
+            }
+            System.out.println(" done!");
+            return timelineTextItemLinks;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<TimelineTextItemLink> getAllTextItems() {
+        showSQLMessage(QUERY_ALL_TEXT_ITEMS);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_TEXT_ITEMS)) {
+            List<TimelineTextItemLink> timelineTextItemLinks = new ArrayList<>();
+            while (resultSet.next()) {
+                timelineTextItemLinks.add(extractFromLinkResultSet(resultSet));
             }
             System.out.println(" done!");
             return timelineTextItemLinks;

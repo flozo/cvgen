@@ -8,6 +8,7 @@ import java.util.List;
 public interface TimelineItemDAO extends DAO<TimelineItem> {
 
     int getCount();
+
     @Override
     TimelineItem get(int id);
 
@@ -22,6 +23,7 @@ public interface TimelineItemDAO extends DAO<TimelineItem> {
     List<TimelineItem> getAllOfType(int id);
 
     List<TimelineItem> getAllOfType(String specifier);
+
     List<TimelineItem> getAllIncludedOfType(int id);
 
     List<TimelineItem> getAllIncludedOfType(String specifier);
@@ -29,6 +31,8 @@ public interface TimelineItemDAO extends DAO<TimelineItem> {
     List<TimelineTextItemLink> getTextItems(int id);
 
     List<TimelineTextItemLink> getTextItems(String specifier);
+
+    List<TimelineTextItemLink> getAllTextItems();
 
     @Override
     void add(TimelineItem timelineItem);
