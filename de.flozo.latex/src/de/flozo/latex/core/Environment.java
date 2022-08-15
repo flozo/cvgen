@@ -41,22 +41,32 @@ public class Environment {
         this.bodyBrackets = builder.bodyBrackets;
     }
 
+    private Command getCommand(List<String> body) {
+        return new GenericCommand.Builder(buildOpeningTag())
+                .optionList(optionalArguments)
+                .body(body)
+                .bodyBrackets(bodyBrackets)
+                .optionBrackets(optionBrackets)
+                .indentBody(indentBody)
+                .build();
+    }
 
     public List<String> getBlock() {
         List<String> itemized = new ArrayList<>(body);
         if (name == EnvironmentName.ITEMIZE) {
             itemized = body.stream().map(e -> "\\item " + e).collect(Collectors.toList());
         }
-        GenericCommand command = new GenericCommand.Builder(buildOpeningTag())
-                .optionList(optionalArguments)
-                .body(itemized)
-                .bodyBrackets(bodyBrackets)
-                .optionBrackets(optionBrackets)
-                .indentBody(indentBody)
-                .build();
-        List<String> codeLines = new ArrayList<>(command.getBlock());
+        List<String> codeLines = new ArrayList<>(getCommand(itemized).getBlock());
         codeLines.add(COMMAND_MARKER_CHAR + buildTag(CLOSING_KEYWORD));
         return codeLines;
+    }
+
+    public String getInline() {
+        List<String> itemized = new ArrayList<>(body);
+        if (name == EnvironmentName.ITEMIZE) {
+            itemized = body.stream().map(e -> "\\item " + e).collect(Collectors.toList());
+        }
+        return getCommand(itemized).getInline() + COMMAND_MARKER_CHAR + buildTag(CLOSING_KEYWORD);
     }
 
     private String buildTag(String tagKeyword) {
