@@ -4,11 +4,13 @@ public class TimelineTextItemLink {
 
     private int id;
     private String name;
+    private TimelineType timelineType;
     private TextItem textItem;
 
-    public TimelineTextItemLink(int id, String name, TextItem textItem) {
+    public TimelineTextItemLink(int id, String name, TimelineType timelineType, TextItem textItem) {
         this.id = id;
         this.name = name;
+        this.timelineType = timelineType;
         this.textItem = textItem;
     }
 
@@ -28,6 +30,14 @@ public class TimelineTextItemLink {
         this.name = name;
     }
 
+    public TimelineType getTimelineType() {
+        return timelineType;
+    }
+
+    public void setTimelineType(TimelineType timelineType) {
+        this.timelineType = timelineType;
+    }
+
     public TextItem getTextItem() {
         return textItem;
     }
@@ -41,6 +51,7 @@ public class TimelineTextItemLink {
         return "TimelineTextItemLink{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", timelineType=" + timelineType +
                 ", textItem=" + textItem +
                 '}';
     }

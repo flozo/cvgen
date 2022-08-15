@@ -37,6 +37,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     public static final String LINK_TABLE_NAME = "timeline_text_item_link_view";
     public static final String LINK_TABLE_COLUMN_ID = "_id";
     public static final String LINK_TABLE_COLUMN_NAME = "name";
+    public static final String LINK_TABLE_COLUMN_TIMELINE_TYPE_ID = "timeline_type_id";
+    public static final String LINK_TABLE_COLUMN_TIMELINE_TYPE_NAME = "timeline_type_name";
     public static final String LINK_TABLE_COLUMN_TEXT_ITEM_ID = "text_item_id";
     public static final String LINK_TABLE_COLUMN_TEXT_ITEM_NAME = "text_item_name";
     public static final String LINK_TABLE_COLUMN_TEXT_ITEM_VALUE = "text_item_value";
@@ -73,11 +75,12 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
     // timeline_text_item_link_view created via:
 
     // CREATE VIEW timeline_text_item_link_view AS
-    // SELECT tiv._id, tiv.name,
-    //	 ti._id AS text_item_id, ti.name AS text_item_name, ti.value AS text_item_value
+    // SELECT tiv._id, tiv.name, tiv.timeline_type_id, tiv.timeline_type_name, tiv.timeline_type_description,
+    //   ti._id AS text_item_id, ti.name AS text_item_name, ti.value AS text_item_value
     // FROM timeline_item_view AS tiv
     // INNER JOIN timeline_text_item_link AS ttil ON ttil.timeline_item_id = tiv._id
     // INNER JOIN text_items AS ti ON ttil.text_item_id = ti._id
+
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
@@ -434,7 +437,8 @@ public class TimelineItemDAOImpl implements TimelineItemDAO {
 
     private TimelineTextItemLink extractFromLinkResultSet(ResultSet resultSet) throws SQLException {
         return new TimelineTextItemLink(resultSet.getInt(1), resultSet.getString(2),
-                new TextItem(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)));
+                new TimelineType(resultSet.getInt(3), resultSet.getString(4), resultSet.getString(5)),
+                new TextItem(resultSet.getInt(6), resultSet.getString(7), resultSet.getString(8)));
     }
 
 
