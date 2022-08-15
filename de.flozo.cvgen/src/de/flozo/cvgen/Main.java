@@ -246,36 +246,10 @@ public class Main {
                     .insertLatexComments(true)
                     .build();
 
-
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
             ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
-            List<String> itemizeOptions = new ArrayList<>();
-            itemizeOptions.add(String.format("topsep=%s", LengthExpression.fromLength(itemizeStyle.getTopSep()).getFormatted()));
-            itemizeOptions.add(String.format("leftmargin=%s", LengthExpression.fromLength(itemizeStyle.getLeftMargin()).getFormatted()));
-            itemizeOptions.add(String.format("labelsep=%s", LengthExpression.fromLength(itemizeStyle.getLabelSep()).getFormatted()));
-            itemizeOptions.add(String.format("itemindent=%s", LengthExpression.fromLength(itemizeStyle.getItemIndent()).getFormatted()));
-            itemizeOptions.add(String.format("itemsep=%s", LengthExpression.fromLength(itemizeStyle.getItemSep()).getFormatted()));
-            itemizeOptions.add(String.format("label=%s", itemizeStyle.getLabel().getValue()));
-
-
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
-
-
-            List<TimelineTextItemLink> wissMAItemList = timelineItemDAO.getTextItems("wissMA");
-            List<TimelineTextItemLink> shkItemList = timelineItemDAO.getTextItems("SHK");
-
-            List<String> wissMAItems = wissMAItemList.stream()
-                    .map(TimelineTextItemLink::getTextItem)
-                    .map(TextItem::getValue)
-                    .collect(Collectors.toList());
-            ItemizeEnvironment itemizeEnvironmentWissMA = new ItemizeEnvironment(itemizeOptions, wissMAItems);
-
-            List<String> shkItems = shkItemList.stream()
-                    .map(TimelineTextItemLink::getTextItem)
-                    .map(TextItem::getValue)
-                    .collect(Collectors.toList());
-            ItemizeEnvironment itemizeEnvironmentSHK = new ItemizeEnvironment(itemizeOptions, shkItems);
-
+            List<TimelineTextItemLink> textItemList = timelineItemDAO.getAllTextItems();
 
             /// timeline column styles
             List<Element> careerColumnStyles = new ArrayList<>();
@@ -288,6 +262,8 @@ public class Main {
                     textItemDAO.get("cv_career_title"),
                     elementDAO.get("cv_career_title"),
                     timelineItemDAO.getAllIncludedOfType("career"),
+                    textItemList,
+                    itemizeStyle,
                     elementDAO.get("cv_career"),
                     careerColumnStyles
             );
@@ -297,6 +273,8 @@ public class Main {
                     textItemDAO.get("cv_education_title"),
                     elementDAO.get("cv_education_title"),
                     timelineItemDAO.getAllIncludedOfType("education"),
+                    textItemList,
+                    itemizeStyle,
                     elementDAO.get("cv_education"),
                     careerColumnStyles
             );
@@ -359,23 +337,12 @@ public class Main {
                     .build();
             DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
 
-
-//            Environment itemize = new Environment.Builder(EnvironmentName.ITEMIZE)
-//                    .optionalArguments(itemizeOptions)
-//                    .body(timelineItemListMap.get("edu_1"))
-//                    .build();
-
             Page cvPage1 = pageDAO.get("cv_page_1");
             ContentElement cvTitle = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("cv_title").getValue())
                     .build();
 
             DocumentElement cvTitleField = new DocumentElement("cv_title", cvTitle, elementDAO.get("cv_title"));
-
-//
-//
-//            DocumentElement cvContactTitleField = new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
-
 
             DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
                     .addLine(lineDAO.get("headline_separation"))
@@ -389,10 +356,9 @@ public class Main {
                     .addElement(careerTimeline.getTitleField())
                     .addMatrix(careerTimeline.getItemMatrix())
                     .addElement(educationTimeline.getTitleField())
-                    .addMatrix(educationTimeline.getItemMatrix(0, 2))
+                    .addMatrix(educationTimeline.getItemMatrix(0, 1))
                     .insertLatexComments(true)
                     .build();
-
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
@@ -418,14 +384,12 @@ public class Main {
             hyperOptions.add(String.format("pdfcontactcountry={%s}", sender.getCountry()));
             hyperOptions.add(String.format("pdfcontactemail={%s}", sender.getEMailAddress()));
 
-
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
 
             LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
             List<String> layers = layerDAO.getAll().stream().map(Layer::getName).collect(Collectors.toList());
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
-
 
             ExpressionList documentBody = new FormattedExpressionList.Builder()
                     .append(layerDeclarationBlock)
@@ -437,9 +401,7 @@ public class Main {
                     .body(documentBody.getBlock())
                     .build();
 
-
             LatexCode laTeXCode = new LatexCode(VERSION_INFO_LATEX_HEADER, preamble, document);
-
 
             String fileName = "test_output.tex";
             String directory = "/tmp";
@@ -451,10 +413,8 @@ public class Main {
                 System.out.println("[output] Something went wrong!");
             }
 
-
         } finally {
             datasource2.closeConnection();
         }
-
     }
 }
