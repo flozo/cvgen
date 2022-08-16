@@ -114,20 +114,39 @@ public class MatrixOfNodes {
             this.element = element;
         }
 
-        public Builder addRow(LengthExpression textHeight, String... row) {
-            return addRow(textHeight, new ArrayList<>(List.of(row)));
+        public Builder addRow(Element element, String... row) {
+            return addRow(element, new ArrayList<>(List.of(row)));
         }
 
         public Builder addRow(String... row) {
-            return addRow(LengthExpression.inDefaultUnit(0.0), new ArrayList<>(List.of(row)));
+            return addRow(null, new ArrayList<>(List.of(row)));
         }
 
-        public Builder addRow(LengthExpression textHeight, List<String> row) {
-            return addRowOfNodes(row.stream()
-                    .map(e -> new Node.Builder(e)
-                            .textHeight(textHeight)
-                            .build())
-                    .collect(Collectors.toList()));
+        public Builder addRow(Element element, List<String> row) {
+            if (element != null) {
+                return addRowOfNodes(row.stream()
+                        .map(e -> new Node.Builder(e)
+                                .innerXSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()))
+                                .innerYSep(LengthExpression.fromLength(element.getSeparationSpace().getInnerYSep()))
+                                .fontSize(element.getElementStyle().getTextStyle().getFontSize())
+                                .textColor(element.getElementStyle().getTextStyle().getColor())
+                                .textWidth(LengthExpression.fromLength(element.getElementStyle().getTextStyle().getTextWidth()))
+                                .textHeight(LengthExpression.fromLength(element.getElementStyle().getTextStyle().getTextHeight()))
+                                .textDepth(LengthExpression.fromLength(element.getElementStyle().getTextStyle().getTextDepth()))
+                                .textOpacity(element.getElementStyle().getTextStyle().getOpacity())
+                                .lineCap(element.getElementStyle().getLineStyle().getLineCap())
+                                .lineJoin(element.getElementStyle().getLineStyle().getLineJoin())
+                                .drawColor(element.getElementStyle().getLineStyle().getColor())
+                                .lineOpacity(element.getElementStyle().getLineStyle().getOpacity())
+                                .dashPatternStyle(element.getElementStyle().getLineStyle().getDashPattern())
+                                .fillColor(element.getElementStyle().getAreaStyle().getColor())
+                                .build())
+                        .collect(Collectors.toList()));
+            } else {
+                return addRowOfNodes(row.stream()
+                        .map(e -> new Node.Builder(e).build())
+                        .collect(Collectors.toList()));
+            }
         }
 
         public Builder addRowOfNodes(Node... row) {

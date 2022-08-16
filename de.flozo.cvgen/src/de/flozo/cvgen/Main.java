@@ -246,6 +246,8 @@ public class Main {
                     .insertLatexComments(true)
                     .build();
 
+            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
+
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
             ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
@@ -283,7 +285,7 @@ public class Main {
             // contact
             ContentElement githubUrl = new ContentElement.Builder()
                     .addComponent(textItemDAO.get("github_url").getValue())
-                    .addComponent("\\scriptsize" + hyperlink.getInline())
+                    .addComponent("\\tiny\\raisebox{0.65ex}{" + hyperlink.getInline() + "}")
                     .makeHyperlink(textItemDAO.get("github_url").getValue())
                     .inlineDelimiter(Delimiter.SPACE.getString())
                     .build();
@@ -302,7 +304,7 @@ public class Main {
                     .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
                     .addRow(phoneIcon.getInline(), sender.getMobileNumber())
                     .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
-                    .addRow(LengthExpression.inCentimeters(0.5), githubIcon.getInline(), githubUrl.getInline())
+                    .addRow(elementDAO.get("cv_contact_url_line"), githubIcon.getInline(), githubUrl.getInline())
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
                     .build();
@@ -354,11 +356,12 @@ public class Main {
                     .addElement(cvPersonalTitleField)
                     .addMatrix(cvPersonal)
                     .addElement(careerTimeline.getTitleField())
-                    .addMatrix(careerTimeline.getItemMatrix())
+                    .addMatrix(careerTimeline.getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                     .addElement(educationTimeline.getTitleField())
                     .addMatrix(educationTimeline.getItemMatrix(0, 1))
                     .insertLatexComments(true)
                     .build();
+
 
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);

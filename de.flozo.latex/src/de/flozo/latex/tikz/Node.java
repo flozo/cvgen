@@ -288,7 +288,7 @@ public class Node extends Path {
 
         public Builder textWidth(LengthExpression textWidth) {
             this.textWidth = textWidth;
-            if (textWidth.getNumericalValue() != 0) {
+            if (!Objects.equals(textWidth.getUnit().getName(), "default")) {
                 addOption(NodeOption.TEXT_WIDTH, textWidth.getFormatted());
             }
             return this;
@@ -296,7 +296,7 @@ public class Node extends Path {
 
         public Builder textHeight(LengthExpression textHeight) {
             this.textHeight = textHeight;
-            if (textHeight.getNumericalValue() != 0) {
+            if (!Objects.equals(textHeight.getUnit().getName(), "default")) {
                 addOption(NodeOption.TEXT_HEIGHT, textHeight.getFormatted());
             }
             return this;
@@ -304,7 +304,7 @@ public class Node extends Path {
 
         public Builder textDepth(LengthExpression textDepth) {
             this.textDepth = textDepth;
-            if (textDepth.getNumericalValue() != 0) {
+            if (!Objects.equals(textDepth.getUnit().getName(), "default")) {
                 addOption(NodeOption.TEXT_DEPTH, textDepth.getFormatted());
             }
             return this;
@@ -335,7 +335,7 @@ public class Node extends Path {
 
         public Builder innerXSep(LengthExpression innerXSep) {
             this.innerXSep = innerXSep;
-            if (innerXSep.getNumericalValue() != 0) {
+            if (!Objects.equals(innerXSep.getUnit().getName(), "default")) {
                 addOption(NodeOption.INNER_X_SEP, innerXSep.getFormatted());
             }
             return this;
@@ -343,7 +343,7 @@ public class Node extends Path {
 
         public Builder innerYSep(LengthExpression innerYSep) {
             this.innerYSep = innerYSep;
-            if (innerYSep.getNumericalValue() != 0) {
+            if (!Objects.equals(innerYSep.getUnit().getName(), "default")) {
                 addOption(NodeOption.INNER_Y_SEP, innerYSep.getFormatted());
             }
             return this;
@@ -351,7 +351,7 @@ public class Node extends Path {
 
         public Builder outerXSep(LengthExpression outerXSep) {
             this.outerXSep = outerXSep;
-            if (outerXSep.getNumericalValue() != 0) {
+            if (!Objects.equals(outerXSep.getUnit().getName(), "default")) {
                 addOption(NodeOption.OUTER_X_SEP, outerXSep.getFormatted());
             }
             return this;
@@ -359,7 +359,7 @@ public class Node extends Path {
 
         public Builder outerYSep(LengthExpression outerYSep) {
             this.outerYSep = outerYSep;
-            if (outerYSep.getNumericalValue() != 0) {
+            if (!Objects.equals(outerYSep.getUnit().getName(), "default")) {
                 addOption(NodeOption.OUTER_Y_SEP, outerYSep.getFormatted());
             }
             return this;

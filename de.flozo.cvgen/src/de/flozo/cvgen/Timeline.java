@@ -68,17 +68,35 @@ public class Timeline {
         return new DocumentElement(timelineTitle.getName(), getTitle(), timelineTitleStyle);
     }
 
-    public MatrixOfNodes getItemMatrix(int startIndex, int endIndex) {
+    public MatrixOfNodes getItemMatrix(int startIndex, int endIndex, Element headline, Element elementItems) {
         MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder("career", itemMatrixStyle);
         for (TimelineItem item : items.subList(startIndex, endIndex + 1)) {
-            matrixBuilder.addRow(TimelinePeriod.withDefaultFormat(item).getPeriodTag(), item.getCompany(), item.getTask());
+            matrixBuilder.addRow(headline, TimelinePeriod.withDefaultFormat(item).getPeriodTag(), item.getCompany(), item.getTask());
             // Add textItems if present for current TimelineItem.
             if (textItems.stream()
                     .map(TimelineTextItemLink::getTimelineType)
                     .map(TimelineType::getId)
                     .collect(Collectors.toList())
                     .contains(item.getTimelineType().getId())) {
-                matrixBuilder.addRow("", "\\footnotesize" + textItems(item.getId()).getEnvironment().getInline(), "");
+                // Use elementStyle if present.
+                matrixBuilder.addRow(elementItems, "", textItems(item.getId()).getEnvironment().getInline(), "");
+//                    matrixBuilder.addRowOfNodes(
+//                            new Node.Builder("").build(),
+//                            new Node.Builder(textItems(item.getId()).getEnvironment().getInline())
+//                                    .fontSize(elementStyle.getTextStyle().getFontSize())
+//                                    .textColor(elementStyle.getTextStyle().getColor())
+//                                    .textWidth(LengthExpression.fromLength(elementStyle.getTextStyle().getTextWidth()))
+//                                    .textHeight(LengthExpression.fromLength(elementStyle.getTextStyle().getTextHeight()))
+//                                    .textDepth(LengthExpression.fromLength(elementStyle.getTextStyle().getTextDepth()))
+//                                    .textOpacity(elementStyle.getTextStyle().getOpacity())
+//                                    .lineCap(elementStyle.getLineStyle().getLineCap())
+//                                    .lineJoin(elementStyle.getLineStyle().getLineJoin())
+//                                    .drawColor(elementStyle.getLineStyle().getColor())
+//                                    .lineOpacity(elementStyle.getLineStyle().getOpacity())
+//                                    .dashPatternStyle(elementStyle.getLineStyle().getDashPattern())
+//                                    .fillColor(elementStyle.getAreaStyle().getColor())
+//                                    .build(),
+//                            new Node.Builder("").build());
             }
         }
         for (Element style : columnStyles) {
@@ -87,8 +105,16 @@ public class Timeline {
         return matrixBuilder.build();
     }
 
+    public MatrixOfNodes getItemMatrix(Element headline, Element elementItems) {
+        return getItemMatrix(0, items.size() - 1, headline, elementItems);
+    }
+
+    public MatrixOfNodes getItemMatrix(int startIndex, int endIndex) {
+        return getItemMatrix(startIndex, endIndex, null, null);
+    }
+
     public MatrixOfNodes getItemMatrix() {
-        return getItemMatrix(0, items.size() - 1);
+        return getItemMatrix(0, items.size() - 1, null, null);
     }
 
     @Override

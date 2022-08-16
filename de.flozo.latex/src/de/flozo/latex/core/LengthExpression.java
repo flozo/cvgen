@@ -48,6 +48,10 @@ public class LengthExpression {
         return numericalValue;
     }
 
+    public LengthUnit getUnit() {
+        return unit;
+    }
+
     public String getFormatted() {
         // Avoid trailing zeros; ensure point is used as decimal separator
         DecimalFormat df = new DecimalFormat("#.##", new DecimalFormatSymbols(Locale.US));
