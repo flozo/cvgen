@@ -1,10 +1,7 @@
 package de.flozo.cvgen;
 
-import de.flozo.common.dto.appearance.Length;
+import de.flozo.common.dto.appearance.*;
 import de.flozo.common.dto.appearance.LengthUnit;
-import de.flozo.common.dto.appearance.Line;
-import de.flozo.common.dto.appearance.Page;
-import de.flozo.common.dto.appearance.Position;
 import de.flozo.latex.core.*;
 import de.flozo.latex.tikz.LinePath;
 import de.flozo.latex.tikz.MatrixOfNodes;
@@ -25,6 +22,7 @@ public class DocumentPage {
     private final List<DocumentElement> documentElements;
     private final List<MatrixOfNodes> matrices;
     private final List<Line> lines;
+    private final List<Rectangle> rectangles;
     private final ExpressionList pageOptions;
     private final boolean insertLatexComments;
 
@@ -34,6 +32,7 @@ public class DocumentPage {
         this.matrices = builder.matrices;
         this.pageProperties = builder.pageProperties;
         this.lines = builder.lines;
+        this.rectangles = builder.rectangles;
         this.pageOptions = new FormattedExpressionList.Builder(
                 "inner xsep=0pt",
                 "inner ysep=0pt",
@@ -55,6 +54,23 @@ public class DocumentPage {
                 .build();
     }
 
+    private RectanglePath getRectangle(Rectangle rectangle) {
+        Position origin = new Position(0, "", rectangle.getOrigin().getLengthX(), rectangle.getOrigin().getLengthY());
+        Position target = new Position(0, "", rectangle.getTarget().getLengthX(), rectangle.getTarget().getLengthY());
+        return new RectanglePath.Builder(origin, target)
+                .lineWidth(LengthExpression.fromLineWidth(rectangle.getLineStyle().getLineWidth()))
+                .drawColor(rectangle.getLineStyle().getColor())
+                .lineCap(rectangle.getLineStyle().getLineCap())
+                .lineJoin(rectangle.getLineStyle().getLineJoin())
+                .dashPattern(rectangle.getLineStyle().getDashPattern())
+                .fillColor(rectangle.getAreaStyle().getColor())
+                .skipLastTerminator(true)
+                .build();
+    }
+
+    private Map<String, RectanglePath> getRectangleMap() {
+        return new LinkedHashMap<>(rectangles.stream().collect(Collectors.toMap(Rectangle::getName, this::getRectangle)));
+    }
 
     private LinePath getLine(Line line) {
         Length xLength = null;
@@ -91,6 +107,10 @@ public class DocumentPage {
         List<String> codeLines = new ArrayList<>();
         if (insertLatexComments) codeLines.add(getCommentLine(pageProperties.getAreaStyle().getName()));
         codeLines.add(getBackgroundRectangle().getInline());
+        for (Map.Entry<String, RectanglePath> rectanglePath : getRectangleMap().entrySet()) {
+            if (insertLatexComments) codeLines.add(getCommentLine(rectanglePath.getKey()));
+            codeLines.add(rectanglePath.getValue().getInline());
+        }
         for (Map.Entry<String, LinePath> linePath : getLineMap().entrySet()) {
             if (insertLatexComments) codeLines.add(getCommentLine(linePath.getKey()));
             codeLines.add(linePath.getValue().getInline());
@@ -132,6 +152,7 @@ public class DocumentPage {
                 ", documentElements=" + documentElements +
                 ", matrices=" + matrices +
                 ", lines=" + lines +
+                ", rectangles=" + rectangles +
                 ", pageOptions=" + pageOptions +
                 ", insertLatexComments=" + insertLatexComments +
                 '}';
@@ -147,6 +168,7 @@ public class DocumentPage {
         private final List<DocumentElement> documentElements = new ArrayList<>();
         private final List<MatrixOfNodes> matrices = new ArrayList<>();
         private final List<Line> lines = new ArrayList<>();
+        private final List<Rectangle> rectangles = new ArrayList<>();
         private boolean insertLatexComments = DEFAULT_INSERT_LATEX_COMMENTS;
 
         public Builder(String name, Page pageProperties) {
@@ -181,6 +203,15 @@ public class DocumentPage {
             return addLine(new ArrayList<>(List.of(lines)));
         }
 
+        public Builder addRectangle(List<Rectangle> rectangles) {
+            this.rectangles.addAll(rectangles);
+            return this;
+        }
+
+        public Builder addRectangle(Rectangle rectangles) {
+            return addRectangle(new ArrayList<>(List.of(rectangles)));
+        }
+
         public Builder insertLatexComments(boolean insertLatexComments) {
             this.insertLatexComments = insertLatexComments;
             return this;
@@ -189,7 +220,5 @@ public class DocumentPage {
         public DocumentPage build() {
             return new DocumentPage(this);
         }
-
-
     }
 }
