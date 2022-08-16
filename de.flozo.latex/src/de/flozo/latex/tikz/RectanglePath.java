@@ -5,6 +5,7 @@ import de.flozo.latex.core.LengthExpression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class RectanglePath extends Path {
 
@@ -67,6 +68,8 @@ public class RectanglePath extends Path {
         private final List<String> optionalArguments = new ArrayList<>();
         private Color drawColor;
         private Color fillColor;
+        private PredefinedOpacity lineOpacity;
+        private PredefinedOpacity fillOpacity;
         private PredefinedLineWidth predefinedLineWidth;
         private LengthExpression lineWidth;
         private LineCap lineCap;
@@ -101,6 +104,21 @@ public class RectanglePath extends Path {
             return this;
         }
 
+//        public Builder lineOpacity(PredefinedOpacity lineOpacity) {
+//            this.lineOpacity = lineOpacity;
+//            addOption(NodeOption.DRAW_OPACITY, lineOpacity.getValue());
+//            return this;
+//        }
+
+        public Builder fillOpacity(PredefinedOpacity fillOpacity) {
+            this.fillOpacity = fillOpacity;
+            if (!Objects.equals(fillOpacity.getValue(), "opaque")) {
+                addCustomOption(fillOpacity.getValue()).build().getInline();
+            }
+            return this;
+        }
+
+
         public Builder predefinedLineWidth(PredefinedLineWidth predefinedLineWidth) {
             this.predefinedLineWidth = predefinedLineWidth;
             this.optionalArguments.add(predefinedLineWidth.getString());
@@ -110,27 +128,41 @@ public class RectanglePath extends Path {
 
         public Builder lineWidth(LengthExpression lineWidth) {
             this.lineWidth = lineWidth;
-            addOption(NodeOption.LINE_WIDTH, lineWidth.getFormatted());
+            if (!Objects.equals(lineWidth.getUnit().getName(), "default")) {
+                addOption(NodeOption.LINE_WIDTH, lineWidth.getFormatted());
+            }
             return this;
         }
 
         public Builder lineCap(LineCap lineCap) {
             this.lineCap = lineCap;
-            addOption(NodeOption.LINE_CAP, lineCap.getValue());
+            if (!Objects.equals(lineCap.getName(), "default")) {
+                addOption(NodeOption.LINE_CAP, lineCap.getValue());
+            }
             return this;
         }
 
         public Builder lineJoin(LineJoin lineJoin) {
             this.lineJoin = lineJoin;
-            addOption(NodeOption.LINE_JOIN, lineJoin.getValue());
+            if (!Objects.equals(lineJoin.getName(), "default")) {
+                addOption(NodeOption.LINE_JOIN, lineJoin.getValue());
+            }
             return this;
         }
 
         public Builder dashPattern(DashPattern dashPattern) {
             this.dashPattern = dashPattern;
-            this.optionalArguments.add(dashPattern.getName());
+            if (!Objects.equals(dashPattern.getName(), "default")) {
+                this.optionalArguments.add(dashPattern.getName());
+            }
             return this;
         }
+
+        public Builder addCustomOption(String customOption) {
+            this.optionalArguments.add(customOption);
+            return this;
+        }
+
 
         public Builder skipLastTerminator(boolean skipLastTerminator) {
             this.skipLastTerminator = skipLastTerminator;

@@ -148,7 +148,9 @@ public class LinePath extends Path {
 
         public Builder lineWidth(LineWidth lineWidth) {
             this.lineWidth = lineWidth;
-            addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
+            if (!Objects.equals(lineWidth.getUnit().getName(), "default")) {
+                addOption(NodeOption.LINE_WIDTH, LengthExpression.fromLineWidth(lineWidth).getFormatted());
+            }
             return this;
         }
 
