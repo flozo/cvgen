@@ -60,16 +60,23 @@ public class DocumentPage {
         return new RectanglePath.Builder(origin, target)
                 .lineWidth(LengthExpression.fromLineWidth(rectangle.getLineStyle().getLineWidth()))
                 .drawColor(rectangle.getLineStyle().getColor())
+//                .lineOpacity(rectangle.getLineStyle().getOpacity())
                 .lineCap(rectangle.getLineStyle().getLineCap())
                 .lineJoin(rectangle.getLineStyle().getLineJoin())
                 .dashPattern(rectangle.getLineStyle().getDashPattern())
                 .fillColor(rectangle.getAreaStyle().getColor())
+                .fillOpacity(rectangle.getAreaStyle().getOpacity())
                 .skipLastTerminator(true)
                 .build();
     }
 
     private Map<String, RectanglePath> getRectangleMap() {
-        return new LinkedHashMap<>(rectangles.stream().collect(Collectors.toMap(Rectangle::getName, this::getRectangle)));
+        // keep insertion order!
+        return new LinkedHashMap<>(rectangles.stream()
+                .collect(Collectors.toMap(Rectangle::getName,
+                        this::getRectangle,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new)));
     }
 
     private LinePath getLine(Line line) {
@@ -81,7 +88,7 @@ public class DocumentPage {
             yLength = new Length(0, "", line.getPosition().getLengthY().getValue(), line.getPosition().getLengthY().getUnit());
         } else {
             xLength = new Length(0, "", line.getPosition().getLengthX().getValue(), line.getPosition().getLengthX().getUnit());
-            double yTarget = line.getPosition().getLengthY().getValue();
+            double yTarget = line.getLength().getValue();
             yLength = new Length(0, "", yTarget, line.getPosition().getLengthY().getUnit());
         }
         Position target = new Position(0, "", xLength, yLength);
@@ -95,8 +102,17 @@ public class DocumentPage {
                 .build();
     }
 
-    private Map<String, LinePath> getLineMap() {
-        return new LinkedHashMap<>(lines.stream().collect(Collectors.toMap(Line::getName, this::getLine)));
+    public Map<String, LinePath> getLineMap() {
+        // keep insertion order!
+        return new LinkedHashMap<>(lines.stream()
+                .collect(Collectors.toMap(Line::getName,
+                        this::getLine,
+                        (e1, e2) -> e1,
+                        LinkedHashMap::new)));
+    }
+
+    public List<Line> getLines() {
+        return lines;
     }
 
     private String getCommentLine(String comment) {
@@ -193,6 +209,7 @@ public class DocumentPage {
         public Builder addMatrix(MatrixOfNodes... matrices) {
             return addMatrix(new ArrayList<>(List.of(matrices)));
         }
+
 
         public Builder addLine(List<Line> lines) {
             this.lines.addAll(lines);

@@ -45,10 +45,10 @@ public class RectangleDAOImpl implements RectangleDAO {
 
     // CREATE VIEW rectangle_view AS
     // SELECT r._id, r.name,
-    // 	 pvo._id AS origin_id, pvo.name AS origin_name,
+    //   pvo._id AS origin_id, pvo.name AS origin_name,
     //	   pvo.x_length_id AS origin_x_length_id, pvo.x_length_name AS origin_x_length_name, pvo.x_length_value AS origin_x_length_value, pvo.x_length_unit_id AS origin_x_length_unit_id, pvo.x_length_unit_name AS origin_x_length_unit_name, pvo.x_length_unit_value AS origin_x_length_unit_value,
     //	   pvo.y_length_id AS origin_y_length_id, pvo.y_length_name AS origin_y_length_name, pvo.y_length_value AS origin_y_length_value, pvo.y_length_unit_id AS origin_y_length_unit_id, pvo.y_length_unit_name AS origin_y_length_unit_name, pvo.y_length_unit_value AS origin_y_length_unit_value,
-    //	 pvt._id AS target_id, pvt.name AS target_name,
+    //   pvt._id AS target_id, pvt.name AS target_name,
     //	   pvt.x_length_id AS target_x_length_id, pvt.x_length_name AS target_x_length_name, pvt.x_length_value AS target_x_length_value, pvt.x_length_unit_id AS target_x_length_unit_id, pvt.x_length_unit_name AS target_x_length_unit_name, pvt.x_length_unit_value AS target_x_length_unit_value,
     //	   pvt.y_length_id AS target_y_length_id, pvt.y_length_name AS target_y_length_name, pvt.y_length_value AS target_y_length_value, pvt.y_length_unit_id AS target_y_length_unit_id, pvt.y_length_unit_name AS target_y_length_unit_name, pvt.y_length_unit_value AS target_y_length_unit_value,
     //	 lsv._id AS line_style_id, lsv.name AS line_style_name, line_width_id, line_width_name, line_width_value, line_width_unit_id, line_width_unit_name, line_width_unit_value, line_cap_id, line_cap_name, line_cap_value, line_join_id, line_join_name, line_join_value, dash_pattern_id, dash_pattern_name, lsv.color_id AS line_color_id, lsv.color_name AS line_color_name, lsv.opacity_id AS line_opacity_id, lsv.opacity_name AS line_opacity_name,
@@ -56,7 +56,7 @@ public class RectangleDAOImpl implements RectangleDAO {
     //	 include
     // FROM rectangles AS r
     // INNER JOIN position_view AS pvo ON r.origin_id = pvo._id
-    // INNER JOIN position_view AS pvt ON r.origin_id = pvt._id
+    // INNER JOIN position_view AS pvt ON r.target_id = pvt._id
     // INNER JOIN line_style_view AS lsv ON r.line_style_id = lsv._id
     // INNER JOIN area_style_view AS asv ON r.area_style_id = asv._id
 

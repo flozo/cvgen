@@ -46,12 +46,8 @@ public class Main {
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
 
-            System.out.println(letterContent);
-
             Address receiver = letterContent.getReceiver();
             Address sender = letterContent.getSender();
-            System.out.println(sender);
-            System.out.println(receiver);
 
             TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
 
@@ -170,7 +166,7 @@ public class Main {
             LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
             List<Line> lineList = lineDAO.getAll();
             lineList.remove(0);
-
+            lineList.remove(5);
 
             EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
 
@@ -245,8 +241,6 @@ public class Main {
                     .addLine(lineList)
                     .insertLatexComments(true)
                     .build();
-
-            ElementStyleDAO elementStyleDAO = new ElementStyleDAOImpl(datasource2, connection);
 
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
             ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
@@ -346,10 +340,13 @@ public class Main {
 
             DocumentElement cvTitleField = new DocumentElement("cv_title", cvTitle, elementDAO.get("cv_title"));
 
+            RectangleDAO rectangleDAO = new RectangleDAOImpl(datasource2, connection);
+
             DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
+                    .addRectangle(rectangleDAO.get("cv_left_box"))
+                    .addLine(lineDAO.get("cv_box_right_border"))
                     .addLine(lineDAO.get("headline_separation"))
                     .addElement(headline)
-                    .addElement(cvTitleField)
                     .addElement(photo)
                     .addElement(cvContactTitleField)
                     .addMatrix(cvContact)
@@ -390,7 +387,9 @@ public class Main {
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
 
             LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
-            List<String> layers = layerDAO.getAll().stream().map(Layer::getName).collect(Collectors.toList());
+            List<String> layers = layerDAO.getAll().stream()
+                    .map(Layer::getName)
+                    .collect(Collectors.toList());
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
