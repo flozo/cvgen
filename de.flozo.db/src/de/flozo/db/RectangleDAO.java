@@ -15,6 +15,8 @@ public interface RectangleDAO extends DAO<Rectangle> {
     @Override
     List<Rectangle> getAll();
 
+    List<Rectangle> getAllIncluded();
+
     @Override
     void add(Rectangle rectangle);
 

@@ -63,6 +63,7 @@ public class RectangleDAOImpl implements RectangleDAO {
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + COLUMN_INCLUDE + EQUALS + "1";
 
     public static final int NON_ID_COLUMNS = 6;
 
@@ -155,6 +156,25 @@ public class RectangleDAOImpl implements RectangleDAO {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public List<Rectangle> getAllIncluded() {
+        showSQLMessage(QUERY_ALL_INCLUDED);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(QUERY_ALL_INCLUDED)) {
+            List<Rectangle> rectangles = new ArrayList<>();
+            while (resultSet.next()) {
+                rectangles.add(extractFromResultSet(resultSet));
+            }
+            System.out.println(" done!");
+            return rectangles;
+        } catch (SQLException e) {
+            System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+
     }
 
     @Override
