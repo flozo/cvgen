@@ -69,7 +69,7 @@ public class Timeline {
     }
 
     public MatrixOfNodes getItemMatrix(int startIndex, int endIndex, Element headline, Element elementItems) {
-        MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder("career", itemMatrixStyle);
+        MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder(timelineName, itemMatrixStyle);
         for (TimelineItem item : items.subList(startIndex, endIndex + 1)) {
             matrixBuilder.addRow(headline, TimelinePeriod.withDefaultFormat(item).getPeriodTag(), item.getCompany(), item.getTask());
             // Add textItems if present for current TimelineItem.
