@@ -252,6 +252,21 @@ public class Main {
             careerColumnStyles.add(elementDAO.get("cv_date_column"));
             careerColumnStyles.add(elementDAO.get("cv_timeline_column2"));
             careerColumnStyles.add(elementDAO.get("cv_timeline_column3"));
+            List<Element> trainingColumnStyles = new ArrayList<>();
+            trainingColumnStyles.add(elementDAO.get("cv_date_column"));
+            trainingColumnStyles.add(elementDAO.get("cv_training_column2"));
+            trainingColumnStyles.add(elementDAO.get("cv_training_column3"));
+
+            // further training
+            Timeline trainingTimeline = new Timeline("training",
+                    textItemDAO.get("cv_further_training_title"),
+                    elementDAO.get("cv_further_training_title"),
+                    timelineItemDAO.getAllIncludedOfType("further_training"),
+                    textItemList,
+                    itemizeStyle,
+                    elementDAO.get("cv_further_training"),
+                    trainingColumnStyles
+            );
 
             // career
             Timeline careerTimeline = new Timeline("career",
@@ -281,7 +296,7 @@ public class Main {
                     .addComponent(textItemDAO.get("github_url").getValue())
                     .addComponent("\\tiny\\raisebox{0.65ex}{" + hyperlink.getInline() + "}")
                     .makeHyperlink(textItemDAO.get("github_url").getValue())
-                    .inlineDelimiter(Delimiter.SPACE.getString())
+                    .inlineDelimiter(Delimiter.SPACE)
                     .build();
 
             Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
@@ -352,10 +367,24 @@ public class Main {
                     .addMatrix(cvContact)
                     .addElement(cvPersonalTitleField)
                     .addMatrix(cvPersonal)
+                    .addElement(trainingTimeline.getTitleField())
+                    .addMatrix(trainingTimeline.getItemMatrix(elementDAO.get("cv_timeline_headline_compact"), elementDAO.get("cv_item_lists")))
                     .addElement(careerTimeline.getTitleField())
                     .addMatrix(careerTimeline.getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                     .addElement(educationTimeline.getTitleField())
-                    .addMatrix(educationTimeline.getItemMatrix(0, 1))
+                    .addMatrix(educationTimeline.getItemMatrix(0, 0, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+                    .insertLatexComments(true)
+                    .build();
+
+
+            Page cvPage2 = pageDAO.get("cv_page_2");
+
+            DocumentPage cv2 = new DocumentPage.Builder("cv2", cvPage2)
+                    .addRectangle(rectangleDAO.get("cv_left_box"))
+                    .addLine(lineDAO.get("cv_box_right_border"))
+                    .addLine(lineDAO.get("headline_separation"))
+                    .addElement(headline)
+                    .addMatrix(educationTimeline.getItemMatrix(1, 1, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                     .insertLatexComments(true)
                     .build();
 
@@ -374,7 +403,7 @@ public class Main {
             String pdfTitle = "Application";
             List<String> hyperOptions = new ArrayList<>();
             hyperOptions.add("colorlinks=true");
-            hyperOptions.add("urlcolor=Blues-K");
+            hyperOptions.add("urlcolor=Blues-M");
             hyperOptions.add(String.format("pdftitle={%s}", pdfTitle));
             hyperOptions.add(String.format("pdfsubject={%s}", pdfSubject));
             hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.getInline()));
@@ -397,6 +426,7 @@ public class Main {
                     .append(layerDeclarationBlock)
                     .append(motivationalLetter.getCode())
                     .append(cv1.getCode())
+                    .append(cv2.getCode())
                     .build();
 
             Environment document = new Environment.Builder(EnvironmentName.DOCUMENT)

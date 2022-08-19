@@ -41,19 +41,6 @@ public class ColumnStyle {
                 .bodyDelimiter(Delimiter.NONE)
                 .build()
                 .getOptions();
-//        return new NodeStyle.Builder()
-//                .addCustomOption("rectangle")
-//                .addNodeOption(NodeOption.FILL, element.getElementStyle().getAreaStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.DRAW, element.getElementStyle().getLineStyle().getColor().getSpecifier())
-////                    .addNodeOption(NodeOption.TEXT,element.getElementStyle().getTextStyle().getColor().getSpecifier())
-//                .addNodeOption(NodeOption.ALIGN, element.getElementStyle().getTextStyle().getAlignment().getValue())
-//                .addNodeOption(NodeOption.INNER_X_SEP, LengthExpression.fromLength(element.getSeparationSpace().getInnerXSep()).getFormatted())
-//                .addNodeOption(NodeOption.INNER_Y_SEP, LengthExpression.fromLength(element.getSeparationSpace().getInnerYSep()).getFormatted())
-//                .addNodeOption(NodeOption.MINIMUM_WIDTH, LengthExpression.fromLength(element.getMinimumWidth()).getFormatted())
-//                .addNodeOption(NodeOption.MINIMUM_HEIGHT, LengthExpression.fromLength(element.getMinimumHeight()).getFormatted())
-//                .addNodeOption(NodeOption.TEXT_WIDTH, LengthExpression.fromLength(element.getElementStyle().getTextStyle().getTextWidth()).getFormatted())
-//                .addNodeOption(NodeOption.TEXT_HEIGHT, LengthExpression.fromLength(element.getElementStyle().getTextStyle().getTextHeight()).getFormatted())
-//                .build();
     }
 
     @Override

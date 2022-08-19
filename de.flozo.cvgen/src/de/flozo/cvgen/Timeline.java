@@ -80,23 +80,6 @@ public class Timeline {
                     .contains(item.getTimelineType().getId())) {
                 // Use elementStyle if present.
                 matrixBuilder.addRow(elementItems, "", textItems(item.getId()).getEnvironment().getInline(), "");
-//                    matrixBuilder.addRowOfNodes(
-//                            new Node.Builder("").build(),
-//                            new Node.Builder(textItems(item.getId()).getEnvironment().getInline())
-//                                    .fontSize(elementStyle.getTextStyle().getFontSize())
-//                                    .textColor(elementStyle.getTextStyle().getColor())
-//                                    .textWidth(LengthExpression.fromLength(elementStyle.getTextStyle().getTextWidth()))
-//                                    .textHeight(LengthExpression.fromLength(elementStyle.getTextStyle().getTextHeight()))
-//                                    .textDepth(LengthExpression.fromLength(elementStyle.getTextStyle().getTextDepth()))
-//                                    .textOpacity(elementStyle.getTextStyle().getOpacity())
-//                                    .lineCap(elementStyle.getLineStyle().getLineCap())
-//                                    .lineJoin(elementStyle.getLineStyle().getLineJoin())
-//                                    .drawColor(elementStyle.getLineStyle().getColor())
-//                                    .lineOpacity(elementStyle.getLineStyle().getOpacity())
-//                                    .dashPatternStyle(elementStyle.getLineStyle().getDashPattern())
-//                                    .fillColor(elementStyle.getAreaStyle().getColor())
-//                                    .build(),
-//                            new Node.Builder("").build());
             }
         }
         for (Element style : columnStyles) {
