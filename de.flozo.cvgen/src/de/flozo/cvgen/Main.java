@@ -24,8 +24,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.3";
-    public static final String VERSION_DATE = "2022-08-11";
+    public static final String VERSION_NUMBER = "0.4";
+    public static final String VERSION_DATE = "2022-08-20";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -33,132 +33,40 @@ public class Main {
             APPLICATION_NAME, VERSION_NUMBER, VERSION_DATE, REPO_URL);
     public static final String VERSION_INFO_PDF_META_DATA = String.format("%1$s v%2$s (%3$s); visit %4$s",
             APPLICATION_NAME, VERSION_NUMBER, VERSION_DATE, REPO_URL);
+    public static final String HOME_DIRECTORY = System.getProperty("user.home");
 
 
     public static void main(String[] args) {
-
 
         Datasource2 datasource2 = Datasource2.INSTANCE;
         Connection connection = datasource2.getConnection();
 
         try {
 
+            // Letter
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
             LetterContent letterContent = letterContentDAO.get("test");
 
-            Address receiver = letterContent.getReceiver();
             Address sender = letterContent.getSender();
-
-            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
-
-            ContentElement.Builder receiverNameLineBuilder = new ContentElement.Builder();
-            if (receiver.getCompany() != null && !receiver.getCompany().isBlank()) {
-                receiverNameLineBuilder.addComponent(receiver.getCompany());
-            } else {
-                receiverNameLineBuilder
-                        .addComponent(receiver.getPerson().getFirstName())
-                        .addComponent(receiver.getPerson().getLastName());
-            }
-            ContentElement receiverNameLine = receiverNameLineBuilder.inlineDelimiter(Delimiter.SPACE).build();
-            ContentElement receiverStreetLine = new ContentElement.Builder()
-                    .addComponent(receiver.getStreet())
-                    .addComponent(receiver.getHouseNumber())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-            ContentElement receiverCityLine = new ContentElement.Builder()
-                    .addComponent(receiver.getPostalCode())
-                    .addComponent(receiver.getCity())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-            ContentElement addressFieldContent = new ContentElement.Builder()
-                    .addComponent(receiverNameLine.getInline())
-                    .addComponent(receiverStreetLine.getInline())
-                    .addComponent(receiverCityLine.getInline())
-                    .multilineContent(true)
-                    .build();
-
-
-            ContentElement senderNameLine = new ContentElement.Builder()
-                    .addComponent(sender.getPerson().getFirstName())
-                    .addComponent(sender.getPerson().getLastName())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-            ContentElement senderNameLineWithTitle = new ContentElement.Builder()
-                    .addComponent(sender.getPerson().getAcademicTitle() + ".")
-                    .addComponent(sender.getPerson().getFirstName())
-                    .addComponent(sender.getPerson().getLastName())
-                    .inlineDelimiter(Delimiter.NON_BREAKING_SPACE)
-                    .build();
-
-
-            ContentElement senderStreetLine = new ContentElement.Builder()
-                    .addComponent(sender.getStreet())
-                    .addComponent(sender.getHouseNumber())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-            ContentElement senderCityLine = new ContentElement.Builder()
-                    .addComponent(sender.getPostalCode())
-                    .addComponent(sender.getCity())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-            ContentElement senderAddress = new ContentElement.Builder()
-                    .addComponent(senderStreetLine.getInline())
-                    .addComponent(senderCityLine.getInline())
-                    .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
-                    .build();
-
-            String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
-            ContentElement backaddressFieldContent = new ContentElement.Builder()
-                    .addComponent(senderNameLine.getInline())
-                    .addComponent(senderStreetLine.getInline())
-                    .addComponent(senderCityLine.getInline())
-                    .inlineDelimiter(backaddressSeparator)
-                    .build();
-
-            ContentElement dateFieldContent = new ContentElement.Builder()
-                    .addComponent(sender.getCity())
-                    .addComponent(letterContent.getDate())
-                    .insertSpaceAfterDelimiter(true)
-                    .inlineDelimiter(Delimiter.COMMA)
-                    .build();
-
-            ContentElement subjectFieldContent = new ContentElement.Builder()
-                    .addComponent(letterContent.getSubject())
-                    .build();
-
-            ContentElement bodyContent = new ContentElement.Builder()
-                    .addComponent(letterContent.getBodyText())
-                    .build();
-
+            Address receiver = letterContent.getReceiver();
             EnclosureDAO enclosureDAO = new EnclosureDAOImpl(datasource2, connection);
             List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
 
-            ContentElement enclosures = new ContentElement.Builder()
-                    .addComponents(enclosureList.stream().map(Enclosure::getCaption).collect(Collectors.toList()))
-                    .inlineDelimiter(Delimiter.COMMA)
-                    .insertSpaceAfterDelimiter(true)
-                    .build();
-            ContentElement enclosureLine = new ContentElement.Builder()
-                    .addComponent("Enclosures: ")
-                    .addComponent(enclosures.getInline())
-                    .build();
+            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
+            String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
 
-            ContentElement valedictionLine = new ContentElement.Builder()
-                    .addComponent(letterContent.getValediction().getValue())
-                    .build();
+            EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
+            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
+
+            LetterTextFieldContent letterTextFieldContent = new LetterTextFieldContent(
+                    letterContent, enclosureList, backaddressSeparator, signatureFile
+            );
 
             ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
 
+            Letter letter = new Letter(letterTextFieldContent, elementDAO);
 
-            DocumentElement addressField = new DocumentElement("receiver_address", addressFieldContent, elementDAO.get("address"));
-            DocumentElement backaddressField = new DocumentElement("backaddress", backaddressFieldContent, elementDAO.get("backaddress"));
-            DocumentElement dateField = new DocumentElement("letter_date", dateFieldContent, elementDAO.get("date"));
-            DocumentElement subjectField = new DocumentElement("letter_subject", subjectFieldContent, elementDAO.get("subject"));
-            DocumentElement bodyField = new DocumentElement("letter_body", bodyContent, elementDAO.get("body"));
-            DocumentElement enclosureTagLine = new DocumentElement("enclosures", enclosureLine, elementDAO.get("enclosures"));
-            DocumentElement headline = new DocumentElement("headline", senderNameLineWithTitle, elementDAO.get("headline_field"));
-            DocumentElement valediction = new DocumentElement("valediction", valedictionLine, elementDAO.get("valediction"));
-
+            // ***
 
             PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
             Page letterPage = pageDAO.get("cv_motivational_letter");
@@ -168,29 +76,10 @@ public class Main {
             lineList.remove(0);
             lineList.remove(5);
 
-            EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
-
-            // Signature
-            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
-            String absoluteFilePathSignature = signatureFile.getFile().getPath().replaceFirst("^~", System.getProperty("user.home"));
-            ContentElement signatureOption = new ContentElement.Builder()
-                    .addComponent("scale")
-                    .addComponent(String.valueOf(signatureFile.getScaleFactor()))
-                    .inlineDelimiter(Delimiter.EQUALS)
-                    .build();
-            Command includeSignature = new GenericCommand.Builder("includegraphics")
-                    .optionList(signatureOption.getInline())
-                    .body(absoluteFilePathSignature)
-                    .build();
-            ContentElement includegraphicsSignature = new ContentElement.Builder(includeSignature.getInline())
-                    .addComponent(senderNameLine.getInline())
-                    .inlineDelimiter(Delimiter.DOUBLE_BACKSLASH)
-                    .build();
-            DocumentElement signature = new DocumentElement("signature", includegraphicsSignature, elementDAO.get("signature_letter"));
 
             // Photo
             EmbeddedFile photoFile = embeddedFileDAO.get("photo");
-            String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", System.getProperty("user.home"));
+            String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
             ContentElement photoOption = new ContentElement.Builder()
                     .addComponent("scale")
                     .addComponent(String.valueOf(photoFile.getScaleFactor()))
@@ -215,29 +104,21 @@ public class Main {
             Element senderStyle = elementDAO.get("sender");
             Element senderStyleColumn1 = elementDAO.get("sender_column1");
             Element senderStyleColumn2 = elementDAO.get("sender_column2");
-
             ColumnStyle column1 = new ColumnStyle(senderStyleColumn1);
             ColumnStyle column2 = new ColumnStyle(senderStyleColumn2);
 
-            ContentElement hyperlinkedEmailAddress = new ContentElement.Builder()
-                    .addComponent(sender.getEMailAddress())
-                    .makeHyperlink(sender.getEMailAddress(), subjectFieldContent.getInline())
-                    .build();
-
-            MatrixOfNodes senderField = new MatrixOfNodes.Builder("sender_field", senderStyle)
-                    .addRow(senderAddress.getInline(), mapMarkerIcon.getInline())
-                    .addRow(sender.getMobileNumber(), phoneIcon.getInline())
-                    .addRow(hyperlinkedEmailAddress.getInline(), mailIcon.getInline())
-                    .addColumnStyle(column1.getStyle())
-                    .addColumnStyle(column2.getStyle())
-                    .build();
-
 
             DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
-                    .addElement(headline, addressField, backaddressField, dateField, subjectField, bodyField, enclosureTagLine)
-                    .addMatrix(senderField)
-                    .addElement(valediction)
-                    .addElement(signature)
+                    .addElement(letter.getHeadline())
+                    .addElement(letter.getReceiverAddressField())
+                    .addElement(letter.getBackaddressField())
+                    .addElement(letter.getDateField())
+                    .addElement(letter.getSubjectField())
+                    .addElement(letter.getBodyField())
+                    .addElement(letter.getEnclosureTagLine())
+                    .addMatrix(letterTextFieldContent.getSenderField(senderStyle, column1, column2, mapMarkerIcon, phoneIcon, mailIcon))
+                    .addElement(letter.getValediction())
+                    .addElement(letter.getSignature())
                     .addLine(lineList)
                     .insertLatexComments(true)
                     .build();
@@ -310,9 +191,9 @@ public class Main {
             ColumnStyle cvContactColumn1 = new ColumnStyle(cvContactStyleColumn1);
             ColumnStyle cvContactColumn2 = new ColumnStyle(cvContactStyleColumn2);
             MatrixOfNodes cvContact = new MatrixOfNodes.Builder("cv_contact", cvContactStyle)
-                    .addRow(mapMarkerIcon.getInline(), senderAddress.getInline())
+                    .addRow(mapMarkerIcon.getInline(), letterTextFieldContent.getSenderAddressFieldNoNameContent().getInline())
                     .addRow(phoneIcon.getInline(), sender.getMobileNumber())
-                    .addRow(mailIcon.getInline(), hyperlinkedEmailAddress.getInline())
+                    .addRow(mailIcon.getInline(), letterTextFieldContent.getHyperlinkedEmailAddress().getInline())
                     .addRow(elementDAO.get("cv_contact_url_line"), githubIcon.getInline(), githubUrl.getInline())
                     .addColumnStyle(cvContactColumn1.getStyle())
                     .addColumnStyle(cvContactColumn2.getStyle())
@@ -361,7 +242,7 @@ public class Main {
                     .addRectangle(rectangleDAO.get("cv_left_box"))
                     .addLine(lineDAO.get("cv_box_right_border"))
                     .addLine(lineDAO.get("headline_separation"))
-                    .addElement(headline)
+                    .addElement(letter.getHeadline())
                     .addElement(photo)
                     .addElement(cvContactTitleField)
                     .addMatrix(cvContact)
@@ -383,7 +264,7 @@ public class Main {
                     .addRectangle(rectangleDAO.get("cv_left_box"))
                     .addLine(lineDAO.get("cv_box_right_border"))
                     .addLine(lineDAO.get("headline_separation"))
-                    .addElement(headline)
+                    .addElement(letter.getHeadline())
                     .addMatrix(educationTimeline.getItemMatrix(1, 1, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                     .insertLatexComments(true)
                     .build();
@@ -406,7 +287,7 @@ public class Main {
             hyperOptions.add("urlcolor=Blues-M");
             hyperOptions.add(String.format("pdftitle={%s}", pdfTitle));
             hyperOptions.add(String.format("pdfsubject={%s}", pdfSubject));
-            hyperOptions.add(String.format("pdfauthor={%s}", senderNameLine.getInline()));
+            hyperOptions.add(String.format("pdfauthor={%s}", letterTextFieldContent.getSenderNameLine().getInline()));
             hyperOptions.add(String.format("pdfdate={%s}", LocalDate.now()));
             hyperOptions.add(String.format("pdfproducer={%s}", VERSION_INFO_PDF_META_DATA));
             hyperOptions.add(String.format("pdfcontactcity={%s}", sender.getCity()));
