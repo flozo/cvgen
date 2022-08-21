@@ -73,9 +73,15 @@ public class CurriculumVitae {
     }
 
     private Timeline getEducationTimeline() {
-        List<Element> trainingColumnStyles = columnStyles("cv_date_column", "cv_timeline_column2", "cv_timeline_column3");
-        return assembleTimeline("education", "cv_education_title", "education", "cv_education", trainingColumnStyles);
+        List<Element> educationColumnStyles = columnStyles("cv_date_column", "cv_timeline_column2", "cv_timeline_column3");
+        return assembleTimeline("education", "cv_education_title", "education", "cv_education", educationColumnStyles);
     }
+
+    private Timeline getEducationTimeline2() {
+        List<Element> educationColumnStyles = columnStyles("cv_date_column", "cv_timeline_column2", "cv_timeline_column3");
+        return assembleTimeline("education", "cv_education_title", "education", "cv_education_2", educationColumnStyles);
+    }
+
 
     private DocumentElement getContactTitleField() {
         ContentElement cvContactTitle = new ContentElement.Builder()
@@ -194,7 +200,7 @@ public class CurriculumVitae {
     public DocumentPage createCVPage2(PageDAO pageDAO, LineDAO lineDAO, RectangleDAO rectangleDAO, DocumentElement headline) {
         Page cvPage2 = pageDAO.get("cv_page_2");
         return buildCVPage("cv2", cvPage2, rectangleDAO, lineDAO, headline)
-                .addMatrix(getEducationTimeline().getItemMatrix(1, 1, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+                .addMatrix(getEducationTimeline2().getItemMatrix(1, 3, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                 .insertLatexComments(true)
                 .build();
     }
