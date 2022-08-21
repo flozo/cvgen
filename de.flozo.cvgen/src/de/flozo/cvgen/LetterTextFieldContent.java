@@ -14,10 +14,11 @@ import de.flozo.latex.tikz.MatrixOfNodes;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static de.flozo.cvgen.Main.HOME_DIRECTORY;
+
 public class LetterTextFieldContent {
 
     public static final String DEFAULT_BACKADDRESS_SEPARATOR = "\\hspace{8pt}$\\bullet$\\hspace{8pt}";
-    public static final String HOME_DIRECTORY = System.getProperty("user.home");
 
     private final LetterContent letterContent;
     private final Address sender;
@@ -205,7 +206,6 @@ public class LetterTextFieldContent {
                 .addColumnStyle(column2.getStyle())
                 .build();
     }
-
 
     @Override
     public String toString() {

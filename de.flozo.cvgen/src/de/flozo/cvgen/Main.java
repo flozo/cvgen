@@ -6,12 +6,10 @@ import de.flozo.common.dto.latex.DocumentClass;
 import de.flozo.common.dto.latex.LatexPackage;
 import de.flozo.common.dto.latex.TikzLibrary;
 import de.flozo.db.*;
-import de.flozo.latex.assembly.IconCommand;
 import de.flozo.latex.assembly.LayerList;
 import de.flozo.latex.assembly.PackageList;
 import de.flozo.latex.assembly.Preamble;
 import de.flozo.latex.core.*;
-import de.flozo.latex.tikz.MatrixOfNodes;
 
 import java.sql.Connection;
 import java.time.LocalDate;
@@ -24,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.4";
-    public static final String VERSION_DATE = "2022-08-20";
+    public static final String VERSION_NUMBER = "0.5";
+    public static final String VERSION_DATE = "2022-08-21";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -43,241 +41,48 @@ public class Main {
 
         try {
 
-            // Letter
+            // Letter DAOs
             LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
-            LetterContent letterContent = letterContentDAO.get("test");
-
-            Address sender = letterContent.getSender();
-            Address receiver = letterContent.getReceiver();
+            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
             EnclosureDAO enclosureDAO = new EnclosureDAOImpl(datasource2, connection);
-            List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
-
             TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
-            String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
-
             EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
-            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
+            PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
+            LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
+            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
 
+            // Letter content
+            LetterContent letterContent = letterContentDAO.get("test");
+            List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
+            String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
+            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
             LetterTextFieldContent letterTextFieldContent = new LetterTextFieldContent(
                     letterContent, enclosureList, backaddressSeparator, signatureFile
             );
-
-            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
-
             Letter letter = new Letter(letterTextFieldContent, elementDAO);
+            DocumentPage motivationalLetter = letter.createLetter(pageDAO, lineDAO, iconDAO);
 
-            // ***
-
-            PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
-            Page letterPage = pageDAO.get("cv_motivational_letter");
-
-            LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
-            List<Line> lineList = lineDAO.getAll();
-            lineList.remove(0);
-            lineList.remove(5);
-
-
-            // Photo
-            EmbeddedFile photoFile = embeddedFileDAO.get("photo");
-            String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
-            ContentElement photoOption = new ContentElement.Builder()
-                    .addComponent("scale")
-                    .addComponent(String.valueOf(photoFile.getScaleFactor()))
-                    .inlineDelimiter(Delimiter.EQUALS)
-                    .build();
-            Command includePhoto = new GenericCommand.Builder("includegraphics")
-                    .optionList(photoOption.getInline())
-                    .body(absoluteFilePathPhoto)
-                    .build();
-            ContentElement includegraphicsPhoto = new ContentElement.Builder(includePhoto.getInline()).build();
-            DocumentElement photo = new DocumentElement("photo", includegraphicsPhoto, elementDAO.get("cv_photo"));
-
-
-            // Icons
-            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
-            IconCommand mapMarkerIcon = IconCommand.fromIcon(iconDAO.get("address"));
-            IconCommand phoneIcon = IconCommand.fromIcon(iconDAO.get("phone"));
-            IconCommand mailIcon = IconCommand.fromIcon(iconDAO.get("mail"));
-            IconCommand githubIcon = IconCommand.fromIcon(iconDAO.get("github"));
-            IconCommand hyperlink = IconCommand.fromIcon(iconDAO.get("hyperlink"));
-
-            Element senderStyle = elementDAO.get("sender");
-            Element senderStyleColumn1 = elementDAO.get("sender_column1");
-            Element senderStyleColumn2 = elementDAO.get("sender_column2");
-            ColumnStyle column1 = new ColumnStyle(senderStyleColumn1);
-            ColumnStyle column2 = new ColumnStyle(senderStyleColumn2);
-
-
-            DocumentPage motivationalLetter = new DocumentPage.Builder("letter", letterPage)
-                    .addElement(letter.getHeadline())
-                    .addElement(letter.getReceiverAddressField())
-                    .addElement(letter.getBackaddressField())
-                    .addElement(letter.getDateField())
-                    .addElement(letter.getSubjectField())
-                    .addElement(letter.getBodyField())
-                    .addElement(letter.getEnclosureTagLine())
-                    .addMatrix(letterTextFieldContent.getSenderField(senderStyle, column1, column2, mapMarkerIcon, phoneIcon, mailIcon))
-                    .addElement(letter.getValediction())
-                    .addElement(letter.getSignature())
-                    .addLine(lineList)
-                    .insertLatexComments(true)
-                    .build();
-
+            // CV DAOs
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
-            ItemizeStyle itemizeStyle = itemizeStyleDAO.get("cv_blue_bullet");
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
-            List<TimelineTextItemLink> textItemList = timelineItemDAO.getAllTextItems();
-
-            /// timeline column styles
-            List<Element> careerColumnStyles = new ArrayList<>();
-            careerColumnStyles.add(elementDAO.get("cv_date_column"));
-            careerColumnStyles.add(elementDAO.get("cv_timeline_column2"));
-            careerColumnStyles.add(elementDAO.get("cv_timeline_column3"));
-            List<Element> trainingColumnStyles = new ArrayList<>();
-            trainingColumnStyles.add(elementDAO.get("cv_date_column"));
-            trainingColumnStyles.add(elementDAO.get("cv_training_column2"));
-            trainingColumnStyles.add(elementDAO.get("cv_training_column3"));
-
-            // further training
-            Timeline trainingTimeline = new Timeline("training",
-                    textItemDAO.get("cv_further_training_title"),
-                    elementDAO.get("cv_further_training_title"),
-                    timelineItemDAO.getAllIncludedOfType("further_training"),
-                    textItemList,
-                    itemizeStyle,
-                    elementDAO.get("cv_further_training"),
-                    trainingColumnStyles
-            );
-
-            // career
-            Timeline careerTimeline = new Timeline("career",
-                    textItemDAO.get("cv_career_title"),
-                    elementDAO.get("cv_career_title"),
-                    timelineItemDAO.getAllIncludedOfType("career"),
-                    textItemList,
-                    itemizeStyle,
-                    elementDAO.get("cv_career"),
-                    careerColumnStyles
-            );
-
-            // education
-            Timeline educationTimeline = new Timeline("education",
-                    textItemDAO.get("cv_education_title"),
-                    elementDAO.get("cv_education_title"),
-                    timelineItemDAO.getAllIncludedOfType("education"),
-                    textItemList,
-                    itemizeStyle,
-                    elementDAO.get("cv_education"),
-                    careerColumnStyles
-            );
-
-
-            // contact
-            ContentElement githubUrl = new ContentElement.Builder()
-                    .addComponent(textItemDAO.get("github_url").getValue())
-                    .addComponent("\\tiny\\raisebox{0.65ex}{" + hyperlink.getInline() + "}")
-                    .makeHyperlink(textItemDAO.get("github_url").getValue())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .build();
-
-            Element cvContactStyleColumn1 = elementDAO.get("cv_contact_column1");
-            Element cvContactStyleColumn2 = elementDAO.get("cv_contact_column2");
-
-            Element cvContactStyle = elementDAO.get("cv_contact");
-            ContentElement cvContactTitle = new ContentElement.Builder()
-                    .addComponent(textItemDAO.get("cv_contact_title").getValue())
-                    .build();
-            DocumentElement cvContactTitleField = new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
-            ColumnStyle cvContactColumn1 = new ColumnStyle(cvContactStyleColumn1);
-            ColumnStyle cvContactColumn2 = new ColumnStyle(cvContactStyleColumn2);
-            MatrixOfNodes cvContact = new MatrixOfNodes.Builder("cv_contact", cvContactStyle)
-                    .addRow(mapMarkerIcon.getInline(), letterTextFieldContent.getSenderAddressFieldNoNameContent().getInline())
-                    .addRow(phoneIcon.getInline(), sender.getMobileNumber())
-                    .addRow(mailIcon.getInline(), letterTextFieldContent.getHyperlinkedEmailAddress().getInline())
-                    .addRow(elementDAO.get("cv_contact_url_line"), githubIcon.getInline(), githubUrl.getInline())
-                    .addColumnStyle(cvContactColumn1.getStyle())
-                    .addColumnStyle(cvContactColumn2.getStyle())
-                    .build();
-
-
-            ContentElement personalText = new ContentElement.Builder()
-                    .addComponent("Geboren am")
-                    .addComponent(sender.getPerson().getDateOfBirth())
-                    .addComponent("in")
-                    .addComponent(sender.getPerson().getPlaceOfBirth())
-                    .inlineDelimiter(Delimiter.SPACE)
-                    .finalDelimiter(Delimiter.COMMA)
-                    .build();
-            ContentElement maritalStatus = new ContentElement.Builder()
-                    .addComponent(sender.getPerson().getNationality())
-                    .addComponent(sender.getPerson().getMaritalStatus())
-                    .addComponent(sender.getPerson().getChildren())
-                    .inlineDelimiter(Delimiter.COMMA)
-                    .insertSpaceAfterDelimiter(true)
-                    .build();
-            Element cvPersonalStyle = elementDAO.get("cv_personal");
-            MatrixOfNodes cvPersonal = new MatrixOfNodes.Builder("cv_personal", cvPersonalStyle)
-                    .addRow("", personalText.getInline())
-                    .addRow("", maritalStatus.getInline())
-                    .addColumnStyle(cvContactColumn1.getStyle())
-                    .addColumnStyle(cvContactColumn2.getStyle())
-                    .build();
-
-            // personal title
-            ContentElement cvPersonalTitle = new ContentElement.Builder()
-                    .addComponent(textItemDAO.get("cv_personal_title").getValue())
-                    .build();
-            DocumentElement cvPersonalTitleField = new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
-
-            Page cvPage1 = pageDAO.get("cv_page_1");
-            ContentElement cvTitle = new ContentElement.Builder()
-                    .addComponent(textItemDAO.get("cv_title").getValue())
-                    .build();
-
-            DocumentElement cvTitleField = new DocumentElement("cv_title", cvTitle, elementDAO.get("cv_title"));
-
             RectangleDAO rectangleDAO = new RectangleDAOImpl(datasource2, connection);
 
-            DocumentPage cv1 = new DocumentPage.Builder("cv1", cvPage1)
-                    .addRectangle(rectangleDAO.get("cv_left_box"))
-                    .addLine(lineDAO.get("cv_box_right_border"))
-                    .addLine(lineDAO.get("headline_separation"))
-                    .addElement(letter.getHeadline())
-                    .addElement(photo)
-                    .addElement(cvContactTitleField)
-                    .addMatrix(cvContact)
-                    .addElement(cvPersonalTitleField)
-                    .addMatrix(cvPersonal)
-                    .addElement(trainingTimeline.getTitleField())
-                    .addMatrix(trainingTimeline.getItemMatrix(elementDAO.get("cv_timeline_headline_compact"), elementDAO.get("cv_item_lists")))
-                    .addElement(careerTimeline.getTitleField())
-                    .addMatrix(careerTimeline.getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                    .addElement(educationTimeline.getTitleField())
-                    .addMatrix(educationTimeline.getItemMatrix(0, 0, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                    .insertLatexComments(true)
-                    .build();
+            EmbeddedFile photoFile = embeddedFileDAO.get("photo");
+            CurriculumVitae curriculumVitae = new CurriculumVitae(elementDAO, timelineItemDAO, textItemDAO, itemizeStyleDAO, iconDAO, letterTextFieldContent, photoFile);
+
+            DocumentElement headline = letter.getHeadline();
+            DocumentPage cv1 = curriculumVitae.createCVPage1(pageDAO, lineDAO, rectangleDAO, headline);
+            DocumentPage cv2 = curriculumVitae.createCVPage2(pageDAO, lineDAO, rectangleDAO, headline);
 
 
-            Page cvPage2 = pageDAO.get("cv_page_2");
-
-            DocumentPage cv2 = new DocumentPage.Builder("cv2", cvPage2)
-                    .addRectangle(rectangleDAO.get("cv_left_box"))
-                    .addLine(lineDAO.get("cv_box_right_border"))
-                    .addLine(lineDAO.get("headline_separation"))
-                    .addElement(letter.getHeadline())
-                    .addMatrix(educationTimeline.getItemMatrix(1, 1, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                    .insertLatexComments(true)
-                    .build();
-
-
+            // LaTeX
             DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
-            DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
-
             LatexPackageDAO latexPackageDAO = new LatexPackageDAOImpl(datasource2, connection);
+            TikzLibraryDAO tikzLibraryDAO = new TikzLibraryDAOImpl(datasource2, connection);
+
+            DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
             List<LatexPackage> latexPackages = latexPackageDAO.getAllIncluded();
             PackageList packageList = new PackageList(latexPackages);
-
-            TikzLibraryDAO tikzLibraryDAO = new TikzLibraryDAOImpl(datasource2, connection);
             List<String> tikzLibraries = tikzLibraryDAO.getAll().stream().map(TikzLibrary::getName).collect(Collectors.toList());
 
             String pdfSubject = "Application";
@@ -290,9 +95,9 @@ public class Main {
             hyperOptions.add(String.format("pdfauthor={%s}", letterTextFieldContent.getSenderNameLine().getInline()));
             hyperOptions.add(String.format("pdfdate={%s}", LocalDate.now()));
             hyperOptions.add(String.format("pdfproducer={%s}", VERSION_INFO_PDF_META_DATA));
-            hyperOptions.add(String.format("pdfcontactcity={%s}", sender.getCity()));
-            hyperOptions.add(String.format("pdfcontactcountry={%s}", sender.getCountry()));
-            hyperOptions.add(String.format("pdfcontactemail={%s}", sender.getEMailAddress()));
+            hyperOptions.add(String.format("pdfcontactcity={%s}", letterTextFieldContent.getSender().getCity()));
+            hyperOptions.add(String.format("pdfcontactcountry={%s}", letterTextFieldContent.getSender().getCountry()));
+            hyperOptions.add(String.format("pdfcontactemail={%s}", letterTextFieldContent.getSender().getEMailAddress()));
 
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
 
@@ -330,4 +135,5 @@ public class Main {
             datasource2.closeConnection();
         }
     }
+
 }
