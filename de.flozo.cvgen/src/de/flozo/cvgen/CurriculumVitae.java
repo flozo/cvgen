@@ -77,14 +77,14 @@ public class CurriculumVitae {
         return assembleTimeline("education", "cv_education_title", "education", "cv_education", trainingColumnStyles);
     }
 
-    public DocumentElement getContactTitleField() {
+    private DocumentElement getContactTitleField() {
         ContentElement cvContactTitle = new ContentElement.Builder()
                 .addComponent(textItemDAO.get("cv_contact_title").getValue())
                 .build();
         return new DocumentElement("cv_contact_title", cvContactTitle, elementDAO.get("cv_contact_title"));
     }
 
-    public MatrixOfNodes assembleContactArea() {
+    private MatrixOfNodes assembleContactArea() {
         IconCommand mapMarkerIcon = IconCommand.fromIcon(iconDAO.get("address"));
         IconCommand phoneIcon = IconCommand.fromIcon(iconDAO.get("phone"));
         IconCommand mailIcon = IconCommand.fromIcon(iconDAO.get("mail"));
@@ -109,14 +109,14 @@ public class CurriculumVitae {
                 .build();
     }
 
-    public DocumentElement getPersonalTitleField() {
+    private DocumentElement getPersonalTitleField() {
         ContentElement cvPersonalTitle = new ContentElement.Builder()
                 .addComponent(textItemDAO.get("cv_personal_title").getValue())
                 .build();
         return new DocumentElement("cv_personal_title", cvPersonalTitle, elementDAO.get("cv_personal_title"));
     }
 
-    public MatrixOfNodes assemblePersonalField() {
+    private MatrixOfNodes assemblePersonalField() {
         ColumnStyle cvContactColumn1 = new ColumnStyle(elementDAO.get("cv_contact_column1"));
         ColumnStyle cvContactColumn2 = new ColumnStyle(elementDAO.get("cv_contact_column2"));
         ContentElement personalText = new ContentElement.Builder()
@@ -143,7 +143,7 @@ public class CurriculumVitae {
                 .build();
     }
 
-    public DocumentElement photo() {
+    private DocumentElement photo() {
         String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
         ContentElement photoOption = new ContentElement.Builder()
                 .addComponent("scale")
