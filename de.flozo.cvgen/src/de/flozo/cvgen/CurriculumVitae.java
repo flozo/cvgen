@@ -197,10 +197,16 @@ public class CurriculumVitae {
                 .build();
     }
 
+    private DocumentElement getSignature() {
+        return new DocumentElement("signature", letterTextFieldContent.getSignature(), elementDAO.get("signature_cv"));
+    }
+
+
     public DocumentPage createCVPage2(PageDAO pageDAO, LineDAO lineDAO, RectangleDAO rectangleDAO, DocumentElement headline) {
         Page cvPage2 = pageDAO.get("cv_page_2");
         return buildCVPage("cv2", cvPage2, rectangleDAO, lineDAO, headline)
                 .addMatrix(getEducationTimeline2().getItemMatrix(1, 3, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+                .addElement(getSignature())
                 .insertLatexComments(true)
                 .build();
     }
