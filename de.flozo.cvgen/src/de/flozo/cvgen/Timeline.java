@@ -68,6 +68,10 @@ public class Timeline {
         return new DocumentElement(timelineTitle.getName(), getTitle(), timelineTitleStyle);
     }
 
+    private boolean hasOnlyBlankElements(List<String> list) {
+        return list.stream().allMatch(String::isBlank);
+    }
+
     public MatrixOfNodes getItemMatrix(int startIndex, int endIndex, Element headline, Element elementItems) {
         MatrixOfNodes.Builder matrixBuilder = new MatrixOfNodes.Builder(timelineName, itemMatrixStyle);
         for (TimelineItem item : items.subList(startIndex, endIndex + 1)) {
@@ -77,7 +81,7 @@ public class Timeline {
                     .map(TimelineTextItemLink::getTimelineType)
                     .map(TimelineType::getId)
                     .collect(Collectors.toList())
-                    .contains(item.getTimelineType().getId())) {
+                    .contains(item.getTimelineType().getId()) && !hasOnlyBlankElements(textItems(item.getId()).getItemList())) {
                 // Use elementStyle if present.
                 matrixBuilder.addRow(elementItems, "", textItems(item.getId()).getEnvironment().getInline(), "");
             }

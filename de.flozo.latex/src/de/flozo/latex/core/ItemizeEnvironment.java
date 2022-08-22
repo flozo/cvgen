@@ -19,6 +19,9 @@ public class ItemizeEnvironment {
                 .build();
     }
 
+    public List<String> getItemList() {
+        return itemList;
+    }
 
     @Override
     public String toString() {
