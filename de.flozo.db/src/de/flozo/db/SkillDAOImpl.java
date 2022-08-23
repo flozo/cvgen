@@ -3,8 +3,7 @@ package de.flozo.db;
 import de.flozo.common.dto.content.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SkillDAOImpl implements SkillDAO {
 
@@ -21,6 +20,9 @@ public class SkillDAOImpl implements SkillDAO {
     public static final String VIEW_NAME = "skill_view";
     public static final String VIEW_COLUMN_ID = "_id";
     public static final String VIEW_COLUMN_NAME = "name";
+    public static final String VIEW_COLUMN_SKILL_CATEGORY_LABEL = "skill_category_label";
+    public static final String VIEW_COLUMN_SKILL_CATEGORY_ID = "skill_category_id";
+    public static final String VIEW_COLUMN_SKILL_TYPE_NAME = "skill_type_name";
 
     // sql
     public static final char OPENING_PARENTHESIS = '(';
@@ -34,9 +36,12 @@ public class SkillDAOImpl implements SkillDAO {
     public static final String FROM = " FROM ";
     public static final String WHERE = " WHERE ";
     public static final String EQUALS = " = ";
+    public static final String NOT_EQUALS = " <> ";
     public static final String UPDATE = "UPDATE ";
     public static final String SET = " SET ";
     public static final String DELETE_FROM = "DELETE FROM ";
+    public static final String GROUP_BY = " GROUP BY ";
+    public static final String ORDER_BY = " ORDER BY ";
 
     // query
 
@@ -44,15 +49,17 @@ public class SkillDAOImpl implements SkillDAO {
 
     // CREATE VIEW skill_view AS
     // SELECT s._id, s.name, s.description, s.skill_level_actual, s.skill_level_max,
-    //	 sc._id AS skill_category_id, sc.label AS skill_category_label,
-    //	 st._id AS skill_type_id, st.name AS skill_type_name, st.label AS skill_type_label
+    //   sc._id AS skill_category_id, sc.name AS skill_category_name, sc.label AS skill_category_label,
+    //   st._id AS skill_type_id, st.name AS skill_type_name, st.label AS skill_type_label
     // FROM skills AS s
     // INNER JOIN skill_categories AS sc ON s.skill_category_id = sc._id
     // INNER JOIN skill_types AS st ON sc.skill_type_id = st._id
 
     public static final String QUERY_BY_ID = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_ID + EQUALS + QUESTION_MARK;
     public static final String QUERY_BY_SPECIFIER = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_NAME + EQUALS + QUESTION_MARK;
+    public static final String QUERY_ALL_BY_TYPE = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_SKILL_TYPE_NAME + EQUALS + QUESTION_MARK;
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
+    public static final String QUERY_LISTS_BY_TYPE = SELECT + VIEW_COLUMN_SKILL_CATEGORY_LABEL + ", GROUP_CONCAT(" + VIEW_COLUMN_NAME + ", ', ') AS skill_list" + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_SKILL_TYPE_NAME + EQUALS + QUESTION_MARK + GROUP_BY + VIEW_COLUMN_SKILL_CATEGORY_LABEL + ORDER_BY + VIEW_COLUMN_SKILL_CATEGORY_ID;
 
     public static final int NON_ID_COLUMNS = 5;
 
@@ -142,6 +149,44 @@ public class SkillDAOImpl implements SkillDAO {
             return skills;
         } catch (SQLException e) {
             System.out.println();
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<Skill> getAllByType(String specifier) {
+        showSQLMessage(QUERY_ALL_BY_TYPE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_ALL_BY_TYPE)) {
+            preparedStatement.setString(1, specifier);
+            List<Skill> skills = new ArrayList<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    skills.add(extractFromResultSet(resultSet));
+                }
+            }
+            System.out.println(" done!");
+            return skills;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public Map<String, String> getMapByType(String specifier) {
+        showSQLMessage(QUERY_LISTS_BY_TYPE);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(QUERY_LISTS_BY_TYPE)) {
+            preparedStatement.setString(1, specifier);
+            Map<String, String> skills = new LinkedHashMap<>();
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    skills.put(resultSet.getString(1), resultSet.getString(2));
+                }
+            }
+            System.out.println(" done!");
+            return skills;
+        } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
