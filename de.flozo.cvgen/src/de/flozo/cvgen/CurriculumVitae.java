@@ -4,6 +4,7 @@ import de.flozo.common.dto.appearance.Element;
 import de.flozo.common.dto.appearance.ItemizeStyle;
 import de.flozo.common.dto.appearance.Page;
 import de.flozo.common.dto.content.EmbeddedFile;
+import de.flozo.common.dto.content.Skill;
 import de.flozo.common.dto.content.TimelineTextItemLink;
 import de.flozo.db.*;
 import de.flozo.latex.assembly.IconCommand;
@@ -28,9 +29,10 @@ public class CurriculumVitae {
     private final IconDAO iconDAO;
     private final LetterTextFieldContent letterTextFieldContent;
     private final EmbeddedFile photoFile;
+    private final SkillDAO skillDAO;
 
 
-    public CurriculumVitae(ElementDAO elementDAO, TimelineItemDAO timelineItemDAO, TextItemDAO textItemDAO, ItemizeStyleDAO itemizeStyleDAO, IconDAO iconDAO, LetterTextFieldContent letterTextFieldContent, EmbeddedFile photoFile) {
+    public CurriculumVitae(ElementDAO elementDAO, TimelineItemDAO timelineItemDAO, TextItemDAO textItemDAO, ItemizeStyleDAO itemizeStyleDAO, IconDAO iconDAO, LetterTextFieldContent letterTextFieldContent, EmbeddedFile photoFile, SkillDAO skillDAO) {
         this.elementDAO = elementDAO;
         this.timelineItemDAO = timelineItemDAO;
         this.textItemDAO = textItemDAO;
@@ -40,6 +42,7 @@ public class CurriculumVitae {
         this.iconDAO = iconDAO;
         this.letterTextFieldContent = letterTextFieldContent;
         this.photoFile = photoFile;
+        this.skillDAO = skillDAO;
     }
 
     private Timeline assembleTimeline(String timelineName, String titleEntry, String timelineEntry, String elementEntry, List<Element> columnStyle) {
@@ -181,7 +184,7 @@ public class CurriculumVitae {
 
     public DocumentPage createCVPage1(PageDAO pageDAO, LineDAO lineDAO, RectangleDAO rectangleDAO, DocumentElement headline) {
         Page cvPage1 = pageDAO.get("cv_page_1");
-        return buildCVPage("cv1", cvPage1,rectangleDAO,lineDAO,headline)
+        return buildCVPage("cv1", cvPage1, rectangleDAO, lineDAO, headline)
                 .addElement(photo())
                 .addElement(getContactTitleField())
                 .addMatrix(assembleContactArea())
@@ -191,8 +194,8 @@ public class CurriculumVitae {
                 .addMatrix(getTrainingTimeline().getItemMatrix(elementDAO.get("cv_timeline_headline_compact"), elementDAO.get("cv_item_lists")))
                 .addElement(getCareerTimeline().getTitleField())
                 .addMatrix(getCareerTimeline().getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                .addElement(getEducationTimeline().getTitleField())
-                .addMatrix(getEducationTimeline().getItemMatrix(0, 0, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+//                .addElement(getEducationTimeline().getTitleField())
+//                .addMatrix(getEducationTimeline().getItemMatrix(0, 0, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
                 .insertLatexComments(true)
                 .build();
     }
@@ -201,11 +204,50 @@ public class CurriculumVitae {
         return new DocumentElement("signature", letterTextFieldContent.getSignature(), elementDAO.get("signature_cv"));
     }
 
+    private DocumentElement getSkillAreaTitleField(String title) {
+        ContentElement cvSkillTitle = new ContentElement.Builder()
+                .addComponent(title.toUpperCase())
+                .build();
+        return new DocumentElement("cv_personal_title", cvSkillTitle, elementDAO.get("cv_skills_title"));
+    }
+
+    private DocumentElement getLanguageAreaTitleField(String title) {
+        ContentElement cvSkillTitle = new ContentElement.Builder()
+                .addComponent(title.toUpperCase())
+                .build();
+        return new DocumentElement("cv_personal_title", cvSkillTitle, elementDAO.get("cv_languages_title"));
+    }
+
+
+    private MatrixOfNodes getSkillMatrix(String skillType) {
+        return new SkillArea(skillDAO.getMapByType(skillType), elementDAO.get("cv_skills_title"), elementDAO.get("cv_skills"), elementDAO.get("cv_skills_column1"), elementDAO.get("cv_skills_column2")).assembleSkillArea();
+    }
+
+    private MatrixOfNodes getLanguageMatrix(String skillType) {
+        ColumnStyle cvColumn1 = new ColumnStyle(elementDAO.get("cv_skills_column1"));
+        ColumnStyle cvColumn2 = new ColumnStyle(elementDAO.get("cv_skills_column2"));
+        List<Skill> skills = skillDAO.getAllByType("languages");
+        System.out.println(skills);
+        MatrixOfNodes.Builder matrix = new MatrixOfNodes.Builder("cv_languages", elementDAO.get("cv_languages"));
+        for (Skill skill : skills) {
+            matrix.addRow(skill.getName(), skill.getDescription());
+        }
+        return matrix
+                .addColumnStyle(cvColumn1.getStyle())
+                .addColumnStyle(cvColumn2.getStyle())
+                .build();
+    }
+
 
     public DocumentPage createCVPage2(PageDAO pageDAO, LineDAO lineDAO, RectangleDAO rectangleDAO, DocumentElement headline) {
         Page cvPage2 = pageDAO.get("cv_page_2");
         return buildCVPage("cv2", cvPage2, rectangleDAO, lineDAO, headline)
-                .addMatrix(getEducationTimeline2().getItemMatrix(1, 3, elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+                .addElement(getEducationTimeline().getTitleField())
+                .addMatrix(getEducationTimeline2().getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
+                .addElement(getSkillAreaTitleField("IT-Kenntnisse"))
+                .addMatrix(getSkillMatrix("IT"))
+                .addElement(getLanguageAreaTitleField("Sprachkenntnisse"))
+                .addMatrix(getLanguageMatrix("languages"))
                 .addElement(getSignature())
                 .insertLatexComments(true)
                 .build();

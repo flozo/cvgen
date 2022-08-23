@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.5";
-    public static final String VERSION_DATE = "2022-08-21";
+    public static final String VERSION_NUMBER = "0.6";
+    public static final String VERSION_DATE = "2022-08-23";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -65,10 +65,11 @@ public class Main {
             // CV DAOs
             ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
             TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
+            SkillDAO skillDAO = new SkillDAOImpl(datasource2, connection);
             RectangleDAO rectangleDAO = new RectangleDAOImpl(datasource2, connection);
 
             EmbeddedFile photoFile = embeddedFileDAO.get("photo");
-            CurriculumVitae curriculumVitae = new CurriculumVitae(elementDAO, timelineItemDAO, textItemDAO, itemizeStyleDAO, iconDAO, letterTextFieldContent, photoFile);
+            CurriculumVitae curriculumVitae = new CurriculumVitae(elementDAO, timelineItemDAO, textItemDAO, itemizeStyleDAO, iconDAO, letterTextFieldContent, photoFile, skillDAO);
 
             DocumentElement headline = letter.getHeadline();
             DocumentPage cv1 = curriculumVitae.createCVPage1(pageDAO, lineDAO, rectangleDAO, headline);
