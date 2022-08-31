@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.6";
-    public static final String VERSION_DATE = "2022-08-23";
+    public static final String VERSION_NUMBER = "0.7";
+    public static final String VERSION_DATE = "2022-08-31";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -52,7 +52,7 @@ public class Main {
             IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
 
             // Letter content
-            LetterContent letterContent = letterContentDAO.get("test");
+            LetterContent letterContent = letterContentDAO.get("next");
             List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
             String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
             EmbeddedFile signatureFile = embeddedFileDAO.get("signature");

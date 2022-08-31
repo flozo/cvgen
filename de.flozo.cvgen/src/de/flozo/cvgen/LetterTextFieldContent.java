@@ -151,6 +151,9 @@ public class LetterTextFieldContent {
     }
 
     public ContentElement getEnclosureLine() {
+        if (enclosures.size() == 0) {
+            return new ContentElement.Builder().build();
+        }
         return new ContentElement.Builder()
                 .addComponent("Enclosures: ")
                 .addComponent(assembleEnclosuresField().getInline())
