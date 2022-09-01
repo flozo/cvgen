@@ -52,7 +52,7 @@ public class Main {
             IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
 
             // Letter content
-            LetterContent letterContent = letterContentDAO.get("next");
+            LetterContent letterContent = letterContentDAO.get(3);
             List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
             String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
             EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
@@ -109,11 +109,14 @@ public class Main {
             LayerList layerList = new LayerList.Builder(layers).build();
             List<String> layerDeclarationBlock = layerList.getLayerCode();
 
+            EnclosureCode enclosureCode = new EnclosureCode(enclosureList);
+
             ExpressionList documentBody = new FormattedExpressionList.Builder()
                     .append(layerDeclarationBlock)
                     .append(motivationalLetter.getCode())
                     .append(cv1.getCode())
                     .append(cv2.getCode())
+                    .append(enclosureCode.getCode())
                     .build();
 
             Environment document = new Environment.Builder(EnvironmentName.DOCUMENT)

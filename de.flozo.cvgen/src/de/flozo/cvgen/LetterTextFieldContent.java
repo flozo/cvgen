@@ -155,7 +155,7 @@ public class LetterTextFieldContent {
             return new ContentElement.Builder().build();
         }
         return new ContentElement.Builder()
-                .addComponent("Enclosures: ")
+                .addComponent("Anlagen: ")
                 .addComponent(assembleEnclosuresField().getInline())
                 .build();
     }
