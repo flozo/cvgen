@@ -4,4 +4,5 @@ module de.flozo.cvgen {
     requires de.flozo.common;
     requires de.flozo.latex;
     requires java.desktop;
+    requires org.apache.pdfbox;
 }
