@@ -74,12 +74,12 @@ public class PositionDAOImpl implements PositionDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public PositionDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public PositionDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -140,7 +140,7 @@ public class PositionDAOImpl implements PositionDAO {
     @Override
     public void add(Position position) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, position);
@@ -153,16 +153,16 @@ public class PositionDAOImpl implements PositionDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-position");
+            datasource.rollback(e, "Insert-position");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Position position) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, position.getId());
@@ -176,16 +176,16 @@ public class PositionDAOImpl implements PositionDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-position");
+            datasource.rollback(e, "Update-position");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Position position) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, position.getId());
@@ -198,9 +198,9 @@ public class PositionDAOImpl implements PositionDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-position");
+            datasource.rollback(e, "Delete-position");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -223,7 +223,7 @@ public class PositionDAOImpl implements PositionDAO {
     @Override
     public String toString() {
         return "PositionDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

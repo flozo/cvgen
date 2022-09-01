@@ -86,12 +86,12 @@ public class SkillDAOImpl implements SkillDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public SkillDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public SkillDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -195,7 +195,7 @@ public class SkillDAOImpl implements SkillDAO {
     @Override
     public void add(Skill skill) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, skill);
@@ -208,16 +208,16 @@ public class SkillDAOImpl implements SkillDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-letterContent");
+            datasource.rollback(e, "Insert-letterContent");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Skill skill) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, skill.getId());
@@ -231,16 +231,16 @@ public class SkillDAOImpl implements SkillDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-skill");
+            datasource.rollback(e, "Update-skill");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Skill skill) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, skill.getId());
@@ -253,9 +253,9 @@ public class SkillDAOImpl implements SkillDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-skill");
+            datasource.rollback(e, "Delete-skill");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -278,7 +278,7 @@ public class SkillDAOImpl implements SkillDAO {
     @Override
     public String toString() {
         return "SkillDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

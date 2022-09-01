@@ -74,12 +74,12 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public PackageOptionDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public PackageOptionDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -144,7 +144,7 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
     @Override
     public void add(PackageOption packageOption) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, packageOption);
@@ -157,16 +157,16 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-packageOption");
+            datasource.rollback(e, "Insert-packageOption");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(PackageOption packageOption) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, packageOption.getId());
@@ -180,16 +180,16 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-packageOption");
+            datasource.rollback(e, "Update-packageOption");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(PackageOption packageOption) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, packageOption.getId());
@@ -202,9 +202,9 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-packageOption");
+            datasource.rollback(e, "Delete-packageOption");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -225,7 +225,7 @@ public class PackageOptionDAOImpl implements PackageOptionDAO {
     @Override
     public String toString() {
         return "PackageOptionDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

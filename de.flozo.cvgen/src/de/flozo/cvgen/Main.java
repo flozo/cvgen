@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.7";
-    public static final String VERSION_DATE = "2022-08-31";
+    public static final String VERSION_NUMBER = "0.8";
+    public static final String VERSION_DATE = "2022-09-01";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -36,20 +36,20 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Datasource2 datasource2 = Datasource2.INSTANCE;
-        Connection connection = datasource2.getConnection();
+        Datasource datasource = Datasource.INSTANCE;
+        Connection connection = datasource.getConnection();
 
         try {
 
             // Letter DAOs
-            LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource2, connection);
-            ElementDAO elementDAO = new ElementDAOImpl(datasource2, connection);
-            EnclosureDAO enclosureDAO = new EnclosureDAOImpl(datasource2, connection);
-            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource2, connection);
-            EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource2, connection);
-            PageDAO pageDAO = new PageDAOImpl(datasource2, connection);
-            LineDAO lineDAO = new LineDAOImpl(datasource2, connection);
-            IconDAO iconDAO = new IconDAOImpl(datasource2, connection);
+            LetterContentDAO letterContentDAO = new LetterContentDAOImpl(datasource, connection);
+            ElementDAO elementDAO = new ElementDAOImpl(datasource, connection);
+            EnclosureDAO enclosureDAO = new EnclosureDAOImpl(datasource, connection);
+            TextItemDAO textItemDAO = new TextItemDAOImpl(datasource, connection);
+            EmbeddedFileDAO embeddedFileDAO = new EmbeddedFileDAOImpl(datasource, connection);
+            PageDAO pageDAO = new PageDAOImpl(datasource, connection);
+            LineDAO lineDAO = new LineDAOImpl(datasource, connection);
+            IconDAO iconDAO = new IconDAOImpl(datasource, connection);
 
             // Letter content
             LetterContent letterContent = letterContentDAO.get(3);
@@ -63,10 +63,10 @@ public class Main {
             DocumentPage motivationalLetter = letter.createLetter(pageDAO, lineDAO, iconDAO);
 
             // CV DAOs
-            ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource2, connection);
-            TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource2, connection);
-            SkillDAO skillDAO = new SkillDAOImpl(datasource2, connection);
-            RectangleDAO rectangleDAO = new RectangleDAOImpl(datasource2, connection);
+            ItemizeStyleDAO itemizeStyleDAO = new ItemizeStyleDAOImpl(datasource, connection);
+            TimelineItemDAO timelineItemDAO = new TimelineItemDAOImpl(datasource, connection);
+            SkillDAO skillDAO = new SkillDAOImpl(datasource, connection);
+            RectangleDAO rectangleDAO = new RectangleDAOImpl(datasource, connection);
 
             EmbeddedFile photoFile = embeddedFileDAO.get("photo");
             CurriculumVitae curriculumVitae = new CurriculumVitae(elementDAO, timelineItemDAO, textItemDAO, itemizeStyleDAO, iconDAO, letterTextFieldContent, photoFile, skillDAO);
@@ -77,9 +77,9 @@ public class Main {
 
 
             // LaTeX
-            DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource2, connection);
-            LatexPackageDAO latexPackageDAO = new LatexPackageDAOImpl(datasource2, connection);
-            TikzLibraryDAO tikzLibraryDAO = new TikzLibraryDAOImpl(datasource2, connection);
+            DocumentClassDAO documentClassDAO = new DocumentClassDAOImpl(datasource, connection);
+            LatexPackageDAO latexPackageDAO = new LatexPackageDAOImpl(datasource, connection);
+            TikzLibraryDAO tikzLibraryDAO = new TikzLibraryDAOImpl(datasource, connection);
 
             DocumentClass documentClass = documentClassDAO.getAllIncluded().get(0);
             List<LatexPackage> latexPackages = latexPackageDAO.getAllIncluded();
@@ -102,7 +102,7 @@ public class Main {
 
             Preamble preamble = Preamble.create(documentClass, packageList, tikzLibraries, hyperOptions);
 
-            LayerDAO layerDAO = new LayerDAOImpl(datasource2, connection);
+            LayerDAO layerDAO = new LayerDAOImpl(datasource, connection);
             List<String> layers = layerDAO.getAll().stream()
                     .map(Layer::getName)
                     .collect(Collectors.toList());
@@ -136,7 +136,7 @@ public class Main {
             }
 
         } finally {
-            datasource2.closeConnection();
+            datasource.closeConnection();
         }
     }
 

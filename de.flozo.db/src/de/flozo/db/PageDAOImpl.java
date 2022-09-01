@@ -82,12 +82,12 @@ public class PageDAOImpl implements PageDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public PageDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public PageDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -152,7 +152,7 @@ public class PageDAOImpl implements PageDAO {
     @Override
     public void add(Page page) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, page);
@@ -165,16 +165,16 @@ public class PageDAOImpl implements PageDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-page");
+            datasource.rollback(e, "Insert-page");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Page page) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, page.getId());
@@ -188,16 +188,16 @@ public class PageDAOImpl implements PageDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-page");
+            datasource.rollback(e, "Update-page");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Page page) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, page.getId());
@@ -210,9 +210,9 @@ public class PageDAOImpl implements PageDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-page");
+            datasource.rollback(e, "Delete-page");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
 
     }
@@ -248,7 +248,7 @@ public class PageDAOImpl implements PageDAO {
     @Override
     public String toString() {
         return "PageDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

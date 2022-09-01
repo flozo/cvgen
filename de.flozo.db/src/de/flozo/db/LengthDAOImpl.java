@@ -73,12 +73,12 @@ public class LengthDAOImpl implements LengthDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LengthDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LengthDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -134,7 +134,7 @@ public class LengthDAOImpl implements LengthDAO {
     @Override
     public void add(Length length) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, length);
             // do it
@@ -144,16 +144,16 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-length");
+            datasource.rollback(e, "Insert-length");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Length length) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, length.getId());
             setAllValues(preparedStatement, length);
@@ -164,16 +164,16 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-length");
+            datasource.rollback(e, "Update-length");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Length length) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, length.getId());
             // do it
@@ -183,9 +183,9 @@ public class LengthDAOImpl implements LengthDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-length");
+            datasource.rollback(e, "Delete-length");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -203,7 +203,7 @@ public class LengthDAOImpl implements LengthDAO {
     @Override
     public String toString() {
         return "LengthDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

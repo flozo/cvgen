@@ -51,12 +51,12 @@ public class LatexPackageDAOImpl implements LatexPackageDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
     public static final String QUERY_ALL_INCLUDED = SELECT + STAR + FROM + VIEW_NAME + WHERE + VIEW_COLUMN_INCLUDE + EQUALS + "1";
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LatexPackageDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LatexPackageDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -140,7 +140,7 @@ public class LatexPackageDAOImpl implements LatexPackageDAO {
     @Override
     public String toString() {
         return "LatexPackageDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

@@ -103,12 +103,12 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public TextStyleDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public TextStyleDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -164,7 +164,7 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     @Override
     public void add(TextStyle textStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, textStyle);
             // do it
@@ -174,16 +174,16 @@ public class TextStyleDAOImpl implements TextStyleDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-textStyle");
+            datasource.rollback(e, "Insert-textStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(TextStyle textStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, textStyle.getId());
             setAllValues(preparedStatement, textStyle);
@@ -194,16 +194,16 @@ public class TextStyleDAOImpl implements TextStyleDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-textStyle");
+            datasource.rollback(e, "Update-textStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(TextStyle textStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, textStyle.getId());
             // do it
@@ -213,9 +213,9 @@ public class TextStyleDAOImpl implements TextStyleDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-textStyle");
+            datasource.rollback(e, "Delete-textStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -250,7 +250,7 @@ public class TextStyleDAOImpl implements TextStyleDAO {
     @Override
     public String toString() {
         return "TextStyleDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

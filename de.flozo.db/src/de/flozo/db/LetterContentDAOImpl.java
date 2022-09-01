@@ -97,12 +97,12 @@ public class LetterContentDAOImpl implements LetterContentDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LetterContentDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LetterContentDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -167,7 +167,7 @@ public class LetterContentDAOImpl implements LetterContentDAO {
     @Override
     public void add(LetterContent letterContent) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, letterContent);
@@ -180,16 +180,16 @@ public class LetterContentDAOImpl implements LetterContentDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-letterContent");
+            datasource.rollback(e, "Insert-letterContent");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(LetterContent letterContent) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, letterContent.getId());
@@ -203,16 +203,16 @@ public class LetterContentDAOImpl implements LetterContentDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-letterContent");
+            datasource.rollback(e, "Update-letterContent");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(LetterContent letterContent) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, letterContent.getId());
@@ -225,9 +225,9 @@ public class LetterContentDAOImpl implements LetterContentDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-letterContent");
+            datasource.rollback(e, "Delete-letterContent");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -266,7 +266,7 @@ public class LetterContentDAOImpl implements LetterContentDAO {
     @Override
     public String toString() {
         return "LetterContentDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

@@ -73,12 +73,12 @@ public class LineWidthDAOImpl implements LineWidthDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LineWidthDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LineWidthDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -134,7 +134,7 @@ public class LineWidthDAOImpl implements LineWidthDAO {
     @Override
     public void add(LineWidth lineWidth) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, lineWidth);
             // do it
@@ -144,16 +144,16 @@ public class LineWidthDAOImpl implements LineWidthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-lineWidth");
+            datasource.rollback(e, "Insert-lineWidth");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(LineWidth lineWidth) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, lineWidth.getId());
             setAllValues(preparedStatement, lineWidth);
@@ -164,16 +164,16 @@ public class LineWidthDAOImpl implements LineWidthDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-lineWidth");
+            datasource.rollback(e, "Update-lineWidth");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(LineWidth lineWidth) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, lineWidth.getId());
             // do it
@@ -183,9 +183,9 @@ public class LineWidthDAOImpl implements LineWidthDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-lineWidth");
+            datasource.rollback(e, "Delete-lineWidth");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -203,7 +203,7 @@ public class LineWidthDAOImpl implements LineWidthDAO {
     @Override
     public String toString() {
         return "LineWidthDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

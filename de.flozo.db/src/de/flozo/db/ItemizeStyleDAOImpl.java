@@ -97,11 +97,11 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
-    public ItemizeStyleDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public ItemizeStyleDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -166,7 +166,7 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
     @Override
     public void add(ItemizeStyle itemizeStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, itemizeStyle);
@@ -179,16 +179,16 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-itemizeStyle");
+            datasource.rollback(e, "Insert-itemizeStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(ItemizeStyle itemizeStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, itemizeStyle.getId());
@@ -202,16 +202,16 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-itemizeStyle");
+            datasource.rollback(e, "Update-itemizeStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(ItemizeStyle itemizeStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, itemizeStyle.getId());
@@ -224,9 +224,9 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-itemizeStyle");
+            datasource.rollback(e, "Delete-itemizeStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -264,7 +264,7 @@ public class ItemizeStyleDAOImpl implements ItemizeStyleDAO {
     @Override
     public String toString() {
         return "ItemizeStyleDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

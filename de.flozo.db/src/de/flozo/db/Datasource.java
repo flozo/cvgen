@@ -2,7 +2,7 @@ package de.flozo.db;
 
 import java.sql.*;
 
-public enum Datasource2 {
+public enum Datasource {
 
     INSTANCE;
 

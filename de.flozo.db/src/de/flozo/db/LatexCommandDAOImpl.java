@@ -48,12 +48,12 @@ public class LatexCommandDAOImpl implements LatexCommandDAO {
     public static final String QUERY_ALL = SELECT + STAR + FROM + VIEW_NAME;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LatexCommandDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LatexCommandDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -124,7 +124,7 @@ public class LatexCommandDAOImpl implements LatexCommandDAO {
     @Override
     public String toString() {
         return "LatexCommandDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

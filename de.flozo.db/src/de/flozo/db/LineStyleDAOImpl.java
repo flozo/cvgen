@@ -91,12 +91,12 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public LineStyleDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public LineStyleDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -157,7 +157,7 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     @Override
     public void add(LineStyle lineStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + INSERT + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, lineStyle);
@@ -170,16 +170,16 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-lineStyle");
+            datasource.rollback(e, "Insert-lineStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(LineStyle lineStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + UPDATE_ROW + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, lineStyle.getId());
@@ -193,16 +193,16 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-lineStyle");
+            datasource.rollback(e, "Update-lineStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(LineStyle lineStyle) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         System.out.print("[database] Executing SQL statement \"" + DELETE + "\" ...");
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, lineStyle.getId());
@@ -215,9 +215,9 @@ public class LineStyleDAOImpl implements LineStyleDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-lineStyle");
+            datasource.rollback(e, "Delete-lineStyle");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -246,7 +246,7 @@ public class LineStyleDAOImpl implements LineStyleDAO {
     @Override
     public String toString() {
         return "LineStyleDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

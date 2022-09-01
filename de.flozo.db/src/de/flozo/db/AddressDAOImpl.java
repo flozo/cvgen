@@ -100,11 +100,11 @@ public class AddressDAOImpl implements AddressDAO {
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
-    public AddressDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public AddressDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -204,7 +204,7 @@ public class AddressDAOImpl implements AddressDAO {
     @Override
     public void add(Address address) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, address);
@@ -215,16 +215,16 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-address");
+            datasource.rollback(e, "Insert-address");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Address address) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, address.getId());
@@ -236,16 +236,16 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-address");
+            datasource.rollback(e, "Update-address");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Address address) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, address.getId());
@@ -256,9 +256,9 @@ public class AddressDAOImpl implements AddressDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-address");
+            datasource.rollback(e, "Delete-address");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -291,7 +291,7 @@ public class AddressDAOImpl implements AddressDAO {
     @Override
     public String toString() {
         return "AddressDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

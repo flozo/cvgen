@@ -56,12 +56,12 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public TikzLibraryDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public TikzLibraryDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -127,7 +127,7 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
     @Override
     public void add(TikzLibrary tikzLibrary) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, tikzLibrary);
@@ -140,16 +140,16 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Insert-tikzLibrary");
+            datasource.rollback(e, "Insert-tikzLibrary");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(TikzLibrary tikzLibrary) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, tikzLibrary.getId());
@@ -163,16 +163,16 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
             System.out.println(" done!");
         } catch (Exception e) {
             System.out.println();
-            datasource2.rollback(e, "Update-tikzLibrary");
+            datasource.rollback(e, "Update-tikzLibrary");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(TikzLibrary tikzLibrary) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, tikzLibrary.getId());
@@ -185,9 +185,9 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
             System.out.println(" done!");
         } catch (SQLException e) {
             System.out.println();
-            datasource2.rollback(e, "Delete-tikzLibrary");
+            datasource.rollback(e, "Delete-tikzLibrary");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -204,7 +204,7 @@ public class TikzLibraryDAOImpl implements TikzLibraryDAO {
     @Override
     public String toString() {
         return "TikzLibraryDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }

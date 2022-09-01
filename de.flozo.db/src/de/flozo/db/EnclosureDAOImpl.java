@@ -78,12 +78,12 @@ public class EnclosureDAOImpl implements EnclosureDAO {
     // delete
     public static final String DELETE = DELETE_FROM + TABLE_NAME + WHERE + COLUMN_ID + EQUALS + QUESTION_MARK;
 
-    private final Datasource2 datasource2;
+    private final Datasource datasource;
     private final Connection connection;
 
 
-    public EnclosureDAOImpl(Datasource2 datasource2, Connection connection) {
-        this.datasource2 = datasource2;
+    public EnclosureDAOImpl(Datasource datasource, Connection connection) {
+        this.datasource = datasource;
         this.connection = connection;
     }
 
@@ -162,7 +162,7 @@ public class EnclosureDAOImpl implements EnclosureDAO {
     @Override
     public void add(Enclosure enclosure) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(INSERT);
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT)) {
             setAllValues(preparedStatement, enclosure);
@@ -173,16 +173,16 @@ public class EnclosureDAOImpl implements EnclosureDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Insert-enclosure");
+            datasource.rollback(e, "Insert-enclosure");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void update(Enclosure enclosure) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(UPDATE_ROW);
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ROW)) {
             preparedStatement.setInt(UPDATE_WHERE_POSITION, enclosure.getId());
@@ -194,16 +194,16 @@ public class EnclosureDAOImpl implements EnclosureDAO {
                 // end of transaction
             }
         } catch (Exception e) {
-            datasource2.rollback(e, "Update-enclosure");
+            datasource.rollback(e, "Update-enclosure");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
     @Override
     public void delete(Enclosure enclosure) {
         // start transaction:
-        datasource2.setAutoCommitBehavior(false);
+        datasource.setAutoCommitBehavior(false);
         showSQLMessage(DELETE);
         try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE)) {
             preparedStatement.setInt(1, enclosure.getId());
@@ -214,9 +214,9 @@ public class EnclosureDAOImpl implements EnclosureDAO {
                 // end of transaction
             }
         } catch (SQLException e) {
-            datasource2.rollback(e, "Delete-enclosure");
+            datasource.rollback(e, "Delete-enclosure");
         } finally {
-            datasource2.setAutoCommitBehavior(true);
+            datasource.setAutoCommitBehavior(true);
         }
     }
 
@@ -238,7 +238,7 @@ public class EnclosureDAOImpl implements EnclosureDAO {
     @Override
     public String toString() {
         return "EnclosureDAOImpl{" +
-                "datasource2=" + datasource2 +
+                "datasource2=" + datasource +
                 ", connection=" + connection +
                 '}';
     }
