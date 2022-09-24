@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.8";
-    public static final String VERSION_DATE = "2022-09-01";
+    public static final String VERSION_NUMBER = "0.9";
+    public static final String VERSION_DATE = "2022-09-24";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -32,6 +32,12 @@ public class Main {
     public static final String VERSION_INFO_PDF_META_DATA = String.format("%1$s v%2$s (%3$s); visit %4$s",
             APPLICATION_NAME, VERSION_NUMBER, VERSION_DATE, REPO_URL);
     public static final String HOME_DIRECTORY = System.getProperty("user.home");
+
+
+    public static final String DEFAULT_TARGET_DIRECTORY = "/tmp";
+    public static final String DEFAULT_TARGET_FILENAME = "test_output.tex";
+    public static final boolean DEFAULT_RUN_PDFLATEX = true;
+    public static final boolean DEFAULT_OPEN_PDF = true;
 
 
     public static void main(String[] args) {
@@ -125,11 +131,8 @@ public class Main {
 
             LatexCode laTeXCode = new LatexCode(VERSION_INFO_LATEX_HEADER, preamble, document);
 
-            String fileName = "test_output.tex";
-            String directory = "/tmp";
-
-            OutputFile outputFile = new OutputFile(directory, fileName, laTeXCode.getCode());
-            if (outputFile.create(true, true)) {
+            OutputFile outputFile = new OutputFile(DEFAULT_TARGET_DIRECTORY, DEFAULT_TARGET_FILENAME, laTeXCode.getCode());
+            if (outputFile.create(DEFAULT_RUN_PDFLATEX, DEFAULT_OPEN_PDF)) {
                 System.out.println("[output] Done!");
             } else {
                 System.out.println("[output] Something went wrong!");
