@@ -30,6 +30,8 @@ public class FormattedExpressionList implements ExpressionList {
     private final BracketMode openingBracketMode;
     private final BracketMode closingBracketMode;
 
+    private boolean isInline = false;
+
     private FormattedExpressionList(Builder builder) {
         this.expressions = builder.expressions;
         this.delimiter = builder.delimiter;
@@ -55,9 +57,11 @@ public class FormattedExpressionList implements ExpressionList {
     // Return assembled code with optional additional spacing
     @Override
     public String getInline() {
+        isInline = true;
         if (expressions == null) {
             return "";
         } else {
+//            return String.join(inlineSpacing ? INLINE_SEPARATOR : "", assembleCode(openingBracketMode, closingBracketMode));
             return brackets.getLeftBracket() +
                     String.join(inlineSpacing ? INLINE_SEPARATOR : "", assembleCode(BracketMode.SKIP, BracketMode.SKIP)) +
                     brackets.getRightBracket();
@@ -76,7 +80,7 @@ public class FormattedExpressionList implements ExpressionList {
                 encloseInBrackets(codeLines, openingBracketMode, closingBracketMode);
             }
         }
-        if (indentBlock) {
+        if (indentBlock && !isInline) {
             return indent(codeLines);
         }
         return codeLines;
