@@ -10,7 +10,9 @@ public enum Datasource {
     // database
     public static final String DB_NAME = "properties_dummy.db";
     public static final String CONNECTION_STRING_PREFIX = "jdbc:sqlite:";
-    public static final String RESOURCE_FOLDER = "../../../Data/CVgen_test/";
+    //    public static final String RESOURCE_FOLDER = "../../../Data/CVgen_test/";
+    public static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/de.flozo.db";
+    public static final String RESOURCE_FOLDER = CURRENT_DIRECTORY + "/resources/";
 
     private static final String CONNECTION_STRING = CONNECTION_STRING_PREFIX + RESOURCE_FOLDER + DB_NAME;
 
