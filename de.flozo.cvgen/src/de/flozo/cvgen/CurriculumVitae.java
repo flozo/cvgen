@@ -16,9 +16,13 @@ import de.flozo.latex.tikz.MatrixOfNodes;
 import java.util.ArrayList;
 import java.util.List;
 
+import static de.flozo.cvgen.Main.CURRENT_DIRECTORY;
 import static de.flozo.cvgen.Main.HOME_DIRECTORY;
 
 public class CurriculumVitae {
+
+//    public static final String BIRTH_TAG = "Geboren am";
+    public static final String BIRTH_TAG = "Born on ";      // Database!
 
     private final ElementDAO elementDAO;
     private final TimelineItemDAO timelineItemDAO;
@@ -129,7 +133,7 @@ public class CurriculumVitae {
         ColumnStyle cvContactColumn1 = new ColumnStyle(elementDAO.get("cv_contact_column1"));
         ColumnStyle cvContactColumn2 = new ColumnStyle(elementDAO.get("cv_contact_column2"));
         ContentElement personalText = new ContentElement.Builder()
-                .addComponent("Geboren am")
+                .addComponent(BIRTH_TAG)
                 .addComponent(letterTextFieldContent.getSender().getPerson().getDateOfBirth())
                 .addComponent("in")
                 .addComponent(letterTextFieldContent.getSender().getPerson().getPlaceOfBirth())
@@ -153,10 +157,15 @@ public class CurriculumVitae {
     }
 
     private DocumentElement photo() {
-        String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
+        String absoluteFilePathPhoto = CURRENT_DIRECTORY + "/resources/Face.png";
+        double scaleFactor = 1;
+        if (photoFile != null) {
+            absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
+            scaleFactor = photoFile.getScaleFactor();
+        }
         ContentElement photoOption = new ContentElement.Builder()
                 .addComponent("scale")
-                .addComponent(String.valueOf(photoFile.getScaleFactor()))
+                .addComponent(String.valueOf(scaleFactor))
                 .inlineDelimiter(Delimiter.EQUALS)
                 .build();
         Command includePhoto = new GenericCommand.Builder("includegraphics")
@@ -244,9 +253,9 @@ public class CurriculumVitae {
         return buildCVPage("cv2", cvPage2, rectangleDAO, lineDAO, headline)
                 .addElement(getEducationTimeline().getTitleField())
                 .addMatrix(getEducationTimeline2().getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                .addElement(getSkillAreaTitleField("IT-Kenntnisse"))
+                .addElement(getSkillAreaTitleField("IT Knowledge"))
                 .addMatrix(getSkillMatrix("IT"))
-                .addElement(getLanguageAreaTitleField("Sprachkenntnisse"))
+                .addElement(getLanguageAreaTitleField("Languages"))
                 .addMatrix(getLanguageMatrix("languages"))
                 .addElement(getSignature())
                 .insertLatexComments(true)

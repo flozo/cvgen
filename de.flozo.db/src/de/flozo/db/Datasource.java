@@ -8,7 +8,7 @@ public enum Datasource {
 
 
     // database
-    public static final String DB_NAME = "properties.db";
+    public static final String DB_NAME = "properties_dummy.db";
     public static final String CONNECTION_STRING_PREFIX = "jdbc:sqlite:";
     public static final String RESOURCE_FOLDER = "../../../Data/CVgen_test/";
 

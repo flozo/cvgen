@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.9";
-    public static final String VERSION_DATE = "2022-09-24";
+    public static final String VERSION_NUMBER = "0.10";
+    public static final String VERSION_DATE = "2022-09-25";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -32,12 +32,15 @@ public class Main {
     public static final String VERSION_INFO_PDF_META_DATA = String.format("%1$s v%2$s (%3$s); visit %4$s",
             APPLICATION_NAME, VERSION_NUMBER, VERSION_DATE, REPO_URL);
     public static final String HOME_DIRECTORY = System.getProperty("user.home");
+    public static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/de.flozo.cvgen";
 
 
     public static final String DEFAULT_TARGET_DIRECTORY = "/tmp";
     public static final String DEFAULT_TARGET_FILENAME = "test_output.tex";
     public static final boolean DEFAULT_RUN_PDFLATEX = true;
     public static final boolean DEFAULT_OPEN_PDF = true;
+
+    public static final String LETTER_CONTENT_NAME = "test";
 
 
     public static void main(String[] args) {
@@ -58,10 +61,12 @@ public class Main {
             IconDAO iconDAO = new IconDAOImpl(datasource, connection);
 
             // Letter content
-            LetterContent letterContent = letterContentDAO.get(3);
+            LetterContent letterContent = letterContentDAO.get(LETTER_CONTENT_NAME);
             List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
             String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
-            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
+//            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
+            File file = new File(0, "signature", CURRENT_DIRECTORY + "/resources/DummySignature.png");
+            EmbeddedFile signatureFile = new EmbeddedFile(0, file, 0.65, true);
             LetterTextFieldContent letterTextFieldContent = new LetterTextFieldContent(
                     letterContent, enclosureList, backaddressSeparator, signatureFile
             );
