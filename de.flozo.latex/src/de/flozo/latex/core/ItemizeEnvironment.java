@@ -30,4 +30,5 @@ public class ItemizeEnvironment {
                 ", itemList=" + itemList +
                 '}';
     }
+
 }
