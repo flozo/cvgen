@@ -19,7 +19,8 @@ import static de.flozo.cvgen.Main.HOME_DIRECTORY;
 public class LetterTextFieldContent {
 
     public static final String DEFAULT_BACKADDRESS_SEPARATOR = "\\hspace{8pt}$\\bullet$\\hspace{8pt}";
-    public static final String ENCLOSURE_TAG = "Enclosure";
+    public static final String ENCLOSURE_TAG = "Anlagen";
+//    public static final String ENCLOSURE_TAG = "Enclosure";
 
     private final LetterContent letterContent;
     private final Address sender;
