@@ -22,7 +22,11 @@ import static de.flozo.cvgen.Main.HOME_DIRECTORY;
 public class CurriculumVitae {
 
 //    public static final String BIRTH_TAG = "Geboren am";
-    public static final String BIRTH_TAG = "Born on ";      // Database!
+        public static final String BIRTH_TAG = "Born on ";          // Database!
+//    public static final String KNOWLEDGE_TAG = "IT-Kenntnisse";       // Database!
+    public static final String KNOWLEDGE_TAG = "Knowledge";       // Database!
+//    public static final String LANGUAGE_TAG = "Sprachkenntnisse";     // Database!
+    public static final String LANGUAGE_TAG = "Languages";     // Database!
 
     private final ElementDAO elementDAO;
     private final TimelineItemDAO timelineItemDAO;
@@ -157,6 +161,7 @@ public class CurriculumVitae {
     }
 
     private DocumentElement photo() {
+//        String absoluteFilePathPhoto = photoFile.getFile().getPath().replaceFirst("^~", HOME_DIRECTORY);
         String absoluteFilePathPhoto = CURRENT_DIRECTORY + "/resources/Face.png";
         double scaleFactor = 1;
         if (photoFile != null) {
@@ -253,9 +258,9 @@ public class CurriculumVitae {
         return buildCVPage("cv2", cvPage2, rectangleDAO, lineDAO, headline)
                 .addElement(getEducationTimeline().getTitleField())
                 .addMatrix(getEducationTimeline2().getItemMatrix(elementDAO.get("cv_timeline_headline"), elementDAO.get("cv_item_lists")))
-                .addElement(getSkillAreaTitleField("IT Knowledge"))
+                .addElement(getSkillAreaTitleField(KNOWLEDGE_TAG))
                 .addMatrix(getSkillMatrix("IT"))
-                .addElement(getLanguageAreaTitleField("Languages"))
+                .addElement(getLanguageAreaTitleField(LANGUAGE_TAG))
                 .addMatrix(getLanguageMatrix("languages"))
                 .addElement(getSignature())
                 .insertLatexComments(true)
