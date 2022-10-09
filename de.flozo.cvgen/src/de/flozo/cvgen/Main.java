@@ -22,8 +22,8 @@ public class Main {
 
     // constants
     public static final String APPLICATION_NAME = "cvgen";
-    public static final String VERSION_NUMBER = "0.10";
-    public static final String VERSION_DATE = "2022-09-25";
+    public static final String VERSION_NUMBER = "0.11";
+    public static final String VERSION_DATE = "2022-10-09";
 
     public static final String REPO_URL = String.format("https://github.com/flozo/%1$s",
             APPLICATION_NAME);
@@ -37,6 +37,11 @@ public class Main {
 
     public static final String DEFAULT_TARGET_DIRECTORY = "/tmp";
     public static final String DEFAULT_TARGET_FILENAME = "test_output.tex";
+
+    public static final boolean INCLUDE_LETTER = true;
+    public static final boolean INCLUDE_CV = true;
+    public static final boolean INCLUDE_ENCLOSURES = true;
+
     public static final boolean DEFAULT_RUN_PDFLATEX = true;
     public static final boolean DEFAULT_OPEN_PDF = true;
 
@@ -64,9 +69,11 @@ public class Main {
             LetterContent letterContent = letterContentDAO.get(LETTER_CONTENT_NAME);
             List<Enclosure> enclosureList = enclosureDAO.getAllIncluded();
             String backaddressSeparator = textItemDAO.get("backaddress_separator").getValue();
+
 //            EmbeddedFile signatureFile = embeddedFileDAO.get("signature");
             File file = new File(0, "signature", CURRENT_DIRECTORY + "/resources/DummySignature.png");
             EmbeddedFile signatureFile = new EmbeddedFile(0, file, 0.65, true);
+
             LetterTextFieldContent letterTextFieldContent = new LetterTextFieldContent(
                     letterContent, enclosureList, backaddressSeparator, signatureFile
             );
@@ -122,13 +129,18 @@ public class Main {
 
             EnclosureCode enclosureCode = new EnclosureCode(enclosureList);
 
-            ExpressionList documentBody = new FormattedExpressionList.Builder()
-                    .append(layerDeclarationBlock)
-                    .append(motivationalLetter.getCode())
-                    .append(cv1.getCode())
-                    .append(cv2.getCode())
-                    .append(enclosureCode.getCode())
-                    .build();
+            FormattedExpressionList.Builder bodyCode = new FormattedExpressionList.Builder()
+                    .append(layerDeclarationBlock);
+            if (INCLUDE_LETTER) {
+                bodyCode.append(motivationalLetter.getCode());
+            }
+            if (INCLUDE_CV) {
+                bodyCode.append(cv1.getCode()).append(cv2.getCode());
+            }
+            if (INCLUDE_ENCLOSURES) {
+                bodyCode.append(enclosureCode.getCode());
+            }
+            ExpressionList documentBody = bodyCode.build();
 
             Environment document = new Environment.Builder(EnvironmentName.DOCUMENT)
                     .body(documentBody.getBlock())
